@@ -1,0 +1,66 @@
+# scripts 索引
+
+共 60 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+
+| 脚本 | 说明 |
+|---|---|
+| `anti_anti.js` | 反反调试（ptrace 检测对抗） |
+| `api_atlas.py` | 端点图谱（全 App URL 归类） |
+| `autosign.py` | ★ 免二维码直签 + 轮询（列表→类型判定→按类型提交） |
+| `dex_strings.py` | 从解壳 dex 提取全量字符串池 |
+| `extract_dex.py` | 从内存快照按 dex magic+校验切出真 dex |
+| `frida_face_puppet.js` | Frida：伪造活体状态位 + 注入指定人脸图 |
+| `frida_sign_hook.js` | ★ Frida：hook SignInfoActivity/enc/扫码分发/volley/cookie 导出/人脸桥 |
+| `mk_apk.py` | 把解壳 dex 重新打成可被静态工具消费的 apk |
+| `native_unpack_probe.py` | native 加固探针（VMP 标记/加密符号表） |
+| `qr_relay.py` | ★ 自动看屏中继（adb/macOS 截屏/目录）→ 解码 → 直签或转发 |
+| `qr_sign_remote.py` | ★ 四通道签到：单次/--watch 目录/--serve 中继/--stdin |
+| `sign_evidence.py` | 签到模块字符串/类/端点证据汇总 |
+| `snap3.sh` | 冻结进程后直读 /proc/<pid>/mem 全 rw 段 |
+| `api_table.py` | Dump the mobilelearn API template table + hunt the student sign-in submit endpoint. |
+| `dbg_magic.py` | — |
+| `dbg_magic2.py` | — |
+| `dbg_mem.sh` | — |
+| `dex_layout.py` | Layout + entropy map of classes.dex (stub vs payload) and asset blob census. |
+| `dump_and_mine.sh` | dump_and_mine.sh — 对 frida-dexdump 产物做批量分析（droidasc 链路） |
+| `dump_bangcle.py` | — |
+| `endpoints.py` | Whole-APK endpoint census: chaoxing hosts and API paths in every readable entry. |
+| `fdscan.sh` | — |
+| `gate_children.py` | — |
+| `getclass_batch2.sh` | — |
+| `getclass_batch3.sh` | — |
+| `h5_schedule.py` | Inspect the unsealed H5 schedule/attendance bundle inside assets. |
+| `h5_schedule2.py` | — |
+| `hunt_signin.py` | Hunt the 签到/attendance surface across every readable entry of the APK. |
+| `killchild.sh` | — |
+| `maps.sh` | — |
+| `masquerade.js` | masquerade.js v2 - hide emulator/frida fingerprints for Bangcle DexHelper + full crash diagnostics. |
+| `mine_strings.py` | Mine the readable string surface inside the sealed classes.dex; build the 学习通/签到 class + API map. |
+| `params.py` | Recover sign-request parameter constants near the sign code region. |
+| `patch_odm.sh` | — |
+| `patch_props.sh` | — |
+| `patch_props2.sh` | — |
+| `patch_props3.sh` | — |
+| `payload_map.py` | Fine-grained map of the sealed payload inside classes.dex + zlib/ELF magic census. |
+| `probe_env.js` | — |
+| `probe_env2.js` | — |
+| `prop_fix.js` | — |
+| `recon_dex.py` | chaoxing apk recon: dex headers, entry census, packer markers. |
+| `refs_batch.sh` | — |
+| `refs_batch2.sh` | — |
+| `refs_batch3.sh` | — |
+| `refs_batch4.sh` | — |
+| `refs_batch5.sh` | — |
+| `refs_batch6.sh` | — |
+| `refs_batch7.sh` | — |
+| `refs_batch8.sh` | — |
+| `scan_dex.py` | — |
+| `scan_hdr.py` | — |
+| `scan_magic2.py` | — |
+| `scan_strings.py` | — |
+| `sign_client.py` | 学习通 6.7.8 扫码签到复现客户端（占位符版）。 |
+| `sign_window.py` | Window dump around the sign-in endpoints: recover nearby string-pool constants. |
+| `snap.sh` | usage: snap.sh <delay_ms> <mode: dry/dump> <outdir> |
+| `snap2.sh` | — |
+| `strings_payload.py` | Extract the readable class/string surface from the sealed classes.dex, focused on the sign module. |
+| `unseal_probe.py` | Attempt static recovery inside the sealed payload: embedded zips, zlib/deflate streams, single-byte-xor dex. |

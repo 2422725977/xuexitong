@@ -1,0 +1,3 @@
+classes7.dex | Lcom/chaoxing/mobile/sign/LocationPoi$a;->a | matched=(Lcom/chaoxing/mobile/sign/LocationPoi;)
+classes7.dex | Lcom/chaoxing/mobile/sign/LocationPoi$a;->b | matched=([Lcom/chaoxing/mobile/sign/LocationPoi;)
+classes7.dex | Lcom/chaoxing/mobile/sign/LocationPoi;-><clinit> | matched=(Lcom/chaoxing/mobile/sign/LocationPoi$a;)

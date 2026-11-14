@@ -1,0 +1,3 @@
+classes3.dex | Lcom/baidu/location/BDLocation;->toString | matched=(&loctype=)
+classes3.dex | Lcom/baidu/location/LocationClient$a;->handleMessage | matched=(loctype)
+classes3.dex | Lcom/baidu/location/b/f;->a | matched=(loctype)

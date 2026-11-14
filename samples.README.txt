@@ -1,0 +1,3 @@
+# 样本 APK 不放仓库（260 MB）
+sha256: bd020876a60d61deffd9819440faf0890e3d7b544a4396559817b2142fa8cb14
+版本: com.chaoxing.mobile 6.7.8 (10946)

@@ -1,0 +1,1262 @@
+9	Ldalvik/annotation/Signature;
+9	equalsIgnoreCase
+8	isAssignableFrom
+6	Landroid/os/CancellationSignal;
+6	signature
+6	signum
+5	Landroid/content/pm/Signature;
+5	[Landroid/content/pm/Signature;
+5	signatures
+4	getLeastSignificantBits
+4	getMostSignificantBits
+4	getSign
+4	getSignature
+4	setSign
+4	signal
+4	getSend_sign
+4	item_chat_sign_in
+4	setSend_sign
+4	sign_ban
+4	topSign
+4	topsign
+3	 Landroid/content/pm/SigningInfo;
+3	*Landroid/telephony/CellSignalStrengthCdma;
+3	)Landroid/telephony/CellSignalStrengthLte;
+3	(Landroid/telephony/CellSignalStrengthNr;
+3	+Landroid/telephony/CellSignalStrengthWcdma;
+3	"Landroid/telephony/SignalStrength;
+3	Ljava/security/Signature;
+3	signalEndOfInputStream
+3	setStaleCheckingEnabled
+3	signalAll
+3	/Lcom/chaoxing/mobile/sign/util/LocationUtils$a;
+3	-Lcom/chaoxing/mobile/sign/util/LocationUtils;
+3	attach_sign_in
+3	iv_sign
+3	send_sign
+3	settings_sign_out_tips
+3	tv_tag_top_sign
+3	getTopSign
+3	getTopsign
+3	setTopSign
+3	setTopsign
+2	|dental|dentist|desi|design|dev|dhl|diamonds|diet|digital|direct|directory|discount|discover|dish|diy|dnp|docs|doctor|do
+2	l|ups|u[agksyz])|(?:vacations|vana|vanguard|vegas|ventures|verisign|versicherung|vet|viajes|video|vig|viking|villas|vin|
+2	JPEG_SIGNATURE
+2	&Landroid/telephony/CellSignalStrength;
+2	)Landroid/telephony/CellSignalStrengthGsm;
+2	calculateSignalLevel
+2	cancellationSignal
+2	checkIndex
+2	getApkContentsSigners
+2	getCellSignalStrength
+2	getGsmSignalStrength
+2	getSigningCertificateHistory
+2	hasMultipleSigners
+2	invalidateSpanAssignments
+2	onSignalStrengthsChanged
+2	readUnsignedByte
+2	readUnsignedInt
+2	readUnsignedShort
+2	signType
+2	/^signal\s(.*),\scode\s(.*),\sfault\saddr\s(.*)$
+2	signal 
+2	&sign=
+2	"Animation_Design_BottomSheetDialog
+2	Base_Widget_Design_TabLayout
+2	@BottomSheetBehavior_Layout_behavior_significantVelocityThreshold
+2	KEY_SIGNATURE
+2	-Landroid/telephony/CellSignalStrengthTdscdma;
+2	0TextAppearance_Design_CollapsingToolbar_Expanded
+2	TextAppearance_Design_Counter
+2	&TextAppearance_Design_Counter_Overflow
+2	TextAppearance_Design_Error
+2	 TextAppearance_Design_HelperText
+2	TextAppearance_Design_Hint
+2	&TextAppearance_Design_Snackbar_Message
+2	TextAppearance_Design_Tab
+2	%ThemeOverlay_Design_TextInputEditText
+2	Theme_Design
+2	Theme_Design_BottomSheetDialog
+2	Theme_Design_Light
+2	$Theme_Design_Light_BottomSheetDialog
+2	Theme_Design_Light_NoActionBar
+2	Theme_Design_NoActionBar
+2	Widget_Design_AppBarLayout
+2	"Widget_Design_BottomNavigationView
+2	Widget_Design_BottomSheet_Modal
+2	Widget_Design_CollapsingToolbar
+2	"Widget_Design_FloatingActionButton
+2	Widget_Design_NavigationView
+2	$Widget_Design_ScrimInsetsFrameLayout
+2	Widget_Design_Snackbar
+2	Widget_Design_TabLayout
+2	Widget_Design_TextInputLayout
+2	application/pgp-signature
+2	application/x-internet-signup
+2	design_appbar_elevation
+2	!design_appbar_state_list_animator
+2	.design_bottom_navigation_active_item_max_width
+2	.design_bottom_navigation_active_item_min_width
+2	)design_bottom_navigation_active_text_size
+2	"design_bottom_navigation_elevation
+2	design_bottom_navigation_height
+2	"design_bottom_navigation_icon_size
+2	design_bottom_navigation_item
+2	'design_bottom_navigation_item_max_width
+2	'design_bottom_navigation_item_min_width
+2	design_bottom_navigation_margin
+2	%design_bottom_navigation_shadow_color
+2	&design_bottom_navigation_shadow_height
+2	"design_bottom_navigation_text_size
+2	design_bottom_sheet
+2	design_bottom_sheet_dialog
+2	design_bottom_sheet_elevation
+2	#design_bottom_sheet_modal_elevation
+2	#design_bottom_sheet_peek_height_min
+2	design_bottom_sheet_slide_in
+2	design_bottom_sheet_slide_out
+2	design_box_stroke_color
+2	$design_dark_default_color_background
+2	design_dark_default_color_error
+2	'design_dark_default_color_on_background
+2	"design_dark_default_color_on_error
+2	$design_dark_default_color_on_primary
+2	&design_dark_default_color_on_secondary
+2	$design_dark_default_color_on_surface
+2	!design_dark_default_color_primary
+2	&design_dark_default_color_primary_dark
+2	)design_dark_default_color_primary_variant
+2	#design_dark_default_color_secondary
+2	+design_dark_default_color_secondary_variant
+2	!design_dark_default_color_surface
+2	design_default_color_background
+2	design_default_color_error
+2	"design_default_color_on_background
+2	design_default_color_on_error
+2	design_default_color_on_primary
+2	!design_default_color_on_secondary
+2	design_default_color_on_surface
+2	design_default_color_primary
+2	!design_default_color_primary_dark
+2	$design_default_color_primary_variant
+2	design_default_color_secondary
+2	&design_default_color_secondary_variant
+2	design_default_color_surface
+2	design_error
+2	design_fab_background
+2	design_fab_border_width
+2	design_fab_elevation
+2	design_fab_hide_motion_spec
+2	design_fab_image_size
+2	design_fab_shadow_end_color
+2	design_fab_shadow_mid_color
+2	design_fab_shadow_start_color
+2	design_fab_show_motion_spec
+2	design_fab_size_mini
+2	design_fab_size_normal
+2	!design_fab_stroke_end_inner_color
+2	!design_fab_stroke_end_outer_color
+2	!design_fab_stroke_top_inner_color
+2	!design_fab_stroke_top_outer_color
+2	(design_fab_translation_z_hovered_focused
+2	 design_fab_translation_z_pressed
+2	design_ic_visibility
+2	design_ic_visibility_off
+2	design_icon_tint
+2	design_layout_snackbar
+2	design_layout_snackbar_include
+2	design_layout_tab_icon
+2	design_layout_tab_text
+2	design_menu_item_action_area
+2	!design_menu_item_action_area_stub
+2	design_menu_item_text
+2	design_navigation_elevation
+2	design_navigation_icon_padding
+2	design_navigation_icon_size
+2	design_navigation_item
+2	design_navigation_item_header
+2	)design_navigation_item_horizontal_padding
+2	#design_navigation_item_icon_padding
+2	 design_navigation_item_separator
+2	 design_navigation_item_subheader
+2	design_navigation_max_width
+2	design_navigation_menu
+2	design_navigation_menu_item
+2	 design_navigation_padding_bottom
+2	,design_navigation_separator_vertical_padding
+2	design_navigation_view
+2	design_password_eye
+2	'design_snackbar_action_inline_max_width
+2	'design_snackbar_action_text_color_alpha
+2	design_snackbar_background
+2	 design_snackbar_background_color
+2	(design_snackbar_background_corner_radius
+2	design_snackbar_elevation
+2	(design_snackbar_extra_spacing_horizontal
+2	design_snackbar_in
+2	design_snackbar_max_width
+2	design_snackbar_min_width
+2	design_snackbar_out
+2	"design_snackbar_padding_horizontal
+2	 design_snackbar_padding_vertical
+2	'design_snackbar_padding_vertical_2lines
+2	design_snackbar_text_max_lines
+2	design_snackbar_text_size
+2	%design_tab_indicator_anim_duration_ms
+2	design_tab_max_width
+2	design_tab_scrollable_min_width
+2	design_tab_text_size
+2	design_tab_text_size_2line
+2	design_text_input_end_icon
+2	design_text_input_start_icon
+2	$design_textinput_caption_translate_y
+2	getSignalStrength
+2	verifySign
+2	#/api/opac/showOpacLink.jspx?newSign
+2	activity_attendance_statistics
+2	activity_clazz_assign_select
+2	activity_signinfo
+2	add_attendance_blue_tooth
+2	add_attendance_wifi
+2	attend_view
+2	&attend_work_shift_view_select_shape_bg
+2	attendanceGroupSelectLayout
+2	attendanceNameTv
+2	attendanceShiftTv
+2	attendance_blue_tooth_manager
+2	attendance_count
+2	attendance_count2
+2	%attendance_daily_stcts_filters_dialog
+2	attendance_group_dialog
+2	attendance_statistics
+2	attendance_statistics_tab_title
+2	chatSign
+2	chooseAttendanceGroupTv
+2	choose_attendance_group
+2	course_task_sign
+2	course_task_sign_in_normal
+2	entry_attendance
+2	getAttendanceUrl
+2	getReplySign
+2	getShowSignbanSet
+2	hasSign
+2	have_enter_attendance_range
+2	&have_entered_the_wifi_attendance_range
+2	ic_course_task_sign
+2	ic_main_active_sign
+2	ic_main_active_signed
+2	ic_recent_no_top_sign
+2	ic_recent_top_sign
+2	ic_recent_top_sign2
+2	ic_recent_top_unsign2
+2	icon_voice_sign_recorgnize
+2	initSign
+2	item_attend_work_shift_view
+2	item_attendance_group_select
+2	item_clazz_assign_select
+2	!item_clazz_assign_select_divider1
+2	!item_clazz_assign_select_divider2
+2	item_punch_attendance_rules
+2	+item_today_attendance_statistics_layout_new
+2	item_top_sign_topic
+2	lesson_online_dialog_sign
+2	non_effective_attendance_wifi
+2	not_enter_attendance_range
+2	not_enter_attendance_range1
+2	params_sign
+2	prize_sign
+2	replySign
+2	rv_clazz_assign
+2	setAttendanceUrl
+2	setReplySign
+2	setShowSignbanSet
+2	settings_sign_out
+2	sign_ban_startTime
+2	sign_course
+2	sign_fail
+2	sign_fail_msg
+2	sign_false
+2	sign_gray
+2	sign_loading
+2	sign_notice_unread
+2	sign_success
+2	sign_tea
+2	sign_time
+2	sign_user
+2	site_id_sign
+2	todayAttendanceStcsLayout
+2	tvSetTimeSign
+2	tv_sign_up
+2	 view_attendance_statistics_error
+2	wf_attend_name
+2	wf_attendance_count
+2	work_attendance_shift_divider
+2	SIGNIN:
+2	getAttendeeInfos
+2	getSign_ban
+2	getSign_rname
+2	setSign_ban
+2	setSign_rname
+2	signToken
+2	sign_rname
+2	top_sign
+2	val$topSign
+2	OLcom/chaoxing/mobile/office/attendance/statistics/AttendanceStatisticsActivity;
+2	.Lcom/chaoxing/mobile/sign/ui/SignInfoActivity;
+2	attendanceRules
+2	msign
+2	requestSign
+2	signInSuccess
+2	Lorg/aspectj/lang/Signature;
+2	*Lorg/aspectj/lang/reflect/MethodSignature;
+2	checkSignatures
+2	setSignature
+1	$cancellationSignal
+1	/%s#%s assigned correctly as %s. runTime: %d ms
+1	5%s#%s: skipping suite assignment due to test failure
+1	', signalStrength=
+1	ist|desi|design|dev|dhl|diamonds|diet|digital|direct|directory|discount|discover|dish|diy|dnp|docs|doctor|dog|domains|do
+1	yz])|(?:vacations|vana|vanguard|vegas|ventures|verisign|versicherung|vet|viajes|video|vig|viking|villas|vin|vip|virgin|v
+1	|desi|design|dev|dhl|diamonds|diet|digital|direct|directory|discount|discover|dish|diy|dnp|docs|doctor|dog|domains|dot|d
+1	)|(?:vacations|vana|vanguard|vegas|ventures|verisign|versicherung|vet|viajes|video|vig|viking|villas|vin|vip|virgin|visa
+1	, signalStrength=
+1	-$$Nest$fgetsuiteAssignment
+1	+. Checking for flash availability safely...
+1	a. Please enable seeking support for the designated transition by overriding isSeekingSupported().
+1	%ACTION_PROVIDER_CONSTRUCTOR_SIGNATURE
+1	!ACTION_VIEW_CONSTRUCTOR_SIGNATURE
+1	ANDROID_VIEWMODEL_SIGNATURE
+1	ARGUMENT_SUITE_ASSIGNMENT
+1	CONSTRUCTOR_SIGNATURE
+1	CancellationSignal()
+1	"Checking '%s' assertion on view %s
+1	MChecking for metadata for AppLocalesMetadataHolderService : Service not found
+1	DESIGN_INFO_ID
+1	Design assumption violated.
+1	QDesign assumption violated: a ViewHolder can only be bound to one item at a time.
+1	DesignTool
+1	+Device doesn't support SHA256 cert checking
+1	,End Of Central Directory signature not found
+1	Error checking VP8 signature
+1	Error checking VP8L signature
+1	IsAssignableFromMatcher
+1	/Key injection was signaled - but it wasnt done.
+1	$LAYOUT_MANAGER_CONSTRUCTOR_SIGNATURE
+1	0Landroid/os/CancellationSignal$OnCancelListener;
+1	4Landroidx/constraintlayout/motion/widget/DesignTool;
+1	6Landroidx/core/os/CancellationSignal$OnCancelListener;
+1	%Landroidx/core/os/CancellationSignal;
+1	6Landroidx/emoji2/text/flatbuffer/FlexBuffers$Unsigned;
+1	HLandroidx/room/TriggerBasedInvalidationTracker$checkInvalidatedTables$1;
+1	<Landroidx/test/espresso/base/UiControllerImpl$SignalingTask;
+1	HLandroidx/test/espresso/matcher/ViewMatchers$IsAssignableFromMatcher-IA;
+1	ELandroidx/test/espresso/matcher/ViewMatchers$IsAssignableFromMatcher;
+1	?Landroidx/test/internal/runner/listener/SuiteAssignmentPrinter;
+1	*Lanet/channel/strategy/dispatch/IAmdcSign;
+1	NLcom/alibaba/wireless/security/open/securesignature/ISecureSignatureComponent;
+1	8Motion event injection was signaled - but it wasnt done.
+1	8MotionEvents injection was signaled - but it wasnt done.
+1	ORF_SIGNATURE_1
+1	ORF_SIGNATURE_2
+1	PEF_SIGNATURE
+1	PNG_SIGNATURE
+1	(Preference does not have a key assigned.
+1	RAF_SIGNATURE
+1	RESULT_SAVE_PROFILE_SIGNALLED
+1	RW2_SIGNATURE
+1	SIGNATURE_CHECK_SIZE
+1	SIGNTYPE
+1	SIGN_ALGORITHM_HMAC_SHA1
+1	SIGN_SPLIT_SYMBOL
+1	"Securityguard sign request failed.
+1	SignalingTask
+1	SuiteAssignmentPrinter
+1	The thumbnail bitmap is rarely returned and is not a good signal to determine
+1	eThis preference already has a parent. You must remove the existing parent before assigning a new one.
+1	UNASSIGNED_ASPECT_RATIO
+1	$USAGE_VOICE_COMMUNICATION_SIGNALLING
+1	Unsigned
+1	VIEWMODEL_SIGNATURE
+1	WEBP_SIGNATURE_1
+1	WEBP_SIGNATURE_2
+1	WEBP_VP8L_SIGNATURE
+1	WEBP_VP8_SIGNATURE
+1	\s*=\s* # Match equals sign
+1	__assign
+1	access$checkIndex
+1	access$checkInvalidatedTables
+1	'access$getANDROID_VIEWMODEL_SIGNATURE$p
+1	access$getVIEWMODEL_SIGNATURE$p
+1	$amdc sign is null or appkey is empty
+1	android.os.CancellationSignal
+1	assignCoordinateFromPadding
+1	assignFromView
+1	 assignFromViewAndKeepVisibleRect
+1	assignParent
+1	assignPositionFromScrapList
+1	assignSpans
+1	byteToUnsignedInt
+1	check ret sign failed
+1	check sign failed
+1	checkInit
+1	checkInitHost failed
+1	checkInitializedOrThrow
+1	checkInvalidatedTables
+1	 checkInvalidatedTables$lambda$14
+1	checkSign
+1	createCancellationSignal
+1	createSignal
+1	designAccess
+1	forceNextChangeSignificant
+1	get sign failed
+1	getAsUnsigned
+1	getAssetSignature
+1	getCancellationSignalObject
+1	getDesignInformation
+1	getDesignTool
+1	getInsetsIgnoringVisibility
+1	getMethodSignature
+1	getSecureSignatureComp
+1	getSignatures
+1	getSigningSignatures
+1	getTransitionSignal
+1	getTransitionSignal$annotations
+1	hasSignatures
+1	hasSigningCertificate
+1	iSign
+1	ignoring signal of: 
+1	intToUnsignedLong
+1	is assignable from class 
+1	isAssignableFromClassName
+1	 isEosSignalledAndStopTimeReached
+1	isIgnoreSuiteMethods
+1	isSignaled
+1	mCancellationSignal
+1	mCancellationSignalObj
+1	mDesignIds
+1	mDesignTool
+1	mForceNextChangeSignificant
+1	mLatestSignalledVersion
+1	mMediaCodecEosSignalled
+1	mSignature
+1	mSourceStoppedSignalled
+1	methodSignature
+1	minusAssign
+1	onSignalStrengthChanged
+1	parseUnsignedInt
+1	parseUnsignedLong
+1	plusAssign
+1	response sign is empty
+1	retSign
+1	sConstructorSignature
+1	sendSignal
+1	setDesignInformation
+1	setInsetsIgnoringVisibility
+1	shortToUnsignedInt
+1	signRequest
+1	signalCodecStop
+1	signalIntent
+1	signalLifecycleChange
+1	signalSourceStopped
+1	signingInfo
+1	suiteAssignment
+1	toUnsignedInt
+1	toUnsignedShort
+1	transitionSignal
+1	Aval is larger than the maximum value of a 16-bit unsigned integer
+1	Aval is larger than the maximum value of a 32-bit unsigned integer
+1	val$cancellationSignal
+1	val$idleSignal
+1	writeUnsignedInt
+1	writeUnsignedShort
+1	x-am-sign
+1	. cannot be negative according to the SignStyle
+1	+$SwitchMap$org$threeten$bp$format$SignStyle
+1	nd=8cz;1e1&Aogon=78;4m&Aopf=2koo;1ls&ApplyFunction=6e9;ew&Aring=5h;2t&Ascr=2kkc;1jc&Assign=6s4;s6&Atilde=5f;2r&Auml=5g;2
+1	Alias checking disabled
+1	CHECKING
+1	Checking for '
+1	'Checking for connections, idleTimeout: 
+1	ZCustom runner class %s should have a public constructor with signature %s(Class testClass)
+1	(Lorg/appspot/apprtc/SignalingParameters;
+1	4Lorg/junit/experimental/theories/ParameterSignature;
+1	7Lorg/junit/experimental/theories/PotentialAssignment$1;
+1	TLorg/junit/experimental/theories/PotentialAssignment$CouldNotGenerateValueException;
+1	5Lorg/junit/experimental/theories/PotentialAssignment;
+1	6Lorg/junit/experimental/theories/internal/Assignments;
+1	"Lorg/threeten/bp/format/SignStyle;
+1	*Lorg/webrtc/PeerConnection$SignalingState;
+1	^Ordering class %s should have a public constructor with signature %s(Ordering.Context context)
+1	Problem checking inUse for id=
+1	RELEASE_SIGNATURE
+1	RawtextLessthanSign
+1	RcdataLessthanSign
+1	#ScriptDataDoubleEscapedLessthanSign
+1	ScriptDataEscapedLessthanSign
+1	ScriptDataLessthanSign
+1	SignalingState
+1	SignalingState: 
+1	7Zone offset minutes and seconds must have the same sign
+1	6[Lorg/junit/experimental/theories/PotentialAssignment;
+1	#[Lorg/threeten/bp/format/SignStyle;
+1	+[Lorg/webrtc/PeerConnection$SignalingState;
+1	__boundsChecking
+1	__signature
+1	 _checkingRemoteSessionIdEncoding
+1	allUnassigned
+1	appendFixedSignedDecimal
+1	appendSignedDecimal
+1	assignNext
+1	assigned
+1	awaitSignal
+1	charEqualsIgnoreCase
+1	checkAddWithMethodSignature
+1	checkInitializeHasBeenCalled
+1	checkInstant
+1	checkInterval
+1	containsIgnoreCase
+1	containsSameMethodSignature
+1	 generateAssignmentsFromTypeAlone
+1	getAppsign secret null
+1	%getIceCheckIntervalStrongConnectivity
+1	#getIceCheckIntervalWeakConnectivity
+1	getMinusSign
+1	getNegativeSign
+1	getPositiveSign
+1	hasAssignableTo
+1	iRejectSignedValues
+1	iSigned
+1	$iceCheckIntervalStrongConnectivityMs
+1	"iceCheckIntervalWeakConnectivityMs
+1	isAssignableToAnyOf
+1	isAssignableViaTypeConversion
+1	!isCheckingRemoteSessionIdEncoding
+1	 isConnectionStaleCheckingEnabled
+1	isIgnoreCase
+1	isIgnoreWhiteSpace
+1	isIgnored
+1	isSameSignature
+1	isStaleCheckingEnabled
+1	logConstructorSignature
+1	logMethodSignature
+1	matchesIgnoreCase
+1	nativeSignalingState
+1	negativeSign
+1	nextUnassigned
+1	7not a zip: end of central directory signature not found
+1	oldDid getAppsign secret null
+1	onSignalingChange
+1	onSignalingThreadReady
+1	2org.eclipse.jetty.io.AbstractBuffer.boundsChecking
+1	9org.eclipse.jetty.servlet.CheckingRemoteSessionIdEncoding
+1	peekUnsignedByte
+1	positiveSign
+1	potentialsForNextUnassigned
+1	readLittleEndianUnsignedInt
+1	readLittleEndianUnsignedInt24
+1	 readLittleEndianUnsignedIntToInt
+1	readLittleEndianUnsignedShort
+1	readUnsignedFixedPoint1616
+1	readUnsignedInt24
+1	readUnsignedIntToInt
+1	readUnsignedLongToLong
+1	rejectSignedValues
+1	runWithAssignment
+1	runWithCompleteAssignment
+1	runWithIncompleteAssignment
+1	"setCheckingRemoteSessionIdEncoding
+1	!setConnectionStaleCheckingEnabled
+1	signStyle
+1	signalError
+1	signalingParameters
+1	signalingState
+1	signalingThread
+1	sqrtsign
+1	staticSignalingThread
+1	surdsign
+1	unassigned
+1	withNegativeSign
+1	withPositiveSign
+1	:        <edit name="family" mode="assign" binding="same">
+1	<(http|https)://mclient.alipay.com/home/exterfaceAssign.htm\?
+1	, signature=
+1	; checkinNum = 
+1	AppVersionSignature
+1	CheckClientSignEx
+1	EmptySignature
+1	GPS_SIGNAL_CONNECTED
+1	GPS_SIGNAL_NOT_CONNECTED
+1	GPS_SIGNAL_SATELLITE_NUM
+1	GetPublicKeyFromSignEx
+1	GetSignMD5String
+1	GetWebSignMD5String
+1	INTIMESIGN_FIELD_NUMBER
+1	SIgnoring spurious interrupt of NetworkDispatcher thread; use quit() to terminate it
+1	InvalidSignature
+1	KEY_APP_SIGNATURE
+1	KEY_SIGNAL
+1	 Lcom/arthenica/ffmpegkit/Signal;
+1	,Lcom/baidu/platform/comapi/verify/SignUtils;
+1	NotIncludeSignatures
+1	0OAEP cannot be used to sign or verify signatures
+1	PAT_SIGNAL_CODE
+1	SIGN_OR_CODE_UNMATCH
+1	SignIn
+1	SignOpra
+1	Signature must not be null
+1	SignatureExpired
+1	UI_TIP_SIGN_ERROR
+1	UnsignedInterfaceDisabled
+1	![Lcom/arthenica/ffmpegkit/Signal;
+1	*ali-text-search/aipptcn/api/design/v2/save
+1	app_signature
+1	app_signature=
+1	checkinNum
+1	checkin_num
+1	$checking platformName:mshield_SOFIRE
+1	clearInTimeSign
+1	cxSignInterceptor
+1	design
+1	designToDevice
+1	Lgalaxy config err, In the release version of the signature should be matched
+1	generateSign
+1	getCheckinNum
+1	getInTimeSign
+1	getSignMD5
+1	getSignMD5ForPkg
+1	getSignMD5String
+1	getSignatureMD5
+1	getWebSignMD5String
+1	hasInTimeSign
+1	2http://mclient.alipay.com/home/exterfaceAssign.htm
+1	3https://mclient.alipay.com/home/exterfaceAssign.htm
+1	4https://mclient.alipay.com/home/exterfaceAssign.htm?
+1	5https://wappaygw.alipay.com/home/exterfaceAssign.htm?
+1	ignoreNativeSignal
+1	inTimeSign_
+1	isIgnoreCacheException
+1	isIgnoreKillProcess
+1	+mclient.alipay.com/home/exterfaceAssign.htm
+1	nativeMD5Sign
+1	nativeOperSign
+1	!nativeSetStreetLayerNewDesignFlag
+1	nativeWebSign
+1	package sign verify failed
+1	parseSignature
+1	setCheckInterface
+1	setCheckinNum
+1	setInTimeSign
+1	setStreetLayerNewDesignFlag
+1	sign or appcode unmatched
+1	signOpra
+1	sign_d
+1	sign_resolve
+1	 ws://asr.chaoxing.com?%s&sign=%s
+1	+Lcom/chaoxing/beacon/BluetoothSignEntity$a;
+1	)Lcom/chaoxing/beacon/BluetoothSignEntity;
+1	*[Lcom/chaoxing/beacon/BluetoothSignEntity;
+1	activity_startsign
+1	addSign
+1	assign_teacher_tips
+1	attendNum
+1	attend_work_shift_view_shape_bg
+1	attendance_group
+1	attendance_group_info
+1	attendance_group_name
+1	bg_connect_code_checking
+1	bt_sign
+1	checking
+1	checking_update
+1	checking_version
+1	common_assign
+1	course_task_sign_in_gray
+1	course_task_sign_in_light_blue
+1	create_topic_select_sign
+1	cx_shanyan_sign_in_to_agree
+1	cx_shanyan_sign_up_to_agree
+1	/daily_stcts_choose_attendance_group_list_dialog
+1	dispose_sign
+1	!ds_bg_attendance_group_non_select
+1	ds_bg_attendance_group_select
+1	getAttendNum
+1	getParams_sign
+1	8https://authen.chaoxing.com/authsign/show?certifyType=%d
+1	;https://learn.chaoxing.com/apis/friend/updateFollowTopsign?
+1	;https://learn.chaoxing.com/apis/friend/updateFriendTopsign?
+1	Dhttps://mobilelearn.chaoxing.com/newsign/studentSign?rcode=%s&uid=%s
+1	https://mobilelearn.chaoxing.com/pptSign/gotasksign?courseId=%s&classId=%s&puid=%s&source=1&showSaveBtn=0&hideBeginButto
+1	6https://mobilelearn.chaoxing.com/sign/produceSignView?
+1	Ehttps://mobilelearn.chaoxing.com/widget/sign/api/findPuidsByActiveId?
+1	.https://money.chaoxing.com/apis/pay/signature?
+1	<https://resource.chaoxing.com/apis/cloud/updateTopsign.jspx?
+1	7https://yz4.chaoxing.com/selfBuiltProject/cancleTopsign
+1	1https://yz4.chaoxing.com/selfBuiltProject/topsign
+1	ic_recent_signed
+1	ic_recent_top_sign_en
+1	ic_recent_top_signed
+1	ic_recent_top_signed_en
+1	ic_recent_top_unsign
+1	ic_recent_top_unsign_en
+1	ic_recent_unsign
+1	icon_note_record_sign
+1	isIgnoreLogin
+1	 item_today_attendance_statistics
+1	'item_today_attendance_statistics_layout
+1	ivMuteSign
+1	ll_sign
+1	7newsign/gotasksign?circleId=%s&uid=%s&tid=%s&appType=%s
+1	onProfileSignIn
+1	onProfileSignOff
+1	ppt/renwuAPI/getAttend?id=%s
+1	JpptSign/gotasksign?courseId=%s&classId=%s&puid=%s&source=%s&showSaveBtn=%d
+1	_pptSign/preSign?activePrimaryId=%s&sys=1&chatId=%s&general=%s&ls=1&appType=15&classId=%s&uid=%s
+1	!recent_record_ask_cancel_top_sign
+1	recent_record_cancel_top_sign
+1	setAttendNum
+1	setParams_sign
+1	sign_account_repeat
+1	sign_course_name
+1	sign_error
+1	sign_fail_again
+1	sign_name
+1	sign_phone_repeat
+1	sign_real_name
+1	sign_real_tea
+1	sign_real_time
+1	sign_result
+1	signinfo_false
+1	signinfo_loading
+1	signinfo_success
+1	signup_avatarcamera_white
+1	string_account_sign_in_loading
+1	string_home_unsign
+1	string_home_unsign_record
+1	switchAttendanceLayout
+1	todaySigned
+1	today_attendance_statistics
+1	tvSignIn
+1	. = managerGroup groupid userAttendIds isEmpty 
+1	 ADD top_sign INTEGER DEFAULT 0
+1	, sign=
+1	, userAttendId='
+1	ontent TEXT, image_url TEXT, image_name TEXT, owner TEXT, school_id INTEGER, time INTEGER, state INTEGER, sign INTEGER, 
+1	ULT 0, id TEXT, json TEXT, update_time INTEGER DEFAULT 0, top_sign INTEGER DEFAULT 0, order_number INTEGER DEFAULT 0);
+1	EFAULT 0, id TEXT, json TEXT, update_time INTEGER DEFAULT 0, top_sign INTEGER DEFAULT 0, order_number INTEGER DEFAULT 0)
+1	BDELETE FROM tb_forward_history WHERE user_id = ? AND top_sign = ? 
+1	DLcom/chaoxing/mobile/course/bean/TeacherAssignClazz$TeacherDetail$a;
+1	BLcom/chaoxing/mobile/course/bean/TeacherAssignClazz$TeacherDetail;
+1	6Lcom/chaoxing/mobile/course/bean/TeacherAssignClazz$a;
+1	4Lcom/chaoxing/mobile/course/bean/TeacherAssignClazz;
+1	;Lcom/chaoxing/mobile/course/ui/ClazzAssignSelectActivity$a;
+1	;Lcom/chaoxing/mobile/course/ui/ClazzAssignSelectActivity$b;
+1	;Lcom/chaoxing/mobile/course/ui/ClazzAssignSelectActivity$c;
+1	9Lcom/chaoxing/mobile/course/ui/ClazzAssignSelectActivity;
+1	BLcom/chaoxing/mobile/course/ui/adapter/ClazzAssignSelectAdapter$a;
+1	BLcom/chaoxing/mobile/course/ui/adapter/ClazzAssignSelectAdapter$b;
+1	BLcom/chaoxing/mobile/course/ui/adapter/ClazzAssignSelectAdapter$c;
+1	BLcom/chaoxing/mobile/course/ui/adapter/ClazzAssignSelectAdapter$d;
+1	@Lcom/chaoxing/mobile/course/ui/adapter/ClazzAssignSelectAdapter;
+1	CLcom/chaoxing/mobile/course/viewmodel/ClazzAssignSelectViewModel$a;
+1	ALcom/chaoxing/mobile/course/viewmodel/ClazzAssignSelectViewModel;
+1	MSG_SIGN_DOWNLOAD_BOOK_ERROR
+1	MSG_SIGN_NORMAL
+1	^SELECT * FROM tb_forward_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number ASC
+1	eSELECT * FROM tb_forward_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number ASC LIMIT 
+1	_SELECT * FROM tb_forward_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number DESC
+1	^SELECT * FROM tb_forward_history WHERE user_id = ? AND top_sign = ?  ORDER BY update_time DESC
+1	TOP_SIGN_TOPIC
+1	C[Lcom/chaoxing/mobile/course/bean/TeacherAssignClazz$TeacherDetail;
+1	5[Lcom/chaoxing/mobile/course/bean/TeacherAssignClazz;
+1	 apis/topic/deleteMyCheckingTopic
+1	assigneds
+1	attendanceUrl
+1	clazzAssign
+1	courseSignIn
+1	getAssignIds
+1	getClazzAssign
+1	getRoomAttendees
+1	getSignIn
+1	getSign_ban_startTime
+1	getUserAttendId
+1	Zhttps://lib.chaoxingbook.com/wechat-signup/cxstudy-landpage.html?callback_for_spec_share=1
+1	pShowSignbanSet
+1	pSign_ban
+1	pSign_ban_startTime
+1	setClazzAssign
+1	setSignIn
+1	setSign_ban_startTime
+1	setUserAttendId
+1	showSignbanSet
+1	signIn
+1	syncRoomAttendees ext->
+1	syncRoomAttendees...
+1	'teachingClassManage/updateClassAssigned
+1	topSignTopicList
+1	Dupdate list_noticeinfo set sendTag = send_sign where sendTag is null
+1	userAttendId
+1	userAttendIds
+1	val$topSignHolder
+1	&pageSize=10&sign=
+1	ATTENDANCE_WIFI
+1	AddAttendanceBlueToothActivity
+1	AddAttendanceWiFiActivity
+1	EDELETE FROM tb_note_topic_history WHERE user_id = ? AND top_sign = ? 
+1	=Lcom/chaoxing/mobile/office/AddAttendanceBlueToothActivity$a;
+1	=Lcom/chaoxing/mobile/office/AddAttendanceBlueToothActivity$b;
+1	;Lcom/chaoxing/mobile/office/AddAttendanceBlueToothActivity;
+1	8Lcom/chaoxing/mobile/office/AddAttendanceWiFiActivity$a;
+1	8Lcom/chaoxing/mobile/office/AddAttendanceWiFiActivity$b;
+1	6Lcom/chaoxing/mobile/office/AddAttendanceWiFiActivity;
+1	JLcom/chaoxing/mobile/office/WorkAttendanceShiftViewAdapter$RecyclerHolder;
+1	=Lcom/chaoxing/mobile/office/WorkAttendanceShiftViewAdapter$a;
+1	=Lcom/chaoxing/mobile/office/WorkAttendanceShiftViewAdapter$b;
+1	;Lcom/chaoxing/mobile/office/WorkAttendanceShiftViewAdapter;
+1	BLcom/chaoxing/mobile/office/apiresponse/AttendanceGroupResponse$a;
+1	@Lcom/chaoxing/mobile/office/apiresponse/AttendanceGroupResponse;
+1	>Lcom/chaoxing/mobile/office/apiresponse/AttendanceRulesBean$a;
+1	<Lcom/chaoxing/mobile/office/apiresponse/AttendanceRulesBean;
+1	BLcom/chaoxing/mobile/office/apiresponse/AttendanceRulesResponse$a;
+1	@Lcom/chaoxing/mobile/office/apiresponse/AttendanceRulesResponse;
+1	GLcom/chaoxing/mobile/office/attendance/statistics/DailyAbsentViewModel;
+1	FLcom/chaoxing/mobile/office/attendance/statistics/DailyLeaveViewModel;
+1	DLcom/chaoxing/mobile/office/attendance/statistics/DailyOutViewModel;
+1	ILcom/chaoxing/mobile/office/attendance/statistics/DailyOvertimeViewModel;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchPersonFragment$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchPersonFragment$b;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchPersonFragment$c;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchPersonFragment$d;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchPersonFragment;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchRecordFragment$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchRecordFragment$b;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchRecordFragment$c;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchRecordFragment$d;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyPunchRecordFragment;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsAdapter$a;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsAdapter$b;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsAdapter$c;
+1	ILcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsAdapter;
+1	`Lcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsChooseAttendanceGroupAdapter$a;
+1	`Lcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsChooseAttendanceGroupAdapter$b;
+1	`Lcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsChooseAttendanceGroupAdapter$c;
+1	^Lcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsChooseAttendanceGroupAdapter;
+1	RLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFiltersAdapter$a;
+1	RLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFiltersAdapter$b;
+1	RLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFiltersAdapter$c;
+1	PLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFiltersAdapter;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment$a;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment$b;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment$c;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment$d;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment$e;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsFragment;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/DailyStatisticsViewModel;
+1	BLcom/chaoxing/mobile/office/attendance/statistics/FragmentAdapter;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailActivity$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailActivity$b;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailActivity;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailAdapter$a;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailAdapter$b;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailAdapter;
+1	NLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailViewModel$a;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/IndividualDetailViewModel;
+1	ELcom/chaoxing/mobile/office/attendance/statistics/LateEarlyAdapter$a;
+1	ELcom/chaoxing/mobile/office/attendance/statistics/LateEarlyAdapter$b;
+1	CLcom/chaoxing/mobile/office/attendance/statistics/LateEarlyAdapter;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/LateEarlyListActivity$a;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/LateEarlyListActivity$b;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/LateEarlyListActivity$c;
+1	HLcom/chaoxing/mobile/office/attendance/statistics/LateEarlyListActivity;
+1	ELcom/chaoxing/mobile/office/attendance/statistics/LateEarlyViewModel;
+1	HLcom/chaoxing/mobile/office/attendance/statistics/LeaveRankingAdapter$a;
+1	HLcom/chaoxing/mobile/office/attendance/statistics/LeaveRankingAdapter$b;
+1	HLcom/chaoxing/mobile/office/attendance/statistics/LeaveRankingAdapter$c;
+1	FLcom/chaoxing/mobile/office/attendance/statistics/LeaveRankingAdapter;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$b;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$c;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$d;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$e;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$f;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity$g;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/LeaveTypeRankingActivity;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/MonthlyLateEarlyAdapter$a;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/MonthlyLateEarlyAdapter$b;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/MonthlyLateEarlyAdapter$c;
+1	JLcom/chaoxing/mobile/office/attendance/statistics/MonthlyLateEarlyAdapter;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsAdapter$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsAdapter$b;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsAdapter$c;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsAdapter;
+1	NLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsFragment$a;
+1	NLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsFragment$b;
+1	NLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsFragment$c;
+1	LLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsFragment;
+1	OLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsViewModel$a;
+1	MLcom/chaoxing/mobile/office/attendance/statistics/MonthlyStatisticsViewModel;
+1	PLcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyAdapter$a;
+1	NLcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyAdapter;
+1	ULcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyListActivity$a;
+1	ULcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyListActivity$b;
+1	ULcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyListActivity$c;
+1	SLcom/chaoxing/mobile/office/attendance/statistics/MonthlyUserLateEarlyListActivity;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsActivity$a;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsActivity$b;
+1	RLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsActivity;
+1	SLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsAdapter$a;
+1	SLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsAdapter$b;
+1	SLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsAdapter$c;
+1	QLcom/chaoxing/mobile/office/attendance/statistics/SpecificDailyStatisticsAdapter;
+1	ULcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountActivity$a;
+1	ULcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountActivity$b;
+1	SLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountActivity;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountAdapter$a;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountAdapter$b;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountAdapter$c;
+1	RLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountAdapter;
+1	TLcom/chaoxing/mobile/office/attendance/statistics/SpecificMonthlyUserCountViewModel;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/UnPunchedPersonAdapter$a;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/UnPunchedPersonAdapter$b;
+1	KLcom/chaoxing/mobile/office/attendance/statistics/UnPunchedPersonAdapter$c;
+1	ILcom/chaoxing/mobile/office/attendance/statistics/UnPunchedPersonAdapter;
+1	3Lcom/chaoxing/mobile/office/bean/AttendanceRules$a;
+1	1Lcom/chaoxing/mobile/office/bean/AttendanceRules;
+1	;Lcom/chaoxing/mobile/office/bean/AttendanceScheduleGroup$a;
+1	9Lcom/chaoxing/mobile/office/bean/AttendanceScheduleGroup;
+1	4Lcom/chaoxing/mobile/office/bean/MSAttendanceBean$a;
+1	2Lcom/chaoxing/mobile/office/bean/MSAttendanceBean;
+1	JLcom/chaoxing/mobile/office/utils/AttendanceContext$DailyFilterOptionEnum;
+1	DLcom/chaoxing/mobile/office/utils/AttendanceContext$PunchResultEnum;
+1	4Lcom/chaoxing/mobile/office/utils/AttendanceContext;
+1	FLcom/chaoxing/mobile/office/viewmodel/AddAttendanceBluetoothViewModel;
+1	ALcom/chaoxing/mobile/office/viewmodel/AddAttendanceWiFiViewModel;
+1	FLcom/chaoxing/mobile/office/widget/AttendanceBlueToothManagerActivity;
+1	ALcom/chaoxing/mobile/office/widget/AttendanceGroupSelectLayout$a;
+1	?Lcom/chaoxing/mobile/office/widget/AttendanceGroupSelectLayout;
+1	CLcom/chaoxing/mobile/office/widget/TodayAttendanceStatisticsLayout;
+1	NON_ATTENDANCE_WIFI
+1	aSELECT * FROM tb_note_topic_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number ASC
+1	hSELECT * FROM tb_note_topic_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number ASC LIMIT 
+1	bSELECT * FROM tb_note_topic_history WHERE user_id = ? AND top_sign = ?  ORDER BY order_number DESC
+1	aSELECT * FROM tb_note_topic_history WHERE user_id = ? AND top_sign = ?  ORDER BY update_time DESC
+1	A[Lcom/chaoxing/mobile/office/apiresponse/AttendanceGroupResponse;
+1	=[Lcom/chaoxing/mobile/office/apiresponse/AttendanceRulesBean;
+1	A[Lcom/chaoxing/mobile/office/apiresponse/AttendanceRulesResponse;
+1	2[Lcom/chaoxing/mobile/office/bean/AttendanceRules;
+1	:[Lcom/chaoxing/mobile/office/bean/AttendanceScheduleGroup;
+1	3[Lcom/chaoxing/mobile/office/bean/MSAttendanceBean;
+1	K[Lcom/chaoxing/mobile/office/utils/AttendanceContext$DailyFilterOptionEnum;
+1	E[Lcom/chaoxing/mobile/office/utils/AttendanceContext$PunchResultEnum;
+1	[msign=
+1	[sign=
+1	[sign=officeApp]
+1	][msign=
+1	][pageSize=10][sign=
+1	][sign=
+1	][sign=officeApp]
+1	][sign=officeApp][uid=
+1	(apis/cooperate/generateOrCleanInviteSign
+1	-apis/cooperate/getCooperateResourceInviteSign
+1	apis/friend/updateFollowTopsign
+1	attendCount
+1	attendSchedule
+1	attendScheduleGroup
+1	attendanceGroupID
+1	attendanceRulesBean
+1	chparams_sign
+1	getAttendCount
+1	getAttendSchedule
+1	getAttendScheduleGroup
+1	getAttendanceGroupID
+1	getAttendanceGroupId
+1	getInviteSign
+1	getMsign
+1	getNoAttendCount
+1	getNoAttendList
+1	getSignSymbolColor
+1	getSignText
+1	getTopsignChannelList
+1	hasAttendanceRules
+1	hasSendsign
+1	inviteSign
+1	isHasAttendanceRules
+1	isOpenInviteSign
+1	isShowSign
+1	isSignSymbol
+1	isSignText
+1	)javascript:RKLBAttendee.applyConnect('0')
+1	)javascript:RKLBAttendee.applyConnect('1')
+1	newTopSign
+1	noAttendCount
+1	noAttendList
+1	onAttendanceGroupSelectListener
+1	openInviteSign
+1	2pc/cooperate/inviteCooperator?cid=%s&inviteSign=%s
+1	send_sign =? and puid =?
+1	setAttendCount
+1	setAttendanceGroupID
+1	setAttendanceGroupName
+1	setAttendanceRulesBean
+1	setHasAttendanceRules
+1	setInviteSign
+1	setMsign
+1	setNoAttendCount
+1	setNoAttendList
+1	"setOnAttendanceGroupSelectListener
+1	setOpenInviteSign
+1	setShowSign
+1	setSignSymbol
+1	setSignSymbolColor
+1	setSignText
+1	setTopsignChannelList
+1	showSign
+1	showUploadingSign
+1	sign=officeApp
+1	signSymbol
+1	signSymbolColor
+1	signText
+1	topsignChannelList
+1	val$attendanceRules
+1	 with the same signature
+1	&ctype=stusign
+1	, signature:
+1	ATTEND_WIFI
+1	CLIENT_FORM_SIGN
+1	!CLIENT_OPEN_ATTENDANCE_STATISTICS
+1	CLIENT_SEAT_RESERVE_SIGN_IN
+1	CX-Signature
+1	)ClientSeatReserveSignInJsProtocalExecutor
+1	(Lcom/chaoxing/mobile/sign/LocationPoi$a;
+1	&Lcom/chaoxing/mobile/sign/LocationPoi;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$a;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$b;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$c;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$d;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$e;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$f;
+1	0Lcom/chaoxing/mobile/sign/ui/SignInfoActivity$g;
+1	/Lcom/chaoxing/mobile/sign/util/LocationUtils$1;
+1	/Lcom/chaoxing/mobile/sign/util/LocationUtils$b;
+1	!Lcom/chaoxing/mobile/sign/util/a;
+1	#Lcom/chaoxing/mobile/sign/util/b$a;
+1	!Lcom/chaoxing/mobile/sign/util/b;
+1	!Lcom/chaoxing/mobile/sign/util/c;
+1	PackageManagerGetSignatures
+1	Signature: 
+1	WebSignHelper
+1	'[Lcom/chaoxing/mobile/sign/LocationPoi;
+1	appsign
+1	btn_sign_in
+1	checkIn
+1	cxsign
+1	getRequestSignFlag
+1	getSigntime
+1	.http://seat-yd.chaoxing.com/apis/library/sign?
+1	)https://authen.chaoxing.com/authsign/show
+1	isSigned
+1	jsbridgeSignal
+1	mCheckIn
+1	requestSignFlag
+1	setRequestSignFlag
+1	setSigntime
+1	sign error json :
+1	sign json :
+1	sign=
+1	signBan
+1	signConfig
+1	signId
+1	signId=
+1	signPublicKey
+1	signToken json error:
+1	signToken:
+1	signature origin: 
+1	signcode
+1	signtime
+1	signup
+1	startSignal
+1	state_end_sign
+1	study_account_action_sign_in
+1	"study_account_action_sign_in_short
+1	usersign/addsign?
+1	val$signPublicKey
+1	verifyJsSign
+1	webRequestSign
+1	# because it is not assignable from 
+1	 failed for no signer.
+1	&signature=
+1	, mAssignedFromSavedState=
+1	!, video_signal_type_present_flag=
+1	ATTENDEE
+1	"AppleVariableSignedIntegerBox.java
+1	,Could not interpret numbers after plus-sign.
+1	!DEFAULT_SIGNIFICANT_VEL_THRESHOLD
+1	DSS signature check success
+1	*During service checking, please hold on...
+1	ERROR_NO_TOKENSIGN
+1	ERROR_SignatureDoesNotMatch
+1	ERROR_TOKENSIGN_VALID
+1	ERROR_UPSTREAM_TOKENSIGN_VALID
+1	FROM_NUMBER_WITHOUT_PLUS_SIGN
+1	FROM_NUMBER_WITH_PLUS_SIGN
+1	<Failed to get application signature certificate fingerprint.
+1	GROUP_ASSIGN_OWNER
+1	"Get PackageSignature failed: null.
+1	HMS_SIGNATURE_V2
+1	HMS_SIGNATURE_V3
+1	HiPkgSignManager
+1	 Huawei CBG Cloud Security Signer
+1	INVALID_SIGNATURE_SIGN
+1	Invalid signature
+1	KEY_SIGNATURE2
+1	KEY_SIGNATURE3
+1	-KSY_STREAMER_RTMP_ERROR_SignatureDoesNotMatch
+1	<Launch sign in Intent failed. hms is probably being updated
+1	7Lcom/google/crypto/tink/proto/EcdsaSignatureEncoding$a;
+1	7Lcom/google/crypto/tink/proto/EcdsaSignatureEncoding$b;
+1	5Lcom/google/crypto/tink/proto/EcdsaSignatureEncoding;
+1	DLcom/googlecode/mp4parser/boxes/apple/AppleVariableSignedIntegerBox;
+1	8Lcom/huawei/hms/framework/common/NetworkUtil$SignalType;
+1	3Lcom/huawei/secure/android/common/HiPkgSignManager;
+1	ALcom/huawei/secure/android/common/encrypt/keystore/rsa/RSASignKS;
+1	6Lcom/huawei/secure/android/common/encrypt/rsa/RSASign;
+1	8Lcom/huawei/secure/android/common/sign/HiPkgSignManager;
+1	"Ljava/security/SignatureException;
+1	*MGF1 hash is different from signature hash
+1	MISSING_SIGNATURE
+1	&Maybe call SignatureConfig.register().
+1	NOTICE_TYPE_SIGN
+1	RSASign
+1	RSASignKS
+1	RSA_SIGN_PKCS1_2048_SHA256
+1	RSA_SIGN_PKCS1_3072_SHA256
+1	RSA_SIGN_PKCS1_4096_SHA256
+1	RSA_SIGN_PKCS1_4096_SHA512
+1	SERVICES_SIGNATURE
+1	SERVICES_SIGNATURE_CAR
+1	SERVICES_SIGNATURE_TV
+1	SERVICES_SIGNATURE_V3
+1	SIGNED_IN
+1	SIGNED_OUT
+1	SIGNIFICANT_VEL_THRESHOLD
+1	SIGN_IN_FAILED
+1	SIGN_IN_MODE_OPTIONAL
+1	SIGN_IN_MODE_REQUIRED
+1	SIGN_IN_REQUIRED
+1	-Security bug: RSA signature computation error
+1	SSecurity bug: signing with private key followed by verifying with public key failed
+1	SignVerifier
+1	SignalType
+1	Signature = 
+1	Signature2:
+1	Signature3:
+1	Signature:
+1	SignatureException: 
+1	StringToSign = 
+1	!TextAppearance_Design_Placeholder
+1	TextAppearance_Design_Prefix
+1	TextAppearance_Design_Suffix
+1	TinkPublicKeySign
+1	ake sure that generic signatures are preserved.
+1	UNSIGNED_BYTE_MASK
+1	#UNSIGNED_LEXICOGRAPHICAL_COMPARATOR
+1	#VUI: video_signal_type_present_flag
+1	Widget_Design_TextInputEditText
+1	6[Lcom/google/crypto/tink/proto/EcdsaSignatureEncoding;
+1	&alias or content or sign value is null
+1	assignBoxBackgroundByMode
+1	%behavior_significantVelocityThreshold
+1	calculateSignature
+1	check sign exception: 
+1	check sign fail: 
+1	check signature failed.
+1	checkInternal
+1	'checkServerTrusted SignatureException: 
+1	checkSignature
+1	checkSignature fail!
+1	 checkSignature parameter is null
+1	checkSignaturesMatch
+1	checkSigner failed
+1	Bcom.googlecode.mp4parser.boxes.apple.AppleVariableSignedIntegerBox
+1	$com.huawei.hms.fingerprint_signature
+1	com.huawei.hms.sign_certchain
+1	+content or public key or sign value is null
+1	&design_bottom_navigation_label_padding
+1	'design_navigation_item_vertical_padding
+1	doCheckInstalled
+1	doCheckInstalledV2V3
+1	duringChecking
+1	failed checkSignature : 
+1	 failed checkSignature,Exception:
+1	get V3 signature is null
+1	get signerV2 fail.
+1	getCellSignalStrengths
+1	getInstalledAPPSignature
+1	getLteSignalInfo
+1	getNrSignalInfo
+1	getPackageSignature
+1	#getPackageSignatureV3 has exception
+1	getPackageSigningCertificate
+1	getPingPongCheckInterval
+1	getRawSignature
+1	getSignatureString
+1	getSignificantVelocityThreshold
+1	getUnInstalledAPPSignature
+1	hms sign error
+1	hms_app_signer
+1	hms_app_signer_v2
+1	hms_app_signer_v3
+1	invalid signature
+1	invalid signature's length
+1	isIgnoringBatteryOptimizations
+1	isShapeAppearanceSignificant
+1	isSwipeSignificant
+1	%maybeAssignCoplanarSiblingViewBasedId
+1	newSign
+1	newVerifySign
+1	onAssignOwnerFromGroup
+1	.packageInfo or packageInfo.signingInfo is null
+1	packageSignature
+1	setPackageSignature
+1	setSignaturePaddings
+1	setSignificantVelocityThreshold
+1	sign Exception: 
+1	)sign InvalidAlgorithmParameterException: 
+1	sign InvalidKeyException: 
+1	sign NoSuchAlgorithmException: 
+1	sign SignatureException: 
+1	$sign UnsupportedEncodingException : 
+1	#sign UnsupportedEncodingException: 
+1	sign content or key is null
+1	signNew
+1	#signal end of stream failed, ignore
+1	%signalEndOfInputStream failed, ignore
+1	signalEndOfStream
+1	signature V2 check success
+1	signature V3 check success
+1	signature is invalid: 
+1	signature is not null 
+1	signature is null 
+1	signature out of range
+1	3signature prefix matches a key, but cannot verify: 
+1	signature too short
+1	significantVelocityThreshold
+1	tinkpublickeysign
+1	uncheckInternal
+1	!unsignedLexicographicalComparator
+1	$unsupported EC signature algorithm: 
+1	%unsupported RSA signature algorithm: 
+1	unsupported signature encoding
+1	)verify signature with cert chain success.
+1	%verify: publickey SignatureException 
+1	+verifyMDMSignatureV1 MDM verify Exception!:
+1	$verifyMDMSignatureV1 verify failure!
+1	'verifyMDMSignatureV1 verify successful!
+1	+verifyMDMSignatureV2 MDM verify Exception!:
+1	$verifyMDMSignatureV2 verify failure!
+1	'verifyMDMSignatureV2 verify successful!
+1	+verifyMDMSignatureV3 MDM verify Exception!:
+1	$verifyMDMSignatureV3 verify failure!
+1	'verifyMDMSignatureV3 verify successful!
+1	)verifySign UnsupportedEncodingException: 
+1	verifySignNew
+1	video_signal_type_present_flag

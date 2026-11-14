@@ -1,0 +1,4 @@
+classes4.dex | Lcom/chaoxing/libhtmleditor/ui/CommonHtmlEditorFragment;->nc | matched=(https://mobilelearn.chaoxing.com/pptSign/gotasksign?courseId=%s&classId=%s&puid=%s&source=1&showSaveBtn=0&hideBeginButton=1&isTeachingCalendar=1)
+classes4.dex | Lcom/chaoxing/libhtmleditor/ui/NewCommonHtmlEditorFragment;->Va | matched=(https://mobilelearn.chaoxing.com/pptSign/gotasksign?courseId=%s&classId=%s&puid=%s&source=1&showSaveBtn=0&hideBeginButton=1&isTeachingCalendar=1)
+classes4.dex | Lhc/a;->Q0 | matched=(newsign/gotasksign?circleId=%s&uid=%s&tid=%s&appType=%s)
+classes4.dex | Lhc/a;->q1 | matched=(pptSign/gotasksign?courseId=%s&classId=%s&puid=%s&source=%s&showSaveBtn=%d)

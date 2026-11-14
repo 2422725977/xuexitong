@@ -1,0 +1,2 @@
+classes4.dex | Lcom/chaoxing/mobile/s;->F0 | matched=(https://mobilelearn.chaoxing.com/sign/produceSignView?)
+classes4.dex | Lcom/chaoxing/mobile/s;->G0 | matched=(https://mobilelearn.chaoxing.com/sign/produceSignView?)

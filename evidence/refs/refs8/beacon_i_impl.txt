@@ -1,0 +1,4 @@
+classes7.dex | Lcom/chaoxing/mobile/webapp/jsprotocal/common/j0$a; implements Lcom/chaoxing/beacon/i;
+classes7.dex | Lzp/s$a; implements Lcom/chaoxing/beacon/i;
+classes6.dex | Lcom/chaoxing/mobile/office/AddAttendanceBlueToothActivity$a; implements Lcom/chaoxing/beacon/i;
+classes6.dex | Lcom/chaoxing/mobile/office/widget/PunchStateLayout$a; implements Lcom/chaoxing/beacon/i;

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+samples/
+out/
+*.apk
+*.dex
+*.so
+ck.txt
+cookies*.txt
+.DS_Store

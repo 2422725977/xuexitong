@@ -1,0 +1,5 @@
+classes4.dex | Lcom/chaoxing/mobile/s;->G6 | matched=(signType)
+classes.dex | Lanet/channel/strategy/dispatch/d;->a | matched=(signType)
+classes.dex | Lanet/channel/strategy/dispatch/d;->a | matched=(signType)
+classes9.dex | Lcom/tencent/mm/opensdk/modelbiz/OpenBusiLuckyMoney$Req;->toBundle | matched=(_wxapi_open_busi_lucky_money_signType)
+classes9.dex | Lcom/tencent/mm/opensdk/openapi/BaseWXApiImplV10;->sendOpenBusiLuckyMoney | matched=(_wxapi_open_busi_lucky_money_signType)

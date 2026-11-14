@@ -1,0 +1,1 @@
+classes4.dex | Lcom/chaoxing/mobile/s;->I7 | matched=(https://mobilelearn.chaoxing.com/newsign/studentSign?rcode=%s&uid=%s)

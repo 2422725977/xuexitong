@@ -1,0 +1,206 @@
+device Device(id='emulator-5554', name='Android Emulator 5554', dtype='usb')
+spawn gating enabled
+spawned pid 11981
+{"t": "miss", "n": "statx"}
+{"t": "ready", "pid": 11981, "arch": "arm64"}
+[script loaded main Session(pid=11981, persist_timeout=0)]
+{"t": "find", "n": "ro.kernel.android.tracing"}
+{"t": "open", "p": "/proc/12004/timerslack_ns"}
+{"t": "open", "p": "/proc/12005/timerslack_ns"}
+{"t": "open", "p": "/proc/12006/timerslack_ns"}
+{"t": "find", "n": "log.looper.10116.main.slow"}
+{"t": "find", "n": "debug.allocTracker.stackDepth"}
+{"t": "find", "n": "debug.force_rtl"}
+{"t": "find", "n": "persist.sys.strictmode.disable"}
+{"t": "prop", "n": "debug.atrace.tags.enableflags", "v": "0"}
+{"t": "prop", "n": "ro.debuggable", "v": "1"}
+{"t": "fopen", "p": "/proc/self/cmdline"}
+{"t": "fopen64", "p": "/proc/self/cmdline"}
+{"t": "open", "p": "/proc/self/cmdline"}
+{"t": "prop", "n": "debug.atrace.app_number", "v": ""}
+{"t": "prop", "n": "heapprofd.enable", "v": ""}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/pmsg0"}
+{"t": "faccessat", "p": "/dev/pmsg0"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "access", "p": "/dev/socket/logdw"}
+{"t": "faccessat", "p": "/dev/socket/logdw"}
+{"t": "find", "n": "persist.log.tag.chaoxing.mobil"}
+{"t": "find", "n": "log.tag.chaoxing.mobil"}
+{"t": "find", "n": "pi.append_native_lib_paths"}
+{"t": "find", "n": "dalvik.vm.usejitprofiles"}
+{"t": "open", "p": "/proc/self/exe"}
+{"t": "prop", "n": "ro.product.cpu.abi", "v": "arm64-v8a"}
+{"t": "fopen", "p": "/proc/self/maps"}
+{"t": "fopen64", "p": "/proc/self/maps"}
+{"t": "open", "p": "/proc/self/maps"}
+{"t": "prop", "n": "ro.build.version.sdk", "v": "29"}
+{"t": "prop", "n": "ro.build.version.release", "v": "10"}
+{"t": "prop", "n": "ro.build.version.codename", "v": "REL"}
+{"t": "prop", "n": "persist.sys.dalvik.vm.lib", "v": ""}
+{"t": "prop", "n": "ro.product.cpu.abi", "v": "arm64-v8a"}
+{"t": "fopen", "p": "/proc/self/maps"}
+{"t": "fopen64", "p": "/proc/self/maps"}
+{"t": "open", "p": "/proc/self/maps"}
+{"t": "fopen", "p": "/proc/self/maps"}
+{"t": "fopen64", "p": "/proc/self/maps"}
+{"t": "open", "p": "/proc/self/maps"}
+{"t": "prop", "n": "ro.build.version.sdk", "v": "29"}
+{"t": "fopen", "p": "/proc/self/cmdline"}
+{"t": "fopen64", "p": "/proc/self/cmdline"}
+{"t": "open", "p": "/proc/self/cmdline"}
+{"t": "opendir", "p": "/proc/11981/fd"}
+{"t": "readlink", "p": "/proc/11981/fd/0"}
+{"t": "readlinkat", "p": "/proc/11981/fd/0"}
+{"t": "readlink", "p": "/proc/11981/fd/1"}
+{"t": "readlinkat", "p": "/proc/11981/fd/1"}
+{"t": "readlink", "p": "/proc/11981/fd/2"}
+{"t": "readlinkat", "p": "/proc/11981/fd/2"}
+{"t": "readlink", "p": "/proc/11981/fd/3"}
+{"t": "readlinkat", "p": "/proc/11981/fd/3"}
+{"t": "readlink", "p": "/proc/11981/fd/4"}
+{"t": "readlinkat", "p": "/proc/11981/fd/4"}
+{"t": "readlink", "p": "/proc/11981/fd/5"}
+{"t": "readlinkat", "p": "/proc/11981/fd/5"}
+{"t": "readlink", "p": "/proc/11981/fd/6"}
+{"t": "readlinkat", "p": "/proc/11981/fd/6"}
+{"t": "readlink", "p": "/proc/11981/fd/7"}
+{"t": "readlinkat", "p": "/proc/11981/fd/7"}
+{"t": "readlink", "p": "/proc/11981/fd/8"}
+{"t": "readlinkat", "p": "/proc/11981/fd/8"}
+{"t": "readlink", "p": "/proc/11981/fd/9"}
+{"t": "readlinkat", "p": "/proc/11981/fd/9"}
+{"t": "readlink", "p": "/proc/11981/fd/10"}
+{"t": "readlinkat", "p": "/proc/11981/fd/10"}
+{"t": "readlink", "p": "/proc/11981/fd/11"}
+{"t": "readlinkat", "p": "/proc/11981/fd/11"}
+{"t": "readlink", "p": "/proc/11981/fd/12"}
+{"t": "readlinkat", "p": "/proc/11981/fd/12"}
+{"t": "readlink", "p": "/proc/11981/fd/13"}
+{"t": "readlinkat", "p": "/proc/11981/fd/13"}
+{"t": "readlink", "p": "/proc/11981/fd/14"}
+{"t": "readlinkat", "p": "/proc/11981/fd/14"}
+{"t": "readlink", "p": "/proc/11981/fd/15"}
+{"t": "readlinkat", "p": "/proc/11981/fd/15"}
+{"t": "readlink", "p": "/proc/11981/fd/16"}
+{"t": "readlinkat", "p": "/proc/11981/fd/16"}
+{"t": "readlink", "p": "/proc/11981/fd/17"}
+{"t": "readlinkat", "p": "/proc/11981/fd/17"}
+{"t": "readlink", "p": "/proc/11981/fd/18"}
+{"t": "readlinkat", "p": "/proc/11981/fd/18"}
+{"t": "readlink", "p": "/proc/11981/fd/19"}
+{"t": "readlinkat", "p": "/proc/11981/fd/19"}
+{"t": "readlink", "p": "/proc/11981/fd/20"}
+{"t": "readlinkat", "p": "/proc/11981/fd/20"}
+{"t": "readlink", "p": "/proc/11981/fd/21"}
+{"t": "readlinkat", "p": "/proc/11981/fd/21"}
+{"t": "readlink", "p": "/proc/11981/fd/22"}
+{"t": "readlinkat", "p": "/proc/11981/fd/22"}
+{"t": "readlink", "p": "/proc/11981/fd/23"}
+{"t": "readlinkat", "p": "/proc/11981/fd/23"}
+{"t": "readlink", "p": "/proc/11981/fd/24"}
+{"t": "readlinkat", "p": "/proc/11981/fd/24"}
+{"t": "readlink", "p": "/proc/11981/fd/25"}
+{"t": "readlinkat", "p": "/proc/11981/fd/25"}
+{"t": "readlink", "p": "/proc/11981/fd/26"}
+{"t": "readlinkat", "p": "/proc/11981/fd/26"}
+{"t": "readlink", "p": "/proc/11981/fd/27"}
+{"t": "readlinkat", "p": "/proc/11981/fd/27"}
+{"t": "readlink", "p": "/proc/11981/fd/28"}
+{"t": "readlinkat", "p": "/proc/11981/fd/28"}
+{"t": "readlink", "p": "/proc/11981/fd/29"}
+{"t": "readlinkat", "p": "/proc/11981/fd/29"}
+{"t": "readlink", "p": "/proc/11981/fd/30"}
+{"t": "readlinkat", "p": "/proc/11981/fd/30"}
+{"t": "readlink", "p": "/proc/11981/fd/31"}
+{"t": "readlinkat", "p": "/proc/11981/fd/31"}
+{"t": "readlink", "p": "/proc/11981/fd/32"}
+{"t": "readlinkat", "p": "/proc/11981/fd/32"}
+{"t": "readlink", "p": "/proc/11981/fd/33"}
+{"t": "readlinkat", "p": "/proc/11981/fd/33"}
+{"t": "readlink", "p": "/proc/11981/fd/34"}
+{"t": "readlinkat", "p": "/proc/11981/fd/34"}
+{"t": "readlink", "p": "/proc/11981/fd/35"}
+{"t": "readlinkat", "p": "/proc/11981/fd/35"}
+{"t": "readlink", "p": "/proc/11981/fd/36"}
+{"t": "readlinkat", "p": "/proc/11981/fd/36"}
+{"t": "readlink", "p": "/proc/11981/fd/37"}
+{"t": "readlinkat", "p": "/proc/11981/fd/37"}
+{"t": "readlink", "p": "/proc/11981/fd/38"}
+{"t": "readlinkat", "p": "/proc/11981/fd/38"}
+{"t": "readlink", "p": "/proc/11981/fd/39"}
+{"t": "readlinkat", "p": "/proc/11981/fd/39"}
+{"t": "readlink", "p": "/proc/11981/fd/40"}
+{"t": "readlinkat", "p": "/proc/11981/fd/40"}
+{"t": "fopen", "p": "/proc/self/maps"}
+{"t": "fopen64", "p": "/proc/self/maps"}
+{"t": "open", "p": "/proc/self/maps"}
+{"t": "prop", "n": "ro.product.model", "v": "Pixel 4"}
+{"t": "prop", "n": "ro.product.manufacturer", "v": "Google"}
+{"t": "fopen", "p": "/proc/11981/maps"}
+{"t": "fopen64", "p": "/proc/11981/maps"}
+{"t": "open", "p": "/proc/11981/maps"}
+{"t": "prop", "n": "debug.atrace.tags.enableflags", "v": "0"}
+{"t": "fopen", "p": "/proc/self/maps"}
+{"t": "fopen64", "p": "/proc/self/maps"}
+{"t": "open", "p": "/proc/self/maps"}
+{"t": "opendir", "p": "/proc/self/task"}
+{"t": "open", "p": "/proc/self/task/11981/status"}
+{"t": "open", "p": "/proc/self/task/11987/status"}
+{"t": "open", "p": "/proc/self/task/11988/status"}
+{"t": "open", "p": "/proc/self/task/11989/status"}
+{"t": "open", "p": "/proc/self/task/11990/status"}
+{"t": "open", "p": "/proc/self/task/11991/status"}
+{"t": "open", "p": "/proc/self/task/11992/status"}
+{"t": "open", "p": "/proc/self/task/11993/status"}
+{"t": "open", "p": "/proc/self/task/11994/status"}
+{"t": "open", "p": "/proc/self/task/11995/status"}
+{"t": "open", "p": "/proc/self/task/11996/status"}
+{"t": "open", "p": "/proc/self/task/11997/status"}
+{"t": "open", "p": "/proc/self/task/11998/status"}
+{"t": "open", "p": "/proc/self/task/11999/status"}
+{"t": "open", "p": "/proc/self/task/12000/status"}
+{"t": "open", "p": "/proc/self/task/12001/status"}
+{"t": "open", "p": "/proc/self/task/12002/status"}
+{"t": "open", "p": "/proc/self/task/12003/status"}
+{"t": "open", "p": "/proc/self/task/12004/status"}
+{"t": "open", "p": "/proc/self/task/12005/status"}
+{"t": "open", "p": "/proc/self/task/12006/status"}
+{"t": "open", "p": "/proc/self/task/12007/status"}
+t+1 alive=''
+t+2 alive=''
+t+3 alive=''
+t+4 alive=''
+t+5 alive=''
+t+6 alive=''
+t+7 alive=''
+t+8 alive=''
+t+9 alive=''
+t+10 alive=''
+t+11 alive=''
+t+12 alive=''
+done

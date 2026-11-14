@@ -1,0 +1,5 @@
+classes4.dex | Lhc/a;->L0 | matched=(pptPingFen/groupGrade?courseId=%s&activePrimaryId=%s&source=%s)
+classes4.dex | Lhc/a;->M1 | matched=(selectperson/goselectperson?courseId=%s&classId=%s&source=%s&uid=%s&activePrimaryId=%s&showSaveBtn=%d)
+classes4.dex | Lhc/a;->V2 | matched=(taskthesis/teacher/start?courseId=%s&classId=%s&source=%s&puid=%s&activePrimaryId=%s)
+classes4.dex | Lhc/a;->o3 | matched=(https://mobilelearn.chaoxing.com/widget/active/restartActive?activePrimaryId=%s&timeLong=)
+classes4.dex | Lhc/a;->r1 | matched=(pptSign/preSign?activePrimaryId=%s&sys=1&chatId=%s&general=%s&ls=1&appType=15&classId=%s&uid=%s)
