@@ -53,6 +53,19 @@ phoneId: SharedPreferences "appProfile"/"uniqueId"；无值时 = UUID 去横线�
 - 全 App 的人脸只挂在两处：H5 桥 `com.chaoxing.mobile.webapp.jsprotocal.exam.FaceRecognitionExecutor` 与 office 打卡 `/api/apps/punch/user/face/verify[match]`。
 - **签到两条提交链路的参数里没有任何人脸字段** → 不打开 H5 页面就不会触发人脸；比对对象是云端已存的 `remoteImage`（本人照片），活体只是客户端状态位 `CollectResult.liveDetectionStatus`。
 
+## 签到之外：学生高频操作 + 隐身（报告第 13 章）
+
+签到链路本身已复核**无遗漏**；本轮补的是「签到之外」和「伪装层」：
+
+- `docs/学生高频操作接口.md`：
+  - **视频/音频任务点进度上报**（挂机/秒过）——`CourseViewModel.S` 参数表 + `enc` 公式（盐 `d_yHJ!$pdA~5`，`[`/`][`/`]` 分隔）；URL 是服务端下发的 `CourseVideo.reportUrl`
+  - **未完成活动巡检** `teachingPlanAPI/noFinishActiveCount`（不签到也能知道有没有新东西）
+  - 作业/考试直跳 `task/getStuWorkAndExamSkipUrl`、讨论/投票、直播、成绩、课程任务点 `gas/course`、`work/task/library`
+  - 活动体系全景（学生侧 17 个接口 + 教师侧 12 个）
+  - 两条此前只提前缀的到课链路：`INTELLIGENT_CLASSROOM:` → `intelligentclassroom.ConfirmScreenActivity`；座位核销 → `reserveseat.ui.QRcodeVerifyActivity`
+- `docs/隐身与风控.md`：客户端两条旁证链（`analysis/ac_event`、`analysis/datalog`）、服务端可见信号 10 项排序、`scripts/stealth_session.py`（设备档案 + Chrome TLS 指纹 + 拟人延迟 + 掩护流量）、8 条反模式、A/B 验证设计。
+  - 用法：给任意提交脚本加 `--stealth`（`autosign.py`、`qr_sign_remote.py` 已支持），签到前会先发 4 条只读学习请求做掩护。
+
 ## 快速开始
 
 ```bash
@@ -66,8 +79,9 @@ python3 scripts/qr_sign_remote.py --qr '{"time":"1712000000","signId":"123456789
 python3 scripts/qr_relay.py --source adb --serial emulator-5554 --submit \
         --uid <puid> --cookie-file ck.txt --interval 0.7 --stop-on-success
 
-# 3) 没有二维码的活动：轮询 + 自动提交
-python3 scripts/autosign.py --uid <puid> --cookie-file ck.txt --name 张三 --fid 12345 --loop --interval 30
+# 3) 没有二维码的活动：轮询 + 自动提交（--stealth 走 TLS 指纹 + 掩护流量 + 拟人延迟）
+python3 scripts/autosign.py --uid <puid> --cookie-file ck.txt --name 张三 --fid 12345 --loop --interval 30 --stealth
+python3 scripts/stealth_session.py --probe https://mobilelearn.chaoxing.com/   # 自检伪装层
 
 # 4) 中继服务（把"看得见二维码的机器"和"握着 cookie 的机器"分开）
 python3 scripts/qr_sign_remote.py --serve 8765 --uid <puid> --cookie-file ck.txt --token mysecret
@@ -78,11 +92,13 @@ cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mit
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（12 章，解壳 / 协议 / 人脸 / 动态二维码）
+docs/报告-已解壳版.md      完整报告（13 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）
 docs/签到类型全表.md       ★ 不同课程的不同签到方式：判定方法 + 每类必需参数
 docs/工装与环境.md         从零搭出可复现环境（AVD / frida / dump / droidasc）
-scripts/                   56 个脚本：解壳、协议重放、自动签到、Frida hook、抓屏中继
+docs/学生高频操作接口.md   ★ 签到之外：视频任务点 enc、作业考试、直播、成绩、活动体系全景
+docs/隐身与风控.md         ★ 把协议提交伪装成正常签到/学习：旁证链、信号排序、stealth_session
+scripts/                   61 个脚本：解壳、协议重放、自动签到、Frida hook、抓屏中继
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```

@@ -36,6 +36,17 @@ try:
 except ImportError:
     sys.exit("need: pip install requests")
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量
+    from stealth_session import (make_session, Device, warmup, human_delay,
+                                 explain as stealth_explain, HAVE_CFFI)
+except Exception:           # 单文件运行也不至于挂
+    make_session = warmup = human_delay = None
+    Device = None
+    HAVE_CFFI = False
+    def stealth_explain(*a, **k):
+        return ""
+
 UA = ("Mozilla/5.0 (Linux; Android 13; SM-S9180 Build/TP1A.220624.014; wv) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.0.0 "
       "Mobile Safari/537.36 (schild:00000000) (device:SM-S9180) "
@@ -228,12 +239,26 @@ def main():
     ap.add_argument("--want-type", action="store_true", help="--list-only 时也拉详情判定签到类型")
     ap.add_argument("--list-only", action="store_true", help="只列活动不提交")
     ap.add_argument("--dump", action="store_true", help="打印原始 JSON（首次调试用）")
+    ap.add_argument("--stealth", action="store_true",
+                    help="伪装层：设备档案一致 + 完整头 + 拟人延迟 + 签到前掩护流量（推荐开）")
+    ap.add_argument("--delay", default="3,30", help="拟人延迟区间 秒,秒（默认 3,30；0,0 关闭）")
+    ap.add_argument("--phone-id", default=None, help="固定 phoneId（伪装层/通道 A 用）")
+    ap.add_argument("--no-tls", action="store_true", help="关闭 curl_cffi 浏览器 TLS 指纹")
     a = ap.parse_args()
 
-    sess = requests.Session()
-    sess.headers.update({"User-Agent": UA, "Accept": "*/*",
-                         "Accept-Language": "zh-CN,zh;q=0.9", "Connection": "keep-alive"})
     ck = load_cookie(a.cookie, a.cookie_file)
+    if a.stealth and make_session:
+        dev = Device.load_or_create(uid=a.uid)
+        if a.phone_id:
+            dev.phone_id = a.phone_id
+            dev.save()
+        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls)
+        print("[stealth] phoneId=%s  TLS=%s" % (dev.phone_id, "curl_cffi" if getattr(sess, "_cx_tls", False) else "requests"))
+        warmup(sess, uid=a.uid)
+    else:
+        sess = requests.Session()
+        sess.headers.update({"User-Agent": UA, "Accept": "*/*",
+                             "Accept-Language": "zh-CN,zh;q=0.9", "Connection": "keep-alive"})
     if ck:
         sess.headers["Cookie"] = ck
     else:
@@ -263,6 +288,13 @@ def main():
             if atype == 1 and not a.object_id:
                 print("[!] activeId=%s 是拍照签到：需 --object-id <云盘图 id>（或 frida 拿 oid）" % aid)
                 continue
+            if a.stealth and human_delay:
+                try:
+                    lo, hi = [float(x) for x in a.delay.split(",")]
+                except Exception:
+                    lo, hi = 3.0, 30.0
+                if hi > 0:
+                    human_delay(lo, hi)
             ok, body = submit(sess, aid, a.uid, a.fid, a.name, a.lat, a.lon,
                               a.address, a.dump, object_id=(a.object_id if atype == 1 else ""))
             if ok:

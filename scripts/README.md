@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 60 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 61 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -64,3 +64,4 @@
 | `snap2.sh` | — |
 | `strings_payload.py` | Extract the readable class/string surface from the sealed classes.dex, focused on the sign module. |
 | `unseal_probe.py` | Attempt static recovery inside the sealed payload: embedded zips, zlib/deflate streams, single-byte-xor dex. |
+| `stealth_session.py` | ★ 伪装层：设备档案持久化 + Chrome TLS 指纹 + 拟人延迟 + 签到前掩护流量（其他脚本加 --stealth 即可用） |

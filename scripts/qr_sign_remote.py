@@ -41,6 +41,17 @@ try:
 except ImportError:
     sys.exit("need: pip install requests")
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量
+    from stealth_session import (make_session, Device, warmup, human_delay,
+                                 explain as stealth_explain, HAVE_CFFI)
+except Exception:
+    make_session = warmup = human_delay = None
+    Device = None
+    HAVE_CFFI = False
+    def stealth_explain(*a, **k):
+        return ""
+
 UA = ("Mozilla/5.0 (Linux; Android 13; SM-S9180 Build/TP1A.220624.014; wv) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.0.0 "
       "Mobile Safari/537.36 (schild:00000000) (device:SM-S9180) "
@@ -246,6 +257,7 @@ class Signer:
     def __init__(self, a, sess):
         self.a = a
         self.sess = sess
+        self.stealth = bool(getattr(a, "stealth", False))
         self.phid = a.phone_id or phone_id()
         self.uid = a.uid or os.environ.get("CHAOXING_UID", "")
         self.seen = set()
@@ -454,15 +466,28 @@ def main():
     ap.add_argument("--host", default="", help="--serve 绑定地址（默认 127.0.0.1）")
     ap.add_argument("--append-log", default="", help="把每次结果追加到该文件（JSONL）")
     ap.add_argument("--dry-run", action="store_true", help="只打印将发出的请求，不提交")
+    ap.add_argument("--stealth", action="store_true",
+                    help="伪装层：设备档案一致 + 完整头 + 签到前掩护流量（推荐开）")
+    ap.add_argument("--no-tls", action="store_true", help="关闭 curl_cffi 浏览器 TLS 指纹")
     a = ap.parse_args()
 
     if not any([a.qr, a.qr_image, a.qr_file, a.watch, a.serve, a.stdin]):
         ap.error("至少要给 --qr / --qr-image / --qr-file / --watch / --serve / --stdin 之一")
 
     ck = load_cookie(a.cookie, a.cookie_file)
-    sess = requests.Session()
-    sess.headers.update({"User-Agent": UA, "Accept": "*/*",
-                         "Accept-Language": "zh-CN,zh;q=0.9", "Connection": "keep-alive"})
+    if a.stealth and make_session:
+        dev = Device.load_or_create(uid=a.uid)
+        if a.phone_id:
+            dev.phone_id = a.phone_id
+            dev.save()
+        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls)
+        print("[stealth] phoneId=%s  TLS=%s" % (dev.phone_id,
+              "curl_cffi" if getattr(sess, "_cx_tls", False) else "requests"))
+        warmup(sess, uid=a.uid)
+    else:
+        sess = requests.Session()
+        sess.headers.update({"User-Agent": UA, "Accept": "*/*",
+                             "Accept-Language": "zh-CN,zh;q=0.9", "Connection": "keep-alive"})
     if ck:
         sess.headers["Cookie"] = ck
     else:
