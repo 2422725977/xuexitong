@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 64 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 66 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -11,11 +11,13 @@
 | `extract_dex.py` | 从内存快照按 dex magic+校验切出真 dex |
 | `frida_face_puppet.js` | Frida：伪造活体状态位 + 注入指定人脸图 |
 | `frida_sign_hook.js` | ★ Frida：hook SignInfoActivity/enc/扫码分发/volley/cookie 导出/人脸桥 |
+| `frida_video_hook.js` | ★ Frida：视频上报抓真值（enc 明文/密文对、完整 reportUrl、203 回退判定） |
 | `mk_apk.py` | 把解壳 dex 重新打成可被静态工具消费的 apk |
 | `native_unpack_probe.py` | native 加固探针（VMP 标记/加密符号表） |
 | `qr_relay.py` | ★ 自动看屏中继（adb/macOS 截屏/目录）→ 解码 → 直签或转发 |
 | `qr_sign_remote.py` | ★ 四通道签到：单次/--watch 目录/--serve 中继/--stdin |
 | `sign_evidence.py` | 签到模块字符串/类/端点证据汇总 |
+| `video_task.py` | ★ 视频任务点：干跑/按真实节奏上报/--verify-capture/--selftest，内接伪装与风控 |
 | `snap3.sh` | 冻结进程后直读 /proc/<pid>/mem 全 rw 段 |
 | `api_table.py` | Dump the mobilelearn API template table + hunt the student sign-in submit endpoint. |
 | `dbg_magic.py` | — |
