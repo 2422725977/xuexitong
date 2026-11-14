@@ -42,15 +42,22 @@ except ImportError:
     sys.exit("need: pip install requests")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量
+try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量 / 风控熔断
     from stealth_session import (make_session, Device, warmup, human_delay,
-                                 explain as stealth_explain, HAVE_CFFI)
+                                 explain as stealth_explain, HAVE_CFFI,
+                                 RiskHalt, RiskCooldown, parse_quiet)
 except Exception:
     make_session = warmup = human_delay = None
     Device = None
     HAVE_CFFI = False
     def stealth_explain(*a, **k):
         return ""
+    class RiskHalt(RuntimeError):
+        pass
+    class RiskCooldown(RuntimeError):
+        pass
+    def parse_quiet(s):
+        return None
 
 UA = ("Mozilla/5.0 (Linux; Android 13; SM-S9180 Build/TP1A.220624.014; wv) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.0.0 "
@@ -286,13 +293,23 @@ class Signer:
             return {"ok": False, "msg": "missing uid"}
         res = {"ok": False, "msg": "not attempted", "kind": kind}
         for i in range(max(1, self.a.repeat)):
-            if kind == "json":
-                res = submit_native(self.sess, obj, self.uid, self.phid, verbose=verbose)
-            elif kind == "h5":
-                res = submit_h5(self.sess, obj, self.uid, verbose=verbose)
-            else:
-                res = submit_url(self.sess, content, self.uid, self.a.name, self.a.fid,
-                                 self.a.lat, self.a.lon, verbose=verbose)
+            try:
+                if kind == "json":
+                    res = submit_native(self.sess, obj, self.uid, self.phid, verbose=verbose)
+                elif kind == "h5":
+                    res = submit_h5(self.sess, obj, self.uid, verbose=verbose)
+                else:
+                    res = submit_url(self.sess, content, self.uid, self.a.name, self.a.fid,
+                                     self.a.lat, self.a.lon, verbose=verbose)
+            except RiskHalt as e:          # 登录失效/验证码/403 —— 停手，重试只会更糟
+                print("%s [STOP] 风控停机：%s" % (tag, e))
+                print("%s [STOP] 去 App 里人工登录/正常签到一次再回来；本次不再提交。" % tag)
+                res = {"ok": False, "msg": "risk halt: %s" % e, "halt": True, "kind": kind}
+                break
+            except RiskCooldown as e:      # 429/限流/配额满 —— 等冷却
+                print("%s [WAIT] %s（本次不重试）" % (tag, e))
+                res = {"ok": False, "msg": "risk cooldown: %s" % e, "cooldown": True, "kind": kind}
+                break
             res["kind"] = kind
             self.count["tried"] += 1
             if res.get("ok"):
@@ -469,6 +486,10 @@ def main():
     ap.add_argument("--stealth", action="store_true",
                     help="伪装层：设备档案一致 + 完整头 + 签到前掩护流量（推荐开）")
     ap.add_argument("--no-tls", action="store_true", help="关闭 curl_cffi 浏览器 TLS 指纹")
+    ap.add_argument("--max-writes-per-hour", type=int, default=6,
+                    help="每小时写配额（风控层，默认 6）")
+    ap.add_argument("--min-interval", type=float, default=8.0, help="两次写最小间隔秒（默认 8）")
+    ap.add_argument("--quiet-hours", default="1-7", help="静默时段 如 1-7；none 关闭（默认 1-7）")
     a = ap.parse_args()
 
     if not any([a.qr, a.qr_image, a.qr_file, a.watch, a.serve, a.stdin]):
@@ -480,9 +501,13 @@ def main():
         if a.phone_id:
             dev.phone_id = a.phone_id
             dev.save()
-        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls)
+        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls,
+                            max_writes_per_hour=a.max_writes_per_hour,
+                            min_interval=a.min_interval, quiet=parse_quiet(a.quiet_hours))
         print("[stealth] phoneId=%s  TLS=%s" % (dev.phone_id,
               "curl_cffi" if getattr(sess, "_cx_tls", False) else "requests"))
+        print("[risk] 写配额 %d/小时，最小间隔 %.0fs，静默时段 %s" %
+              (a.max_writes_per_hour, a.min_interval, a.quiet_hours))
         warmup(sess, uid=a.uid)
     else:
         sess = requests.Session()

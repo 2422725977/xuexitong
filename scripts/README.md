@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 61 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 64 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -64,4 +64,7 @@
 | `snap2.sh` | — |
 | `strings_payload.py` | Extract the readable class/string surface from the sealed classes.dex, focused on the sign module. |
 | `unseal_probe.py` | Attempt static recovery inside the sealed payload: embedded zips, zlib/deflate streams, single-byte-xor dex. |
-| `stealth_session.py` | ★ 伪装层：设备档案持久化 + Chrome TLS 指纹 + 拟人延迟 + 签到前掩护流量（其他脚本加 --stealth 即可用） |
+| `stealth_session.py` | ★ 伪装层 v2 + 风控层核心：六维伪装（身份/指纹/头/时序/流量/审计）+ 判级闸门熔断（其他脚本加 --stealth 即可用） |
+| `risk_guard.py` | ★ 风控层 CLI：判级语料回归 18 条 / 响应判级 / 模拟处置 / 审计监视 / 状态重置 |
+| `selftest.py` | ★ 全量回归测试 43 项（判级器 + 闸门熔断 + 调用方熔断 + 审计脱敏），不联网 |
+| `autosign.py` / `qr_sign_remote.py` | 已接入熔断：命中风控打印 [STOP]/[WAIT] 并停手；支持 --max-writes-per-hour / --min-interval / --quiet-hours |

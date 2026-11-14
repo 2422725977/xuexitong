@@ -53,7 +53,7 @@ phoneId: SharedPreferences "appProfile"/"uniqueId"；无值时 = UUID 去横线�
 - 全 App 的人脸只挂在两处：H5 桥 `com.chaoxing.mobile.webapp.jsprotocal.exam.FaceRecognitionExecutor` 与 office 打卡 `/api/apps/punch/user/face/verify[match]`。
 - **签到两条提交链路的参数里没有任何人脸字段** → 不打开 H5 页面就不会触发人脸；比对对象是云端已存的 `remoteImage`（本人照片），活体只是客户端状态位 `CollectResult.liveDetectionStatus`。
 
-## 签到之外：学生高频操作 + 隐身（报告第 13 章）
+## 签到之外：学生高频操作 + 伪装层 + 风控层（报告第 13/14 章）
 
 签到链路本身已复核**无遗漏**；本轮补的是「签到之外」和「伪装层」：
 
@@ -63,8 +63,10 @@ phoneId: SharedPreferences "appProfile"/"uniqueId"；无值时 = UUID 去横线�
   - 作业/考试直跳 `task/getStuWorkAndExamSkipUrl`、讨论/投票、直播、成绩、课程任务点 `gas/course`、`work/task/library`
   - 活动体系全景（学生侧 17 个接口 + 教师侧 12 个）
   - 两条此前只提前缀的到课链路：`INTELLIGENT_CLASSROOM:` → `intelligentclassroom.ConfirmScreenActivity`；座位核销 → `reserveseat.ui.QRcodeVerifyActivity`
-- `docs/隐身与风控.md`：客户端两条旁证链（`analysis/ac_event`、`analysis/datalog`）、服务端可见信号 10 项排序、`scripts/stealth_session.py`（设备档案 + Chrome TLS 指纹 + 拟人延迟 + 掩护流量）、8 条反模式、A/B 验证设计。
-  - 用法：给任意提交脚本加 `--stealth`（`autosign.py`、`qr_sign_remote.py` 已支持），签到前会先发 4 条只读学习请求做掩护。
+- `docs/隐身与风控.md`（v2）：客户端两条旁证链（`analysis/ac_event`、`analysis/datalog`）、服务端可见信号 10 项排序、**六维伪装**（身份/指纹/头/时序/流量/审计）、**三层风控**（判级 HALT/COOLDOWN/WARN/NOTICE/OK + 闸门 + 调用方熔断）、9 条反模式、A/B 验证设计。
+  - 用法：给任意提交脚本加 `--stealth`（`autosign.py`、`qr_sign_remote.py` 已支持），签到前会先发 1–2 条只读学习请求做掩护；再加 `--max-writes-per-hour / --min-interval / --quiet-hours` 控制写频率。
+  - 被风控时脚本会打印 `[STOP]`（登录失效/验证码/403，停手）或 `[WAIT]`（限流/配额满，本轮不重试），并落盘审计 `~/.chaoxing_audit.jsonl`（长值打码）。
+  - 体检与回归：`python3 scripts/stealth_session.py --doctor`（六维）、`python3 scripts/selftest.py`（43 项全绿）、`python3 scripts/risk_guard.py --monitor`（实时盯风控）。
 
 ## 快速开始
 
@@ -92,13 +94,13 @@ cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mit
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（13 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计）
+docs/报告-已解壳版.md      完整报告（14 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）
 docs/签到类型全表.md       ★ 不同课程的不同签到方式：判定方法 + 每类必需参数
 docs/工装与环境.md         从零搭出可复现环境（AVD / frida / dump / droidasc）
 docs/学生高频操作接口.md   ★ 签到之外：视频任务点 enc、作业考试、直播、成绩、活动体系全景
-docs/隐身与风控.md         ★ 把协议提交伪装成正常签到/学习：旁证链、信号排序、stealth_session
-scripts/                   61 个脚本：解壳、协议重放、自动签到、Frida hook、抓屏中继
+docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、判级表、闸门与熔断、反模式、A/B 验证
+scripts/                   64 个脚本：解壳、协议重放、自动签到、Frida hook、抓屏中继、伪装/风控/回归
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```

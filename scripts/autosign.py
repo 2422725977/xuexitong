@@ -37,15 +37,22 @@ except ImportError:
     sys.exit("need: pip install requests")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量
+try:                        # 伪装层：设备档案 / 完整头 / 拟人延迟 / 掩护流量 / 风控熔断
     from stealth_session import (make_session, Device, warmup, human_delay,
-                                 explain as stealth_explain, HAVE_CFFI)
+                                 explain as stealth_explain, HAVE_CFFI,
+                                 RiskHalt, RiskCooldown, parse_quiet)
 except Exception:           # 单文件运行也不至于挂
     make_session = warmup = human_delay = None
     Device = None
     HAVE_CFFI = False
     def stealth_explain(*a, **k):
         return ""
+    class RiskHalt(RuntimeError):       # 风控停机（登录失效/验证码/403）
+        pass
+    class RiskCooldown(RuntimeError):   # 风控限流（429/操作频繁/配额满）
+        pass
+    def parse_quiet(s):
+        return None
 
 UA = ("Mozilla/5.0 (Linux; Android 13; SM-S9180 Build/TP1A.220624.014; wv) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.0.0 "
@@ -204,6 +211,16 @@ def detail(sess, aid, dump=False):
     return out
 
 
+def _dump_report(sess=None):
+    """风控停机/冷却时把伪装层与风控层的现场打出来，方便复盘。"""
+    try:
+        rep = sess.report() if hasattr(sess, "report") else {}
+    except Exception:
+        rep = {}
+    if rep:
+        print("[report] " + json.dumps(rep, ensure_ascii=False)[:700])
+
+
 def submit(sess, aid, uid, fid, name, lat, lon, address="", dump=False, object_id=""):
     url = (MOBILE + "pptSign/stuSignajax?activeId=" + urllib.parse.quote(str(aid)) +
            "&uid=" + urllib.parse.quote(str(uid)) +
@@ -244,6 +261,10 @@ def main():
     ap.add_argument("--delay", default="3,30", help="拟人延迟区间 秒,秒（默认 3,30；0,0 关闭）")
     ap.add_argument("--phone-id", default=None, help="固定 phoneId（伪装层/通道 A 用）")
     ap.add_argument("--no-tls", action="store_true", help="关闭 curl_cffi 浏览器 TLS 指纹")
+    ap.add_argument("--max-writes-per-hour", type=int, default=6,
+                    help="每小时写配额（风控层，默认 6；真人一节课也就签到 1-2 次）")
+    ap.add_argument("--min-interval", type=float, default=8.0, help="两次写之间的最小间隔秒（默认 8）")
+    ap.add_argument("--quiet-hours", default="1-7", help="静默时段 如 1-7；none 关闭（默认 1-7 不写）")
     a = ap.parse_args()
 
     ck = load_cookie(a.cookie, a.cookie_file)
@@ -252,8 +273,12 @@ def main():
         if a.phone_id:
             dev.phone_id = a.phone_id
             dev.save()
-        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls)
+        sess = make_session(cookie=ck, device=dev, uid=a.uid, tls=not a.no_tls,
+                            max_writes_per_hour=a.max_writes_per_hour,
+                            min_interval=a.min_interval, quiet=parse_quiet(a.quiet_hours))
         print("[stealth] phoneId=%s  TLS=%s" % (dev.phone_id, "curl_cffi" if getattr(sess, "_cx_tls", False) else "requests"))
+        print("[risk] 写配额 %d/小时，最小间隔 %.0fs，静默时段 %s" %
+              (a.max_writes_per_hour, a.min_interval, a.quiet_hours))
         warmup(sess, uid=a.uid)
     else:
         sess = requests.Session()
@@ -295,8 +320,22 @@ def main():
                     lo, hi = 3.0, 30.0
                 if hi > 0:
                     human_delay(lo, hi)
-            ok, body = submit(sess, aid, a.uid, a.fid, a.name, a.lat, a.lon,
-                              a.address, a.dump, object_id=(a.object_id if atype == 1 else ""))
+            try:
+                ok, body = submit(sess, aid, a.uid, a.fid, a.name, a.lat, a.lon,
+                                  a.address, a.dump, object_id=(a.object_id if atype == 1 else ""))
+            except RiskHalt as e:            # 风控停机：立刻停，别把"可疑"试成"被处置"
+                print("\n[STOP] 风控停机：%s" % e)
+                print("[STOP] 该账号/该设备已被平台注意，必须先人工登录 App 走一遍正常流程。")
+                _dump_report(sess)
+                return
+            except RiskCooldown as e:        # 限流/配额：本轮不签，等冷却
+                print("\n[WAIT] %s" % e)
+                print("[WAIT] 本轮跳过，冷却结束或配额恢复后再来（脚本不会硬试）。")
+                _dump_report(sess)
+                if not a.loop:
+                    return
+                time.sleep(min(a.interval * 2, 120))
+                continue
             if ok:
                 print("[+] activeId=%s 签到成功" % aid)
                 done.add(aid)
