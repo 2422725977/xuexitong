@@ -59,6 +59,7 @@ phoneId: SharedPreferences "appProfile"/"uniqueId"；无值时 = UUID 去横线�
 
 - `docs/学生高频操作接口.md`：
   - **视频/音频任务点进度上报**（挂机/秒过）——`CourseViewModel.S` 参数表 + `enc` 公式（盐 `d_yHJ!$pdA~5`，`[`/`][`/`]` 分隔）；URL 是服务端下发的 `CourseVideo.reportUrl`
+  - **取真值的低暴露姿势**：[`docs/低暴露抓取.md`](docs/低暴露抓取.md) —— 浏览器 cookie（零设备信号）> 手机导出 cookie > 模拟器登录（新设备+模拟器指纹，最差）；含尺度纪律与 `scripts/fsd.sh`（非默认端口、抓完即清）
   - **视频任务点协议（★ 新增，本轮定稿）**：[`docs/视频任务点协议.md`](docs/视频任务点协议.md) —— enc 明文模板 + 单位坑（查询串秒 / enc 毫秒、必为 1000 整数倍）+ 服务端 `result=203` 与 `rollbackPoint` 回退机制 + 门禁与开关（reportTimeInterval/doubleSpeed/fastforward/faceRecConfig）+ 五项待实测；脚本 `scripts/video_task.py`（`--selftest` 全绿、`--dry-run` 干跑、`--pace real` 按真实节奏）与 `scripts/frida_video_hook.js`（抓 reportUrl 真值）
   - **未完成活动巡检** `teachingPlanAPI/noFinishActiveCount`（不签到也能知道有没有新东西）
   - 作业/考试直跳 `task/getStuWorkAndExamSkipUrl`、讨论/投票、直播、成绩、课程任务点 `gas/course`、`work/task/library`
@@ -102,7 +103,8 @@ docs/工装与环境.md         从零搭出可复现环境（AVD / frida / dump
 docs/学生高频操作接口.md   ★ 签到之外：视频任务点 enc、作业考试、直播、成绩、活动体系全景
 docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、判级表、闸门与熔断、反模式、A/B 验证
 docs/视频任务点协议.md     ★ 视频任务点：enc 公式、203/rollbackPoint 回退、frida 抓真值、命令速查
-scripts/                   66 个脚本：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归
+docs/低暴露抓取.md         ★ 取真值时怎么把风控暴露面压到最低（三条路排序 + 尺度纪律 + 模拟器最低暴露清单）
+scripts/                   67 个脚本：解壳、协议重放、自动签到、视频任务点、Frida hook（含低暴露启停）、抓屏中继、伪装/风控/回归
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```

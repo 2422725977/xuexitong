@@ -336,10 +336,16 @@ class VideoTask(object):
         if HAVE_STEALTH:
             self.session = make_session(
                 cookie=cookie, uid=self.uid, referer=self.a.referer,
-                stealth=getattr(self.a, "stealth", False),
                 max_writes_per_hour=self.a.max_writes_per_hour,
                 min_interval=self.a.min_interval,
-                quiet_hours=parse_quiet(self.a.quiet_hours))
+                quiet=parse_quiet(self.a.quiet_hours))
+            if getattr(self.a, "stealth", False):
+                try:
+                    res = warmup(self.session, uid=self.uid)
+                    ok = len([x for x in (res or []) if x and x[0] == 200])
+                    print("[stealth] 掩护流量 %d/%d 条只读请求完成" % (ok, len(res or [])))
+                except Exception as e:
+                    print("[stealth] 掩护流量跳过：%s" % e)
         else:
             import requests
             self.session = requests.Session()

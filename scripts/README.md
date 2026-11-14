@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 66 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 67 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -28,6 +28,7 @@
 | `dump_bangcle.py` | — |
 | `endpoints.py` | Whole-APK endpoint census: chaoxing hosts and API paths in every readable entry. |
 | `fdscan.sh` | — |
+| `fsd.sh` | ★ 低暴露启停 frida-server（非默认端口 39042、听 127.0.0.1、抓完自动清痕迹） |
 | `gate_children.py` | — |
 | `getclass_batch2.sh` | — |
 | `getclass_batch3.sh` | — |
