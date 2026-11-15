@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import zipfile, re
-P = "samples/学习通.apk"
+P = "samples/\u5b66\u4e60\u901a.apk"
 z = zipfile.ZipFile(P)
 d = z.read("assets/schedule/js/schedule.js").decode("utf-8", "replace")
 print("=== region 72500-79500")

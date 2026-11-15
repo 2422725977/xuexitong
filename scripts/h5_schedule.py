@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Inspect the unsealed H5 schedule/attendance bundle inside assets."""
 import zipfile, re
-P = "samples/学习通.apk"
+P = "samples/\u5b66\u4e60\u901a.apk"
 z = zipfile.ZipFile(P)
 names = [n for n in z.namelist() if n.startswith("assets/schedule")]
 print("=== assets/schedule entries:", len(names))

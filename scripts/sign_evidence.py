@@ -2,7 +2,7 @@
 """Consolidated signin evidence: single-pass keyword census, payload chinese/identifier harvest, descriptor counts."""
 import zipfile, re, collections
 
-P = "samples/学习通.apk"
+P = "samples/\u5b66\u4e60\u901a.apk"
 z = zipfile.ZipFile(P)
 KW = ["\u7b7e\u5230", "rcode", "activeId", "signType", "ifTiJiao", "clientip", "latitude", "longitude", "beacon", "bluetooth", "checkin", "attendance"]
 res = {k: [0, 0, []] for k in KW}

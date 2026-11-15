@@ -58,6 +58,32 @@ try:
 except Exception:
     _decode_qr = None
 
+# ---------------------------------------------------------------------------
+# 作用域白名单（用户明令 m02160：只允许「计算机二级」测试班级）
+#   任何越界请求在发出之前就被拦下，不给服务端留记录。
+# ---------------------------------------------------------------------------
+ALLOW_COURSE = "269282723"      # 计算机二级
+ALLOW_CLASS = "159926750"       # clazzId
+ALLOW_ANY = False               # 设为 True 才放行其他班级（默认硬闸）
+
+
+class ScopeViolation(SystemExit):
+    pass
+
+
+def guard_scope(course=None, clazz=None, what="操作", allow_course=None, allow_class=None):
+    ac = str(allow_course or ALLOW_COURSE)
+    ak = str(allow_class or ALLOW_CLASS)
+    if ALLOW_ANY:
+        return True
+    if course and str(course) != ac:
+        raise ScopeViolation("[scope] 拒绝越界：%s course=%s 不在白名单 %s（只允许计算机二级测试班）"
+                             % (what, course, ac))
+    if clazz and str(clazz) != ak:
+        raise ScopeViolation("[scope] 拒绝越界：%s class=%s 不在白名单 %s（只允许计算机二级测试班）"
+                             % (what, clazz, ak))
+    return True
+
 try:
     from autosign import walk_active as _walk_active, jget as _jget
 except Exception:
@@ -82,6 +108,61 @@ PLACEHOLDER_ENC = {"xxx", "xxxx", "xxxxx", "test", "test123", "example", "null",
                    "0", "1", "enc", "n/a", "none", "{{enc}}", "enc_value", "your_enc"}
 RE_IMG = re.compile(r"""(?:src|data-src|background-image)\s*[:=]\s*[\"']([^\"']{4,300})[\"']""", re.I)
 RE_DATAURI = re.compile(r"data:image/(?:png|jpe?g|webp);base64,([A-Za-z0-9+/=]{300,})")
+
+
+def _walk_active_any(obj, out, depth=0):
+    """把活动列表 JSON 里所有长度>8 的纯数字 id 当作 activeId 收集（任务/分组汇总行会被 RE_REAL_AID 过滤）"""
+    if depth > 8:
+        return
+    if isinstance(obj, list):
+        for it in obj:
+            _walk_active_any(it, out, depth + 1)
+        return
+    if not isinstance(obj, dict):
+        return
+    keys = {k.lower(): k for k in obj.keys()}
+    aid = None
+    for k in ("id", "activeid", "activeprimaryid"):
+        if k in keys and str(obj[keys[k]]).isdigit() and len(str(obj[keys[k]])) > 8:
+            aid = str(obj[keys[k]])
+            break
+    if aid:
+        out.append({"id": aid, "activeType": obj.get(keys.get("activetype", ""), ""),
+                    "status": obj.get(keys.get("status", ""), ""),
+                    "name": obj.get(keys.get("title", ""), "") or obj.get(keys.get("name", ""), "")})
+    for v in obj.values():
+        if isinstance(v, (dict, list)):
+            _walk_active_any(v, out, depth + 1)
+
+
+def _list_activities(sess, uid, urls, tag="T"):
+    """共用：GET 一批活动列表 URL -> 去重后的活动 dict 列表"""
+    acts = []
+    for u in urls:
+        try:
+            r = sess.get(u, timeout=25, allow_redirects=True)
+        except Exception as e:
+            log(tag, "活动列表请求失败 %s -> %r" % (u[:80], e))
+            continue
+        try:
+            j = r.json()
+        except Exception:
+            continue
+        if isinstance(j, dict) and j.get("errorMsg") == "请用学习通客户端打开活动列表":
+            log(tag, "  (被客户端门禁拒：%s)" % u[:60])
+            continue
+        _walk_active_any(j, acts)
+    uniq, seen = [], set()
+    for a in acts:
+        k = str(a.get("id"))
+        if k in seen:
+            continue
+        seen.add(k)
+        uniq.append(a)
+    real = [x for x in uniq if RE_REAL_AID.match(str(x.get("id") or ""))]
+    if real:
+        uniq = real
+    return uniq
 
 
 def ts():
@@ -232,6 +313,18 @@ class TeacherSide(object):
                 out.append({"enc": c["enc_raw"], "aid": "", "c": "", "src": c["src"]})
         return out
 
+    def cpi_for(self, course, clazz):
+        """教师在该班的 cpi（taskactivelist 需要；只有 backclazzdata 里有，缓存一次）"""
+        if getattr(self, "_cls_cache", None) is None:
+            try:
+                self._cls_cache = self.classes()
+            except Exception:
+                self._cls_cache = []
+        for c in self._cls_cache:
+            if str(c.get("course")) == str(course) and str(c.get("clazz")) == str(clazz):
+                return c.get("cpi") or ""
+        return ""
+
     # ---- 1) 班级枚举 ----
     def classes(self):
         url = MOOC1API + "mycourse/backclazzdata?view=json&getTchClazzType=1&mcode=%s" % self.uid
@@ -253,13 +346,24 @@ class TeacherSide(object):
                 continue
             seen.add(k)
             uniq.append(c)
+        if not ALLOW_ANY:
+            keep = [c for c in uniq if str(c.get("course")) == ALLOW_COURSE and str(c.get("clazz")) == ALLOW_CLASS]
+            if len(keep) != len(uniq):
+                log("T", "作用域白名单过滤：%d 个班级里只有 %d 个属于计算机二级测试班（course=%s class=%s），其余不请求"
+                    % (len(uniq), len(keep), ALLOW_COURSE, ALLOW_CLASS))
+            uniq = keep
         log("T", "教师班级 %d 个" % len(uniq))
         for c in uniq[:20]:
-            log("T", "  %s | course=%s class=%s role=%s" % (c.get("name", "?")[:24], c.get("course"),
-                                                           c.get("clazz"), c.get("role")))
+            log("T", "  %s | course=%s class=%s cpi=%s role=%s" % (c.get("name", "?")[:24], c.get("course"),
+                                                                  c.get("clazz"), c.get("cpi"), c.get("role")))
         return uniq
 
     def _walk_classes(self, obj, out, ctx):
+        """教师 backclazzdata 有两种形状：
+        A) channelList[i].content = {dtype:"Course", id:<courseId>, cpi:<教师cpi>, name, clazz:[{clazzId,...}], person:{data:[{userid}]}}
+        B) channelList[i].content = {cpi, chatid:<classId>, name, course:{data:[{id:<courseId>, teacherfactor,...}]}}
+        共同的坑：courseId 与 clazzId 从不共存于同一个 dict，必须靠 ctx 向下继承。
+        """
         if isinstance(obj, list):
             for it in obj:
                 self._walk_classes(it, out, ctx)
@@ -267,34 +371,61 @@ class TeacherSide(object):
         if not isinstance(obj, dict):
             return
         keys = {k.lower(): k for k in obj.keys()}
-        course = None
-        for k in ("courseid", "course_id", "id"):
-            if k in keys and str(obj[keys[k]]).isdigit():
-                course = str(obj[keys[k]])
-                break
-        clazz = None
-        for k in ("clazzid", "classid", "clazz_id", "class_id", "clazzid_str"):
-            if k in keys:
-                clazz = str(obj[keys[k]])
-                break
+
+        def _g(*names):
+            for n in names:
+                if n in keys:
+                    v = obj[keys[n]]
+                    if v not in (None, "", 0, "0"):
+                        return v
+            return None
+
+        course, clazz = ctx.get("course"), ctx.get("clazz")
+        cpi, name, role = ctx.get("cpi"), ctx.get("name"), ctx.get("role")
+
+        # --- 课程号 ---
+        v = _g("courseid", "course_id", "courseid_str")
+        if v and str(v).isdigit():
+            course = str(v)
+        else:
+            # 只有"长这样像课程"的 dict 才允许用裸 id 当 courseId（clazz/person 子 dict 里也有 id/userid）
+            looks_course = ("dtype" in keys and str(obj[keys["dtype"]]).lower() == "course") or                            ("teacherfactor" in keys) or ("belongschoolid" in keys) or                            ("sectionid" in keys and "clazzid" not in keys)
+            if looks_course and "id" in keys and str(obj[keys["id"]]).isdigit():
+                course = str(obj[keys["id"]])
+        # --- 班级号 ---
+        v = _g("clazzid", "classid", "clazz_id", "class_id", "chatid", "chat_id")
+        if v and str(v).isdigit():
+            clazz = str(v)
+        # --- 教师 cpi / 角色 / 名称 ---
+        v = _g("cpi", "personid", "person_id")
+        if v and str(v).isdigit():
+            cpi = str(v)
+        v = _g("roletype", "role", "role_type")
+        if v is not None:
+            role = str(v)
+        v = _g("coursename", "clazzname", "classname")
+        if v:
+            name = str(v)
+        elif not name and _g("name") and len(str(_g("name"))) <= 40:
+            name = str(_g("name"))
+
+        newctx = {"course": course, "clazz": clazz, "cpi": cpi, "name": name, "role": role}
         if course and clazz:
-            rid = None
-            for k in ("roletype", "role", "role_type"):
-                if k in keys:
-                    rid = str(obj[keys[k]])
-            name = obj.get(keys.get("coursename", ""), "") or obj.get(keys.get("name", ""), "") if keys.get("coursename") or keys.get("name") else ""
-            out.append({"course": course, "clazz": clazz, "role": rid, "name": name or "?"})
-        for v in obj.values():
-            if isinstance(v, (dict, list)):
-                self._walk_classes(v, out, ctx)
+            out.append(dict(newctx))
+        for v2 in obj.values():
+            if isinstance(v2, (dict, list)):
+                self._walk_classes(v2, out, newctx)
 
     # ---- 2) 活动定位 ----
-    def activities(self, course=None, clazz=None):
+    def activities(self, course=None, clazz=None, cpi=""):
+        guard_scope(course, clazz, "活动列表")
         urls = []
         if course and clazz:
-            urls.append(MOBILE + "ppt/activeAPI/taskactivelist?courseId=%s&classId=%s&uid=%s&cpi=&appType=15"
-                        % (course, clazz, self.uid))
+            urls.append(MOBILE + "ppt/activeAPI/taskactivelist?courseId=%s&classId=%s&uid=%s&cpi=%s&appType=15"
+                        % (course, clazz, self.uid, cpi or ""))
+        # 教师本人发起的活动（courseactivelist 的 puid 是发起人 uid；教师 cookie 下才非空）
         urls.append(MOBILE + "ppt/activeAPI/courseactivelist?puid=%s&status=1&page=1&pageSize=20&appType=15" % self.uid)
+        urls.append(MOBILE + "ppt/activeAPI/courseactivelist?puid=%s&status=0&page=1&pageSize=20&appType=15" % self.uid)
         acts = []
         for u in urls:
             r = self.get(u, "activities", sniff=False)
@@ -357,12 +488,49 @@ class TeacherSide(object):
         if r is None:
             return {}
         try:
-            return r.json()
+            d = r.json()
         except Exception:
             return {}
+        sc_course = d.get("courseId") or d.get("courseid")
+        sc_clazz = d.get("clazzId") or d.get("clazzid") or d.get("classId")
+        if not ALLOW_ANY and (sc_course or sc_clazz):
+            guard_scope(sc_course, sc_clazz, "signDetail aid=%s" % aid)
+        return d
+
+    def refresh_qrcode(self, aid):
+        """★ 教师侧权威接口：/v2/apis/sign/refreshQRCode?activeId=&time=  ->  {"result":1,"data":{"refresh":1,"enc":"...","signCode":"..."}}
+        （来自教师签到页 JS updateEwm()，10s 轮换；旧名 /widget/sign/pcTeaSignController/getSignCode 已被注释掉）
+        返回 {'enc','c','signCode','aid'} 或 {}。"""
+        u = MOBILE + "v2/apis/sign/refreshQRCode?activeId=%s&time=%d" % (aid, int(time.time() * 1000))
+        try:
+            r = self.sess.get(u, timeout=25, allow_redirects=True)
+        except Exception as e:
+            log("T", "refreshQRCode 失败 aid=%s -> %r" % (aid, e))
+            return {}
+        body = (r.text or "").strip()
+        try:
+            j = r.json()
+        except Exception:
+            log("T", "refreshQRCode 非 JSON (HTTP %s): %s" % (r.status_code, body[:120]))
+            return {}
+        if str(j.get("result")) != "1" or not isinstance(j.get("data"), dict):
+            log("T", "refreshQRCode aid=%s -> result=%s errorMsg=%s" % (aid, j.get("result"), j.get("errorMsg")))
+            return {}
+        d = j["data"]
+        enc = (d.get("enc") or "").strip()
+        if not enc:
+            return {}
+        return {"enc": enc, "c": str(d.get("signCode") or ""), "signCode": str(d.get("signCode") or ""),
+                "aid": str(aid), "refresh": d.get("refresh"), "src": "refreshQRCode"}
 
     def qr_candidates(self, aid, course=None, clazz=None):
         """教师侧全路径扫一遍，返回 [{'enc','aid','c','src'}]"""
+        guard_scope(course, clazz, "取 enc aid=%s" % aid)
+        # ① 权威接口优先
+        top = self.refresh_qrcode(aid)
+        if top:
+            log("+", "refreshQRCode aid=%s -> enc=%s.. signCode=%s refresh=%s"
+                % (aid, top["enc"][:12], top.get("signCode"), top.get("refresh")))
         urls = []
         if course and clazz:
             urls.append(MOBILE + "pptSign/gotasksign?courseId=%s&classId=%s&activePrimaryId=%s&source=1&isTeacherViewOpen=1"
@@ -370,8 +538,10 @@ class TeacherSide(object):
             urls.append(MOBILE + "newsign/preSign?activePrimaryId=%s&sys=1&chatId=&general=&ls=1&appType=15"
                                  "&courseId=%s&classId=%s&uid=%s&isTeacherViewOpen=1" % (aid, course, clazz, self.uid))
         urls.append(MOBILE + "sign/produceSignView?tid=%s&uid=%s&appType=15" % (self.uid, self.uid))
-        cands = []
+        cands = [top] if top else []
         for u in urls:
+            if top:
+                break                      # 已经拿到权威 enc，不必再把教师页面全抓一遍
             r = self.get(u, "qr_%s" % aid, save=True)
             if r is None:
                 continue
@@ -391,6 +561,8 @@ def rank(cands, target_aid=""):
     """给 enc 候选打分排序：带 id 的二维码链接 > aid 匹配 > 十六进制长串。"""
     def sc(c):
         s = 0
+        if c.get("src") == "refreshQRCode":
+            s += 8                        # 服务端权威接口，胜过一切页面嗅探
         if c.get("src") == "widget/sign/e":
             s += 4
         if target_aid and str(c.get("aid") or "") == str(target_aid):
@@ -411,10 +583,11 @@ class StudentSide(object):
                                  xhr=True, quiet=quiet_hours)
         self.uid = uid
 
-    def submit(self, aid, enc, name="", fid="0", lat="-1", lon="-1", verbose=True):
-        if _submit_url is not None:
+    def submit(self, aid, enc, name="", fid="0", lat="-1", lon="-1", verbose=True, extra=None):
+        if _submit_url is not None and not extra:
             content = "https://x/?enc=%s&id=%s" % (urllib.parse.quote(enc), urllib.parse.quote(str(aid)))
-            return _submit_url(self.sess, content, self.uid, name, fid, lat, lon, verbose=verbose)
+            res = _submit_url(self.sess, content, self.uid, name, fid, lat, lon, verbose=verbose)
+            return _classify(res) if isinstance(res, dict) else res
         q = ("pptSign/stuSignajax?enc=%s&name=%s&activeId=%s&uid=%s&clientip=&useragent="
              "&latitude=%s&longitude=%s&fid=%s&appType=15" % (urllib.parse.quote(enc), urllib.parse.quote(name),
                                                               urllib.parse.quote(str(aid)), urllib.parse.quote(self.uid),
@@ -425,7 +598,76 @@ class StudentSide(object):
             log("S", "GET %s" % (MOBILE + q))
             log("S", "HTTP %s  %s" % (r.status_code, body[:300]))
         ok = ("success" in body.lower()) or ("签到成功" in body)
-        return {"ok": ok, "msg": body[:300]}
+        return _classify({"ok": ok, "msg": body[:300]})
+
+    # ---- 学生侧活动列表（扫码/普通/定位等活动的真实列表在学生视角下最全）----
+    def activities(self, course=None, clazz=None, cpi=""):
+        guard_scope(course, clazz, "学生活动列表")
+        urls = []
+        if course and clazz:
+            urls.append(MOBILE + "ppt/activeAPI/taskactivelist?courseId=%s&classId=%s&uid=%s&cpi=%s&appType=15"
+                        % (course, clazz, self.uid, cpi or ""))
+            urls.append(MOBILE + "ppt/activeAPI/courseactivelist?puid=%s&status=1&page=1&pageSize=20&appType=15" % self.uid)
+        else:
+            urls.append(MOBILE + "ppt/activeAPI/courseactivelist?puid=%s&status=1&page=1&pageSize=20&appType=15" % self.uid)
+        acts = _list_activities(self.sess, self.uid, urls, "S")
+        log("S", "学生活动 %d 条" % len(acts))
+        for x in acts[:12]:
+            log("S", "  aid=%s type=%s status=%s %s" % (x.get("id"), x.get("activeType"), x.get("status"),
+                                                        str(x.get("name") or "")[:26]))
+        return acts
+
+    # ---- 人脸闸门（checkFace_<enc2> 之后的两步）----
+    def face_result(self, aid, face_result_json, verbose=True):
+        """② POST /pptSign/check-face-result?DB_STRATEGY=PRIMARY_KEY&STRATEGY_PARA=activeId
+        教师页/学生页 JS 里的调用：data={activeId, faceResult: JSON.stringify(faceResult)} -> 返回 {enc, code}
+        faceResult 本体是 App 侧人脸 SDK（CLIENT_FACE_RECOGNITION_BLINK, funTag=3）的产物。"""
+        u = MOBILE + "pptSign/check-face-result?DB_STRATEGY=PRIMARY_KEY&STRATEGY_PARA=activeId"
+        try:
+            r = self.sess.post(u, data={"activeId": str(aid), "faceResult": face_result_json}, timeout=25)
+            body = (r.text or "").strip()
+            if verbose:
+                log("S", "POST check-face-result -> HTTP %s %s" % (r.status_code, body[:200]))
+            return r.json() if body.startswith("{") else {}
+        except Exception as e:
+            log("!", "check-face-result 失败: %r" % (e,))
+            return {}
+
+    def submit_face(self, aid, enc, enc2, face_enc, face_code, current_face_id="", name="", fid="0",
+                    course="", address="", verbose=True):
+        """③ 带人脸结果重提：enc2 + faceEnc/faceCode/faceEncAid + currentFaceId + ifCFP=1"""
+        q = ("pptSign/stuSignajax?enc=%s&name=%s&activeId=%s&uid=%s&clientip=&useragent="
+             "&latitude=-1&longitude=-1&fid=%s&appType=15&enc2=%s&currentFaceId=%s&ifCFP=1"
+             "&courseId=%s&faceEnc=%s&faceCode=%s&faceEncAid=%s"
+             % (urllib.parse.quote(enc), urllib.parse.quote(name), urllib.parse.quote(str(aid)),
+                urllib.parse.quote(self.uid), urllib.parse.quote(fid), urllib.parse.quote(enc2),
+                urllib.parse.quote(current_face_id), urllib.parse.quote(str(course)),
+                urllib.parse.quote(face_enc), urllib.parse.quote(face_code), urllib.parse.quote(str(aid))))
+        if address:
+            q += "&address=" + urllib.parse.quote(address)
+        r = self.sess.get(MOBILE + q, timeout=25)
+        body = (r.text or "").strip()
+        if verbose:
+            log("S", "GET %s" % (MOBILE + q)[:230])
+            log("S", "HTTP %s  %s" % (r.status_code, body[:200]))
+        return _classify({"ok": ("success" in body.lower()), "msg": body[:300]})
+
+
+def _classify(res):
+    """把服务端的响应分成几种闸门：checkFace_/validate_ 都不是普通失败，而是
+    'enc 已经过关，但还要过人脸/验证码'——这是本次实签能走到的最深一层。"""
+    if not isinstance(res, dict):
+        return res
+    msg = str(res.get("msg") or res.get("body") or "").strip()
+    if msg.startswith("checkFace_"):
+        res["gate"] = "face"
+        res["enc2"] = msg[len("checkFace_"):]
+        res["ok"] = False
+    elif msg.startswith("validate_"):
+        res["gate"] = "captcha"
+        res["enc2"] = msg[len("validate_"):]
+        res["ok"] = False
+    return res
 
 
 def tch_relogin(path, verbose=True):
@@ -465,6 +707,7 @@ def rec(path, obj):
 
 
 def main():
+    global ALLOW_COURSE, ALLOW_CLASS, ALLOW_ANY
     ap = argparse.ArgumentParser(description="学习通 教师侧取码 -> 学生侧提交 一体化流水线")
     ap.add_argument("--mode", default="watch", choices=["discover", "once", "watch", "submit-url"])
     ap.add_argument("--tch-cookie", default="")
@@ -491,8 +734,18 @@ def main():
     ap.add_argument("--log", default="out/pipeline.jsonl")
     ap.add_argument("--tch-login", action="store_true", help="教师 cookie 缺失/失效时用 CX_TCH_PHONE/CX_TCH_PASS 自动登录")
     ap.add_argument("--dry-run", action="store_true", help="只到取 enc，不提交")
+    ap.add_argument("--allow-course", default=ALLOW_COURSE, help="作用域白名单：允许的 courseId")
+    ap.add_argument("--allow-class", default=ALLOW_CLASS, help="作用域白名单：允许的 clazzId")
+    ap.add_argument("--allow-any-class", action="store_true", help="解除班级白名单（默认禁止，需显式开启）")
     ap.add_argument("--verbose", action="store_true")
     a = ap.parse_args()
+
+    ALLOW_COURSE, ALLOW_CLASS = str(a.allow_course), str(a.allow_class)
+    ALLOW_ANY = bool(a.allow_any_class)
+    guard_scope(a.course, a.clazz, "命令行参数")     # 越界参数在联网前就拦下
+    if not ALLOW_ANY:
+        log("i", "作用域白名单生效：只允许 course=%s class=%s（--allow-any-class 可解除）"
+            % (ALLOW_COURSE, ALLOW_CLASS))
 
     if (a.mode != "submit-url" and a.tch_login
             and not a.tch_cookie and not os.path.exists(a.tch_cookie_file)):
@@ -514,9 +767,12 @@ def main():
     if not tch_uid and tch_ck:
         m = re.search(r"(?:^|;\s*)_uid=([0-9]+)", tch_ck)
         tch_uid = m.group(1) if m else ""
+    if a.mode == "once" and not a.rounds:
+        a.rounds = 1                      # once = 只跑一轮（否则会进 watch 无限循环）
     qh = parse_quiet(a.quiet_hours)
     tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh) if tch_ck else None
     stu = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh) if (stu_ck and not a.dry_run) else None
+    stu_list = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh) if stu_ck else None   # 只读的活动列表用
 
     if tch and warmup and not a.dry_run and a.mode == "watch":
         try:
@@ -530,7 +786,7 @@ def main():
         if tch:
             cls = tch.classes()
             for c in cls[:6]:
-                tch.activities(c["course"], c["clazz"])
+                tch.activities(c["course"], c["clazz"], c.get("cpi") or "")
             if a.aid:
                 tch.qr_candidates(a.aid, a.course or None, a.clazz or None)
         return 0
@@ -553,7 +809,11 @@ def main():
             elif tch:
                 aids = [a.aid] if a.aid else []
                 if not aids:
-                    acts = tch.activities(a.course or None, a.clazz or None)
+                    _cpi = tch.cpi_for(a.course, a.clazz) if (a.course and a.clazz) else ""
+                    acts = tch.activities(a.course or None, a.clazz or None, _cpi)
+                    if not acts and stu_list is not None:
+                        log("i", "教师视角活动列表为空，改用学生视角（同一课程，真实列表在学生侧）")
+                        acts = stu_list.activities(a.course or None, a.clazz or None, _cpi)
                     live = [x for x in acts if str(x.get("activeType", "")) in want and str(x.get("status", "")) in ("1", "true")]
                     live = [x for x in live if str(x.get("id", "")).isdigit() and len(str(x.get("id"))) > 8]
                     if not live:
@@ -598,6 +858,11 @@ def main():
                     rec(a.log, {"t": ts(), "round": rnd, "event": "submit", "enc": c["enc"][:16],
                                 "aid": c["aid"] or a.aid, "src": c["src"], "ok": res.get("ok"),
                                 "msg": str(res.get("msg"))[:120]})
+                    if isinstance(res, dict) and res.get("gate") == "face":
+                        log("!", "闸门=人脸：enc 已通过！服务端返回 checkFace_%s" % (res.get("enc2") or "")[:16])
+                        log("i", "  后续两步：① App 人脸采集 -> ② POST /pptSign/check-face-result -> ③ submit_face(enc2, faceEnc, faceCode)")
+                    if isinstance(res, dict) and res.get("gate") == "captcha":
+                        log("!", "闸门=验证码：enc 已通过！服务端返回 validate_%s" % (res.get("enc2") or "")[:16])
                     if res.get("ok"):
                         log("=", "签到成功！enc=%s aid=%s" % (c["enc"][:12], c["aid"] or a.aid))
                         if a.stop_on_success:
