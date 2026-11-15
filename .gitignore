@@ -6,5 +6,8 @@ out/
 *.dex
 *.so
 ck.txt
+ck*.txt
+ck*.json
 cookies*.txt
+*.jsonl
 .DS_Store

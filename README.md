@@ -70,6 +70,27 @@ phoneId: SharedPreferences "appProfile"/"uniqueId"；无值时 = UUID 去横线�
   - 被风控时脚本会打印 `[STOP]`（登录失效/验证码/403，停手）或 `[WAIT]`（限流/配额满，本轮不重试），并落盘审计 `~/.chaoxing_audit.jsonl`（长值打码）。
   - 体检与回归：`python3 scripts/stealth_session.py --doctor`（六维）、`python3 scripts/selftest.py`（43 项全绿）、`python3 scripts/risk_guard.py --monitor`（实时盯风控）。
 
+### 一键自动签到流水线（★ 新增）
+
+`scripts/cx_pipeline.py` 把「教师侧取当前二维码 → 学生侧提交」的中间过程全部粘好一条命令：
+
+```bash
+# 教师 cookie 放 ck_tch.txt（浏览器 F12 复制整条 Cookie）；学生 cookie 放 ck.txt
+python3 scripts/cx_pipeline.py --mode watch \
+    --tch-cookie-file ck_tch.txt --stu-cookie-file ck.txt --uid <学生puid> \
+    --course <courseId> --class <classId> --stop-on-success --verbose
+
+# 没有教师 cookie 也能自动登（cookie 失效会当场重登一次）
+export CX_TCH_PHONE=1xxxxxxxxxx CX_TCH_PASS=********
+python3 scripts/cx_pipeline.py --mode watch --tch-login --stu-cookie-file ck.txt --uid <学生puid>
+```
+
+- 四段全自动：教师班级枚举 → 活跃活动定位 → **教师侧取 enc（页面正则 + 二维码图片 cv2 多尺度解码，双路并存，候选带评分排序）** → 学生侧 `pptSign/stuSignajax` 提交。
+- 取不到 enc **不静默**：每个可疑响应落盘 `out/tch_probe/*.html`（文件头写了请求与最终跳转 URL），判定流水写 `out/pipeline.jsonl`。
+- 模式：`discover`（只枚举不提交）/ `once` / `watch`（默认）/ `submit-url`（已有 enc 直接提交）。
+- 依据（三条实测）：学生端页面 `var aidInEwm=""; var enc="";` 只能靠扫码回调赋值；`newsign/signDetail` 带 4 种 msg 参数返回 69 字段完全一致、无 enc；服务端错误文案分类（clone → «签到失败，请重新扫描» / 父活动 → «此次签到未开始»）证明唯一门槛就是 enc。
+- 详见 [`docs/一键自动签到.md`](docs/一键自动签到.md)。
+
 ## 快速开始
 
 ```bash
@@ -96,7 +117,7 @@ cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mit
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（15 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点）
+docs/报告-已解壳版.md      完整报告（17 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）
 docs/签到类型全表.md       ★ 不同课程的不同签到方式：判定方法 + 每类必需参数
 docs/工装与环境.md         从零搭出可复现环境（AVD / frida / dump / droidasc）
@@ -104,7 +125,8 @@ docs/学生高频操作接口.md   ★ 签到之外：视频任务点 enc、作�
 docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、判级表、闸门与熔断、反模式、A/B 验证
 docs/视频任务点协议.md     ★ 视频任务点：enc 公式、203/rollbackPoint 回退、frida 抓真值、命令速查
 docs/低暴露抓取.md         ★ 取真值时怎么把风控暴露面压到最低（三条路排序 + 尺度纪律 + 模拟器最低暴露清单）
-scripts/                   67 个脚本：解壳、协议重放、自动签到、视频任务点、Frida hook（含低暴露启停）、抓屏中继、伪装/风控/回归
+docs/一键自动签到.md       ★ 教师侧取码 → 学生侧提交：四段流水线、模式速查、诊断产物、故障排查表
+scripts/                   68 个脚本（含 cx_pipeline.py 一键流水线）：解壳、协议重放、自动签到、视频任务点、Frida hook（含低暴露启停）、抓屏中继、伪装/风控/回归
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```
