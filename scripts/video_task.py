@@ -336,6 +336,7 @@ class VideoTask(object):
         if HAVE_STEALTH:
             self.session = make_session(
                 cookie=cookie, uid=self.uid, referer=self.a.referer,
+                ua_mode=getattr(self.a, "ua_mode", "browser"),
                 max_writes_per_hour=self.a.max_writes_per_hour,
                 min_interval=self.a.min_interval,
                 quiet=parse_quiet(self.a.quiet_hours))
@@ -579,6 +580,8 @@ def main():
     ap.add_argument("--cookie-file")
     ap.add_argument("--cookie")
     ap.add_argument("--referer", default="https://mooc1-api.chaoxing.com/")
+    ap.add_argument("--ua-mode", choices=["browser", "app", "h5"], default="browser",
+                    help="会话档案：browser=桌面 Chrome（Web 登录 cookie 用这个）／app／h5")
     ap.add_argument("--stealth", action="store_true", help="启用伪装层（设备档案+TLS指纹+掩护流量）")
     ap.add_argument("--max-writes-per-hour", type=int, default=90)
     ap.add_argument("--min-interval", type=float, default=5.0)

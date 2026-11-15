@@ -453,6 +453,11 @@ class RiskGuard:
         self.save()
 
 
+# 浏览器档案：cookie 来自 Web 登录时用它，保持「同一台电脑同一个 Chrome」的叙事一致
+BROWSER_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+
+
 class StealthSession:
     """把 requests.Session 包成「像 App 且在风控面前会自己刹车」的会话。"""
 
@@ -502,6 +507,17 @@ class StealthSession:
         self.session.proxies = v
 
     def base_headers(self):
+        if self.ua_mode == "browser":
+            return {
+                "User-Agent": BROWSER_UA,
+                "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+                           "image/avif,image/webp,*/*;q=0.8"),
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Referer": self.referer,
+            }
         ua = self.device.ua if self.ua_mode == "app" else self.device.webview_ua
         return {
             "User-Agent": ua,
@@ -632,10 +648,10 @@ class StealthSession:
 
 # ---------------- 向后兼容的函数式 API（v1 调用方继续可用） ----------------
 def make_session(cookie=None, device=None, uid="", referer=None, impersonate="chrome120",
-                 tls=True, xhr=False, proxy=None, guard=True, **kw):
+                 tls=True, xhr=False, proxy=None, guard=True, ua_mode=None, **kw):
     ss = StealthSession(cookie=cookie, device=device, uid=uid, referer=referer,
                         impersonate=impersonate, tls=tls, xhr=xhr, proxy=proxy, guard=guard,
-                        ua_mode=("h5" if xhr else "app"), **kw)
+                        ua_mode=(ua_mode or ("h5" if xhr else "app")), **kw)
     return ss
 
 

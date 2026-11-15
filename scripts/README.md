@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 68 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 72 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -73,3 +73,8 @@
 | `selftest.py` | ★ 全量回归测试 43 项（判级器 + 闸门熔断 + 调用方熔断 + 审计脱敏），不联网 |
 | `autosign.py` / `qr_sign_remote.py` | 已接入熔断：命中风控打印 [STOP]/[WAIT] 并停手；支持 --max-writes-per-hour / --min-interval / --quiet-hours |
 | `tch_qr_probe.py` | ★ 教师侧二维码探针：用教师登录态反复拉教师端签到页，抽取当前 `widget/sign/e?id&c&enc`、候选 enc/signCode 与跨轮变化（拿到即可不再依赖真人扫码） |
+| `cx_login.py` | ★ 网页端登录（手机号+密码，AES(transferKey) 提交 passport2/fanyalogin）→ 导出 ck.txt / ck.json（学生或教师通用） |
+| `cx_tch_login.py` | ★ 教师端短信验证码登录（三模式 send/login/auto，POST passport2/fanyaloginbycode）→ 导出 ck_tch.txt |
+| `cx_pipeline.py` | ★ 一键流水线：教师侧 refreshQRCode 权威取码 → 学生侧提交；含闸门识别（checkFace_/validate_）、白名单 guard_scope、诊断落盘 |
+| `ewm_watch.py` | 轮询 signDetail 监视 isOver/isBegins/status/signCode/attendNum 变化，可在窗口打开瞬间自动提交（验证旧 enc 是否可用） |
+| `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |

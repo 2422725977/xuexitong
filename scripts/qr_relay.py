@@ -101,6 +101,7 @@ def main():
     ap.add_argument("--fid", default="0")
     ap.add_argument("--repeat", type=int, default=1)
     ap.add_argument("--stop-on-success", action="store_true")
+    ap.add_argument("--max-submits", type=int, default=0, help="最多提交次数（0=不限）")
     ap.add_argument("--verbose", action="store_true", help="解码失败也打印一行")
     a = ap.parse_args()
 
@@ -125,7 +126,7 @@ def main():
         ns.append_log = ""
         signer = qsr.Signer(ns, sess)
 
-    seen, n_try, t0 = set(), 0, time.time()
+    seen, n_try, n_submit, t0 = set(), 0, 0, time.time()
     print("[*] 开始取屏: source=%s interval=%.2fs submit=%s relay=%s" % (a.source, a.interval, a.submit, a.relay or "-"))
     while True:
         try:
@@ -135,13 +136,13 @@ def main():
                 data = grab_screen_macos()
             else:
                 names = [n for n in sorted(os.listdir(a.dir))
-                         if n.lower().endswith((".png", ".jpg", ".jpeg", ".webp", ".bmp"))]
+                         if n.lower().endswith((".png", ".jpg", ".jpeg", ".webp", ".bmp"))
+                         and not n.endswith(".used")]
                 if not names:
                     time.sleep(a.interval)
                     continue
                 p = os.path.join(a.dir, names[-1])
                 data = open(p, "rb").read()
-                os.rename(p, p + ".used")
         except Exception as e:
             print("[!] 取屏失败:", e)
             time.sleep(max(1.0, a.interval))
@@ -171,8 +172,17 @@ def main():
             except Exception as e:
                 print("    relay 失败:", e)
         if a.submit and not ok:
+            n_submit += 1
             res = signer.handle(content, source="relay-src")
             ok = bool(res.get("ok"))
+            if a.max_submits and n_submit >= a.max_submits:
+                print("[*] 已达到 --max-submits %d，退出" % a.max_submits)
+                return
+        if a.source == "loop-dir":
+            try:
+                os.rename(p, p + ".used")
+            except Exception:
+                pass
         if ok and a.stop_on_success:
             print("[*] 签到成功，退出")
             return
