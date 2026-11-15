@@ -87,7 +87,21 @@ python3 scripts/cx_pipeline.py --mode watch --tch-login --stu-cookie-file ck.txt
 
 - 四段全自动：教师班级枚举 → 活跃活动定位 → **教师侧取 enc（页面正则 + 二维码图片 cv2 多尺度解码，双路并存，候选带评分排序）** → 学生侧 `pptSign/stuSignajax` 提交。
 - 取不到 enc **不静默**：每个可疑响应落盘 `out/tch_probe/*.html`（文件头写了请求与最终跳转 URL），判定流水写 `out/pipeline.jsonl`。
-- 模式：`discover`（只枚举不提交）/ `once` / `watch`（默认）/ `submit-url`（已有 enc 直接提交）。
+- 模式：`discover`（只枚举不提交）/ `once` / `watch`（默认）/ `submit-url`（已有 enc 直接提交）/ **`create`（教师侧新建签到 → 取码 → 提交，一条命令）**。
+
+**新建一个"不扫脸"的签到并当场签成**（教师页发起签到表单 `POST /pptSign/newTaskSign`，详见 `docs/一键自动签到.md` 第 12 章）：
+
+```bash
+python3 scripts/cx_pipeline.py --mode create --uid <学生puid> \
+    --tch-cookie-file ck_tch.txt --stu-cookie-file ck.txt \
+    --course <courseId> --class <classId> \
+    --create-type 2 --time-long 1800000 --want-type 2 --max-submits 1 --verbose
+# --create-type：0 普通 / 1 拍照 / 2 二维码 / 3 手势 / 4 位置 / 5 签到码
+# 默认 --no-face（openCheckFaceFlag=0）；--sign-address 改位置签到（--lat/--lon/--address）
+# --auto-create：watch 模式下没有可用活动时自动建一个
+```
+
+- 位置类签到的硬约束：提交必须**同时**带 `location` 与 `locationResult`（同一个 JSON 串），只带一个得到 `errorLocation3`；位置真值从教师活动页 `widget/active/teaActiveView` 的活动 `content` 取（`signDetail` 里只有 `latitude/longitude=-1`）。
 - 依据（三条实测）：学生端页面 `var aidInEwm=""; var enc="";` 只能靠扫码回调赋值；`newsign/signDetail` 带 4 种 msg 参数返回 69 字段完全一致、无 enc；服务端错误文案分类（clone → «签到失败，请重新扫描» / 父活动 → «此次签到未开始»）证明唯一门槛就是 enc。
 - 详见 [`docs/一键自动签到.md`](docs/一键自动签到.md)。
 

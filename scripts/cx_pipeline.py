@@ -25,6 +25,7 @@ import argparse
 import hashlib
 import json
 import os
+import random
 import re
 import subprocess
 import sys
@@ -103,6 +104,10 @@ RE_ENC_Q = re.compile(r"[?&]enc=([0-9A-Za-z_\-+/=]{8,160})")
 RE_ENC_KV = re.compile(r'''["']?(?:enc|ewmEnc|signEnc|qrEnc)["']?\s*[:=]\s*["']([0-9A-Za-z_\-+/=]{8,160})["']''')
 RE_SIGNCODE = re.compile(r"[\"']?signCode[\"']?\s*[:=]\s*[\"']?([0-9A-Za-z]{4,16})")
 RE_REAL_AID = re.compile(r"^\d{10,}$")
+
+# 签到类型（教师发起签到页 otherId -> 标题；人脸仅二维码/位置支持）
+SIGN_TYPE_TITLE = {"0": "普通签到", "1": "拍照签到", "2": "二维码签到", "3": "手势签到",
+                   "4": "位置签到", "5": "签到码"}
 # 明显是模板/占位/文档示例的 enc，直接丢掉（学生签到页里就有 widget/sign/e?...&enc=xxx 这种示例串）
 PLACEHOLDER_ENC = {"xxx", "xxxx", "xxxxx", "test", "test123", "example", "null", "undefined", "nil",
                    "0", "1", "enc", "n/a", "none", "{{enc}}", "enc_value", "your_enc"}
@@ -165,6 +170,50 @@ def _list_activities(sess, uid, urls, tag="T"):
     return uniq
 
 
+def _teaview_activities(html):
+    """解析教师活动页 widget/active/teaActiveView 里的 var jsonObject = {'activeList':[...]}。
+    实测形状（2026-11-15）：每个活动形如
+      {'activeId':4000180737792,'activeType':2,'typeTitle':'二维码签到','otherId':2,
+       'content':'{\"openCheckFaceFlag\":1,\"locationLatitude\":\"30.7114...\",...}', ...}
+    content 是**被转义的 JSON 串**，人脸开关 openCheckFaceFlag 与位置真值都在里面（signDetail 里没有）。"""
+    i = html.find("var jsonObject")
+    if i < 0:
+        return []
+    out = []
+    for m in re.finditer(r"'activeId'\s*:\s*(\d+)(.*?)(?='activeId'\s*:|$)", html[i:], re.S):
+        aid, seg = m.group(1), m.group(2)
+        t = re.search(r"'typeTitle'\s*:\s*'([^']*)'", seg)
+        at = re.search(r"'activeType'\s*:\s*(\d+)", seg)
+        cm = re.search(r"'content'\s*:\s*'((?:[^'\\]|\\.)*)'", seg)
+        content = {}
+        if cm:
+            raw = cm.group(1).replace('\\\\"', '"').replace("\\\\'", "'").replace('\\"', '"')
+            try:
+                content = json.loads(raw)
+            except Exception:
+                content = {}
+        out.append({"aid": aid, "activeType": (at.group(1) if at else ""),
+                    "typeTitle": (t.group(1) if t else ""), "content": content})
+    return out
+
+
+def build_location_json(geo, lat=None, lon=None, address=None):
+    """按学生页 JS 的形状拼 location JSON：{"result":1,"address":..,"longitude":..,"latitude":..}
+    实测：该串必须同时作为 location 与 locationResult 提交，缺一个 -> errorLocation3。"""
+    if not geo:
+        geo = {}
+    la = str(lat if lat not in (None, "") else (geo.get("latitude") or "")).strip()
+    lo = str(lon if lon not in (None, "") else (geo.get("longitude") or "")).strip()
+    ad = address if address not in (None, "") else (geo.get("address") or "")
+    if not (la and lo):
+        return ""
+    try:
+        d = {"result": 1, "address": ad, "longitude": float(lo), "latitude": float(la)}
+    except ValueError:
+        return ""
+    return json.dumps(d, ensure_ascii=False, separators=(",", ":"))
+
+
 def ts():
     return datetime.now().strftime("%H:%M:%S")
 
@@ -192,12 +241,18 @@ def qs_to_dict(s):
 class TeacherSide(object):
     """教师侧：班级枚举 -> 活动定位 -> enc 采集"""
 
-    def __init__(self, ck, uid, ua_mode="h5", dump_dir="out/tch_probe", quiet_hours=None):
+    def __init__(self, ck, uid, ua_mode="h5", dump_dir="out/tch_probe", quiet_hours=None,
+                 max_writes_per_hour=None, min_interval=None):
         if make_session is None:
             raise SystemExit("stealth_session 不可用")
         self.expired = False
+        kw = {}
+        if max_writes_per_hour:
+            kw["max_writes_per_hour"] = max_writes_per_hour
+        if min_interval:
+            kw["min_interval"] = min_interval
         self.sess = make_session(cookie=ck, uid=uid, referer=MOBILE, ua_mode=ua_mode,
-                                 xhr=True, quiet=quiet_hours)
+                                 xhr=True, quiet=quiet_hours, **kw)
         self.uid = uid
         self.dump_dir = dump_dir
         self.round = 0
@@ -497,6 +552,89 @@ class TeacherSide(object):
             guard_scope(sc_course, sc_clazz, "signDetail aid=%s" % aid)
         return d
 
+    # ---- 定位类活动：位置真值只在活动列表页的 content JSON 里（signDetail 只有 latitude=-1）----
+    def activity_geo(self, aid, course=None, clazz=None):
+        """GET widget/active/teaActiveView -> 解析 var jsonObject = {'activeList':[...]} -> 取该 aid 的 content JSON
+        content 里 locationText/locationLatitude/locationLongitude/locationRange/ifopenAddress 就是位置真值。
+        返回 {'latitude','longitude','address','range','ifopenAddress','face'} 或 {}。"""
+        guard_scope(course, clazz, "教师活动页 aid=%s" % aid)
+        if not (course and clazz):
+            return {}
+        u = (MOBILE + "widget/active/teaActiveView?DB_STRATEGY=COURSEID&STRATEGY_PARA=courseId"
+                     "&courseId=%s&classId=%s&uid=%s&appType=15" % (course, clazz, self.uid))
+        try:
+            r = self.sess.get(u, timeout=25)
+        except Exception as e:
+            log("T", "teaActiveView 失败 -> %r" % (e,))
+            return {}
+        html = r.text or ""
+        for a in _teaview_activities(html):
+            if str(a.get("aid")) == str(aid):
+                c = a.get("content") or {}
+                geo = {"latitude": c.get("locationLatitude"), "longitude": c.get("locationLongitude"),
+                       "address": c.get("locationText"), "range": c.get("locationRange"),
+                       "ifopenAddress": c.get("ifopenAddress"), "face": c.get("openCheckFaceFlag"),
+                       "text": a.get("typeTitle")}
+                log("T", "aid=%s type=%s ifopenAddress=%s face=%s range=%s addr=%s"
+                    % (aid, a.get("typeTitle"), geo.get("ifopenAddress"), geo.get("face"),
+                       geo.get("range"), str(geo.get("address"))[:24]))
+                return geo
+        log("T", "teaActiveView 里没找到 aid=%s（可能不在本班活动列表）" % aid)
+        return {}
+
+    # ---- ★ 创建签到（教师"发起签到"页 /pptSign/newTaskSign；type=0 保存 / type=1 立即开始）----
+    def create_sign(self, course, clazz, other_id="2", face="0", ifopen_address="0", time_long="1800000",
+                    start=True, title="", code="", location=None, if_need_vcode="0", late_minute="10",
+                    if_refresh_ewm="1", ewm_refresh_time="5", verbose=True):
+        """实测：POST /pptSign/newTaskSign，form 字段 60+ 个（来自教师页 var url = "/pptSign/newTaskSign"，
+        与 /newsign/saveSign 同构；本机 /newsign/saveSign 返回 404）。
+        返回 {"activeName":"","_activeId":4000180742552,...}；type=1 = 立即开始（type=0 只保存，refreshQRCode 会报"活动未开始"）。
+        otherId：0 普通 / 1 拍照(ifPhoto=1) / 2 二维码 / 3 手势 / 4 位置 / 5 签到码。
+        openCheckFaceFlag=0 即不扫脸；ifopenAddress=1 时需带 locationText/lat/lon/range。
+        失败形状：{"result":0,"msg":"..."}（此时 log 并返回空串）。"""
+        guard_scope(course, clazz, "创建签到")
+        loc = location or {}
+        if not title:
+            title = SIGN_TYPE_TITLE.get(str(other_id), "二维码签到")
+        if not code:
+            code = str(random.randint(100000, 999999))
+        p = {
+            "classId": str(clazz), "courseId": str(course), "puid": self.uid, "source": "1",
+            "type": "1" if start else "0", "otherId": str(other_id), "isResult": "0", "code": code,
+            "latitude": "-1", "longitude": "-1", "activePrimaryId": "0", "timeLong": str(time_long),
+            "ifSendMessage": "1", "ifGetRange": "0", "crnum": "", "planId": "", "appType": "15",
+            "activePrimaryId1": "0", "clone": "0", "classIds": "", "ifPhoto": "1" if str(other_id) == "1" else "0",
+            "circleId": "", "tid": "", "uid": self.uid, "title": title,
+            "ifRefreshEwm": str(if_refresh_ewm), "ewmRefreshTime": str(ewm_refresh_time),
+            "asynKey": "0", "asynId": "", "foreignType": "", "classroomDataId": "", "foreignId": "",
+            "picId": "", "isCourseware": "", "activityTranMode": "", "isPPTLibrary": "",
+            "isTeachingCalendar": "", "classroomPlanId": "", "pageNum": "", "pageId": "",
+            "ifOpenTimer": "0", "timerCron": "", "dateCron": "", "disposable_publishtime": "",
+            "validity_begintime": "", "validity_endtime": "", "ifSkipWeek": "0",
+            "ifopenAddress": str(ifopen_address), "locationText": loc.get("address", ""),
+            "locationLatitude": loc.get("latitude", ""), "locationLongitude": loc.get("longitude", ""),
+            "locationRange": loc.get("range", ""), "fromtype": "", "nowtimestamp": str(int(time.time() * 1000)),
+            "ifSendToOtherClass": "0", "sendToOtherClassList": "", "fyktBigClassChatId": "",
+            "ifNeedVCode": str(if_need_vcode), "onlyAttendForCurrentClass": "0", "lateMinute": str(late_minute),
+            "openSignOutFlag": "0", "signOutRelativeTime": "", "signOutAbsoluteTime": "", "signOutDuration": "",
+            "openCheckFaceFlag": str(face), "fykbParams": "", "openCheckWeChatFlag": "0",
+        }
+        try:
+            r = self.sess.post(MOBILE + "pptSign/newTaskSign", data=p, timeout=30,
+                               headers={"X-Requested-With": "XMLHttpRequest"})
+            body = (r.text or "").strip()
+            j = r.json()
+        except Exception as e:
+            log("T", "创建签到失败 -> %r" % (e,))
+            return ""
+        if str(j.get("result")) == "0" or not j.get("_activeId"):
+            log("T", "创建签到被拒：%s" % body[:200])
+            return ""
+        aid = str(j.get("_activeId"))
+        log("+", "已创建签到 aid=%s type=%s(立即开始=%s) 扫脸=%s 定位=%s 时长=%sms title=%s code=%s"
+            % (aid, other_id, start, face, ifopen_address, time_long, title, code))
+        return aid
+
     def refresh_qrcode(self, aid):
         """★ 教师侧权威接口：/v2/apis/sign/refreshQRCode?activeId=&time=  ->  {"result":1,"data":{"refresh":1,"enc":"...","signCode":"..."}}
         （来自教师签到页 JS updateEwm()，10s 轮换；旧名 /widget/sign/pcTeaSignController/getSignCode 已被注释掉）
@@ -578,24 +716,41 @@ def rank(cands, target_aid=""):
 
 
 class StudentSide(object):
-    def __init__(self, ck, uid, ua_mode="h5", quiet_hours=None):
+    def __init__(self, ck, uid, ua_mode="h5", quiet_hours=None,
+                 max_writes_per_hour=None, min_interval=None):
+        kw = {}
+        if max_writes_per_hour:
+            kw["max_writes_per_hour"] = max_writes_per_hour
+        if min_interval:
+            kw["min_interval"] = min_interval
         self.sess = make_session(cookie=ck, uid=uid, referer=MOBILE, ua_mode=ua_mode,
-                                 xhr=True, quiet=quiet_hours)
+                                 xhr=True, quiet=quiet_hours, **kw)
         self.uid = uid
 
-    def submit(self, aid, enc, name="", fid="0", lat="-1", lon="-1", verbose=True, extra=None):
-        if _submit_url is not None and not extra:
+    def submit(self, aid, enc, name="", fid="0", lat="-1", lon="-1", verbose=True, extra=None,
+               location="", location_result=""):
+        """提交签到。定位类活动必须**同时**带 location 与 locationResult（同一个 JSON 串）：
+           实测只带 location -> errorLocation3；location+locationResult -> success。
+           location JSON 形状（学生页 JS 原文）：{"result":1,"address":..,"longitude":..,"latitude":..}"""
+        if _submit_url is not None and not extra and not location_result:
             content = "https://x/?enc=%s&id=%s" % (urllib.parse.quote(enc), urllib.parse.quote(str(aid)))
             res = _submit_url(self.sess, content, self.uid, name, fid, lat, lon, verbose=verbose)
             return _classify(res) if isinstance(res, dict) else res
-        q = ("pptSign/stuSignajax?enc=%s&name=%s&activeId=%s&uid=%s&clientip=&useragent="
-             "&latitude=%s&longitude=%s&fid=%s&appType=15" % (urllib.parse.quote(enc), urllib.parse.quote(name),
-                                                              urllib.parse.quote(str(aid)), urllib.parse.quote(self.uid),
-                                                              lat, lon, urllib.parse.quote(fid)))
-        r = self.sess.get(MOBILE + q, timeout=20)
+        params = [("enc", enc), ("name", name), ("activeId", str(aid)), ("uid", self.uid),
+                  ("clientip", ""), ("useragent", ""), ("latitude", lat), ("longitude", lon),
+                  ("fid", fid), ("appType", "15")]
+        if location:
+            params.append(("location", location))
+        if location_result:
+            params.append(("locationResult", location_result))
+        q = "pptSign/stuSignajax?" + urllib.parse.urlencode(params)
+        if location_result:
+            r = self.sess.post(MOBILE + "pptSign/stuSignajax", data=dict(params), timeout=20)
+        else:
+            r = self.sess.get(MOBILE + q, timeout=20)
         body = (r.text or "").strip()
         if verbose:
-            log("S", "GET %s" % (MOBILE + q))
+            log("S", "%s %s" % (r.request.method if getattr(r, "request", None) is not None else "GET", MOBILE + q))
             log("S", "HTTP %s  %s" % (r.status_code, body[:300]))
         ok = ("success" in body.lower()) or ("签到成功" in body)
         return _classify({"ok": ok, "msg": body[:300]})
@@ -709,7 +864,7 @@ def rec(path, obj):
 def main():
     global ALLOW_COURSE, ALLOW_CLASS, ALLOW_ANY
     ap = argparse.ArgumentParser(description="学习通 教师侧取码 -> 学生侧提交 一体化流水线")
-    ap.add_argument("--mode", default="watch", choices=["discover", "once", "watch", "submit-url"])
+    ap.add_argument("--mode", default="watch", choices=["discover", "once", "watch", "submit-url", "create"])
     ap.add_argument("--tch-cookie", default="")
     ap.add_argument("--tch-cookie-file", default="ck_tch.txt")
     ap.add_argument("--stu-cookie", default="")
@@ -737,6 +892,22 @@ def main():
     ap.add_argument("--allow-course", default=ALLOW_COURSE, help="作用域白名单：允许的 courseId")
     ap.add_argument("--allow-class", default=ALLOW_CLASS, help="作用域白名单：允许的 clazzId")
     ap.add_argument("--allow-any-class", action="store_true", help="解除班级白名单（默认禁止，需显式开启）")
+    ap.add_argument("--create-type", default="", help="create 模式：otherId（0 普通/1 拍照/2 二维码/3 手势/4 位置/5 签到码），默认取 --want-type 第一个")
+    ap.add_argument("--no-face", dest="face", action="store_false", default=False, help="create 模式：openCheckFaceFlag=0（默认就是不扫脸）")
+    ap.add_argument("--face", dest="face", action="store_true", help="create 模式：开启人脸")
+    ap.add_argument("--sign-address", dest="sign_address", action="store_true", default=False,
+                    help="create 模式：ifopenAddress=1（需要位置；位置取自 --lat/--lon/--address）")
+    ap.add_argument("--time-long", type=int, default=1800000, help="create 模式：签到时长 ms（默认 30 分钟）")
+    ap.add_argument("--save-only", action="store_true", help="create 模式：只保存不开始（type=0，此时取不到 enc）")
+    ap.add_argument("--auto-create", action="store_true", help="没有可用活动时自动创建（用上面的 create 参数，不扫脸）")
+    ap.add_argument("--geo", dest="geo", action="store_true", default=True,
+                    help="定位类活动自动从活动 content 取位置并带 location/locationResult（默认开）")
+    ap.add_argument("--no-geo", dest="geo", action="store_false", help="关闭位置自动填参")
+    ap.add_argument("--lat", default="", help="覆盖纬度（默认取活动 content 的 locationLatitude）")
+    ap.add_argument("--lon", default="", help="覆盖经度（默认取活动 content 的 locationLongitude）")
+    ap.add_argument("--address", default="", help="覆盖地址文本（默认取活动 content 的 locationText）")
+    ap.add_argument("--max-writes-per-hour", type=int, default=0, help="覆盖风控写配额（0=用默认 6/小时）")
+    ap.add_argument("--min-interval", type=float, default=0, help="覆盖最小写间隔秒（0=用默认 8s）")
     ap.add_argument("--verbose", action="store_true")
     a = ap.parse_args()
 
@@ -759,7 +930,8 @@ def main():
     if a.mode == "submit-url":
         if not (a.qr and stu_ck):
             raise SystemExit("submit-url 需要 --qr 与 --stu-cookie-file")
-        st = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=parse_quiet(a.quiet_hours))
+        st = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=parse_quiet(a.quiet_hours),
+                     max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval)
         _submit_url(st.sess, a.qr, a.uid, a.name, a.fid, verbose=True)
         return 0
 
@@ -770,15 +942,43 @@ def main():
     if a.mode == "once" and not a.rounds:
         a.rounds = 1                      # once = 只跑一轮（否则会进 watch 无限循环）
     qh = parse_quiet(a.quiet_hours)
-    tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh) if tch_ck else None
-    stu = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh) if (stu_ck and not a.dry_run) else None
-    stu_list = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh) if stu_ck else None   # 只读的活动列表用
+    tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh,
+                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if tch_ck else None
+    stu = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh,
+                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if (stu_ck and not a.dry_run) else None
+    stu_list = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh,
+                            max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if stu_ck else None   # 只读的活动列表用
 
     if tch and warmup and not a.dry_run and a.mode == "watch":
         try:
             warmup(stu.sess if stu else tch.sess, uid=a.uid, quiet=True)
         except Exception:
             pass
+
+    if a.mode == "create":
+        if not tch:
+            raise SystemExit("create 模式需要教师 cookie（--tch-cookie-file）")
+        cid, cl = a.course, a.clazz
+        if not (cid and cl):
+            cls = tch.classes()
+            if not cls:
+                raise SystemExit("取不到班级：请加 --course/--class")
+            cid, cl = cls[0]["course"], cls[0]["clazz"]
+            tch.uid = tch.uid
+        ctype = a.create_type or (sorted(want)[0] if want else "2")
+        loc = {}
+        if a.sign_address:
+            loc = {"address": a.address, "latitude": a.lat, "longitude": a.lon,
+                   "range": "500米"}
+            if not (a.lat and a.lon):
+                log("!", "位置签到需要 --lat/--lon（或先跑一次让它从活动 content 里取）")
+        new_aid = tch.create_sign(cid, cl, other_id=ctype, face="1" if a.face else "0",
+                                  ifopen_address="1" if a.sign_address else "0",
+                                  time_long=a.time_long, start=not a.save_only, location=loc)
+        if not new_aid:
+            raise SystemExit("创建失败（看上面的服务端返回）")
+        a.aid = new_aid
+        log("i", "新建签到 aid=%s；进入取码+提交流程" % new_aid)
 
     if a.mode == "discover":
         if not tch:
@@ -799,7 +999,8 @@ def main():
         if tch and tch.expired and a.tch_login:
             if tch_relogin(a.tch_cookie_file):
                 tch_ck = load_cookie("", a.tch_cookie_file)
-                tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh)
+                tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh,
+                                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval)
         if tch:
             tch.round = rnd
         try:
@@ -808,6 +1009,14 @@ def main():
                 cands = [{"enc": a.enc, "aid": a.aid, "c": "", "src": "cli"}]
             elif tch:
                 aids = [a.aid] if a.aid else []
+                if a.auto_create and not aids and tch and a.course and a.clazz:
+                    _na = tch.create_sign(a.course, a.clazz,
+                                          other_id=(a.create_type or (sorted(want)[0] if want else "2")),
+                                          face="1" if a.face else "0",
+                                          ifopen_address="1" if a.sign_address else "0",
+                                          time_long=a.time_long, start=True)
+                    if _na:
+                        aids = [_na]
                 if not aids:
                     _cpi = tch.cpi_for(a.course, a.clazz) if (a.course and a.clazz) else ""
                     acts = tch.activities(a.course or None, a.clazz or None, _cpi)
@@ -854,7 +1063,31 @@ def main():
                                     "aid": c["aid"] or a.aid, "src": c["src"], "dry_run": True})
                         continue
                     n_submit += 1
-                    res = stu.submit(c["aid"] or a.aid, c["enc"], a.name, a.fid, verbose=True)
+                    _aid = c["aid"] or a.aid
+                    # 定位类活动：位置真值只在活动列表页 content 里；location 与 locationResult 必须同值
+                    loc_js = ""
+                    if a.geo and tch:
+                        try:
+                            geo = tch.activity_geo(_aid, a.course or None, a.clazz or None)
+                            loc_js = build_location_json(geo, a.lat, a.lon, a.address)
+                            if loc_js:
+                                log("i", "定位参数：location/locationResult=%s" % loc_js[:120])
+                        except Exception as e:
+                            log("-", "取位置失败：%r" % (e,))
+                    res = stu.submit(_aid, c["enc"], a.name, a.fid, verbose=True,
+                                     location=loc_js, location_result=loc_js)
+                    if (not loc_js) and isinstance(res, dict) and "errorLocation" in str(res.get("msg") or "") and tch:
+                        log("i", "服务端要位置（%s），改用活动 content 里的位置重提" % res.get("msg"))
+                        try:
+                            geo = tch.activity_geo(_aid, a.course or None, a.clazz or None)
+                            loc_js = build_location_json(geo, a.lat, a.lon, a.address)
+                        except Exception as e:
+                            log("-", "取位置失败：%r" % (e,))
+                        if loc_js:
+                            n_submit += 1
+                            log("i", "重提 location/locationResult=%s" % loc_js[:120])
+                            res = stu.submit(_aid, c["enc"], a.name, a.fid, verbose=True,
+                                             location=loc_js, location_result=loc_js)
                     rec(a.log, {"t": ts(), "round": rnd, "event": "submit", "enc": c["enc"][:16],
                                 "aid": c["aid"] or a.aid, "src": c["src"], "ok": res.get("ok"),
                                 "msg": str(res.get("msg"))[:120]})
