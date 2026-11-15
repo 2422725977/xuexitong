@@ -75,6 +75,6 @@
 | `tch_qr_probe.py` | ★ 教师侧二维码探针：用教师登录态反复拉教师端签到页，抽取当前 `widget/sign/e?id&c&enc`、候选 enc/signCode 与跨轮变化（拿到即可不再依赖真人扫码） |
 | `cx_login.py` | ★ 网页端登录（手机号+密码，AES(transferKey) 提交 passport2/fanyalogin）→ 导出 ck.txt / ck.json（学生或教师通用） |
 | `cx_tch_login.py` | ★ 教师端短信验证码登录（三模式 send/login/auto，POST passport2/fanyaloginbycode）→ 导出 ck_tch.txt |
-| `cx_pipeline.py` | ★ 一键流水线：教师侧 refreshQRCode 权威取码 → 学生侧提交；含闸门识别（checkFace_/validate_）、白名单 guard_scope、诊断落盘 |
+| `cx_pipeline.py` | ★ 一键流水线：教师侧 refreshQRCode 权威取码 → 学生侧提交；`--mode create` 可先新建**不扫脸**签到（`POST /pptSign/newTaskSign`，`--create-type/--no-face/--sign-address/--time-long/--auto-create`）；位置类自动带 `location`+`locationResult`（`--geo/--lat/--lon/--address`）；含闸门识别（checkFace_/validate_）、白名单 guard_scope、诊断落盘 |
 | `ewm_watch.py` | 轮询 signDetail 监视 isOver/isBegins/status/signCode/attendNum 变化，可在窗口打开瞬间自动提交（验证旧 enc 是否可用） |
 | `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |
