@@ -71,3 +71,4 @@
 | `risk_guard.py` | ★ 风控层 CLI：判级语料回归 18 条 / 响应判级 / 模拟处置 / 审计监视 / 状态重置 |
 | `selftest.py` | ★ 全量回归测试 43 项（判级器 + 闸门熔断 + 调用方熔断 + 审计脱敏），不联网 |
 | `autosign.py` / `qr_sign_remote.py` | 已接入熔断：命中风控打印 [STOP]/[WAIT] 并停手；支持 --max-writes-per-hour / --min-interval / --quiet-hours |
+| `tch_qr_probe.py` | ★ 教师侧二维码探针：用教师登录态反复拉教师端签到页，抽取当前 `widget/sign/e?id&c&enc`、候选 enc/signCode 与跨轮变化（拿到即可不再依赖真人扫码） |
