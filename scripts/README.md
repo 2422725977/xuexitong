@@ -7,7 +7,7 @@
 | `anti_anti.js` | 反反调试（ptrace 检测对抗） |
 | `api_atlas.py` | 端点图谱（全 App URL 归类） |
 | `autosign.py` | ★ 免二维码直签 + 轮询（列表→类型判定→按类型提交） |
-| `cx_pipeline.py` | ★ 一键流水线：教师侧取码 → 学生侧提交（四段自动 + 双路抽取 + 候选评分 + 自动重登 + 落盘诊断） |
+| `cx_pipeline.py` | ★ 一键流水线：教师侧取码 → 学生侧提交（四段自动 + **refreshQRCode 权威取码** + 双路抽取 + 候选评分 + 人脸/captcha 闸门识别 + 白名单 guard_scope + 自动重登 + 落盘诊断） |
 | `dex_strings.py` | 从解壳 dex 提取全量字符串池 |
 | `extract_dex.py` | 从内存快照按 dex magic+校验切出真 dex |
 | `frida_face_puppet.js` | Frida：伪造活体状态位 + 注入指定人脸图 |
