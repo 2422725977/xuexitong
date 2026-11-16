@@ -76,5 +76,6 @@
 | `cx_login.py` | ★ 网页端登录（手机号+密码，AES(transferKey) 提交 passport2/fanyalogin）→ 导出 ck.txt / ck.json（学生或教师通用） |
 | `cx_tch_login.py` | ★ 教师端短信验证码登录（三模式 send/login/auto，POST passport2/fanyaloginbycode）→ 导出 ck_tch.txt |
 | `cx_pipeline.py` | ★ 一键流水线：教师侧 refreshQRCode 权威取码 → 学生侧提交；`--mode create` 可先新建**不扫脸**签到（`POST /pptSign/newTaskSign`，`--create-type/--no-face/--sign-address/--time-long/--auto-create`）；位置类自动带 `location`+`locationResult`（`--geo/--lat/--lon/--address`）；含闸门识别（checkFace_/validate_）、白名单 guard_scope、诊断落盘 |
+| `flip_attend_status.py` | ★ 教师侧状态改写：把 **迟到(9)** 改回 **已签(1)**（或 5 缺勤 / 10 早退 / 7、8、12 请假 / 2 代签 / 39331-39334 实习实训免修参赛）。自动并四条名单查询定位 attendId（迟到行在未签名单里 status=9），`GET /pptSign/updateSignStatus` 返回 success，改完自动复核；不受活动是否结束影响 |
 | `ewm_watch.py` | 轮询 signDetail 监视 isOver/isBegins/status/signCode/attendNum 变化，可在窗口打开瞬间自动提交（验证旧 enc 是否可用） |
 | `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |
