@@ -1,0 +1,29 @@
+{
+ "fixture_aids": {
+  "qr": "4000180999399",
+  "code": "4000180999401",
+  "gesture": "4000180999403",
+  "location": "4000180999405"
+ },
+ "teacher_enc_对照": "20A78B1CA9FD888A",
+ "P1_stu_refreshQRCode_qr": "HTTP 200 {\"result\":0,\"msg\":null,\"data\":null,\"errorMsg\":\"暂无权限\"}",
+ "P1_stu_refreshQRCode_code": "HTTP 200 {\"result\":0,\"msg\":null,\"data\":null,\"errorMsg\":\"非二维码签到\"}",
+ "P3_preSign_qr": "{\"len\": 29356, \"widget_e\": [\"widget/sign/e?id=xxx&c=xxx&enc=xxx&DB_STRATEGY=PRIMARY_KEY&STRATEGY_PARA=id\\n\", \"widget/sign/e?\"], \"locationInfo\": [\"locationInfo\", \"locationInfo = {\\n                        result: object.result\", \"locationInfo = object\\n                \"], \"signToken\": [\"object.signToken\"]}",
+ "P3_preSign_location": "{\"len\": 37564, \"signToken\": [\"object.signToken\"]}",
+ "P3_preSign_code": "{\"len\": 21121, \"locationInfo\": [\"locationInfo\", \"locationInfo = {\\n                    result: object.result\", \"locationInfo = object\\n            \"]}",
+ "P4_stu_page_locationInfo": "NOT FOUND",
+ "P5_checkSignCode_真码": "{\"result\": 1, \"msg\": \"验证成功\", \"data\": null, \"errorMsg\": null}",
+ "P5_checkSignCode_错码8连": "耗时 3.41s",
+ "  错码 111111": "{\"result\": 0, \"msg\": null, \"data\": null, \"errorMsg\": \"手势不正确\"}",
+ "  错码 222222": "{\"result\": 0, \"msg\": null, \"data\": null, \"errorMsg\": \"手势不正确\"}",
+ "  错码 333333": "{\"result\": 0, \"msg\": null, \"data\": null, \"errorMsg\": \"手势不正确\"}",
+ "  错码 246811": "{\"result\": 0, \"msg\": null, \"data\": null, \"errorMsg\": \"手势不正确\"}",
+ "P6_list_active_count": 0,
+ "P6_list_active_sample": "[]",
+ "P7_signDetail_位置类": "{\"activePrimaryId\": null, \"otherId\": 4, \"ifPhoto\": 0, \"ifopenAddress\": null, \"status\": 1, \"latitude\": -1, \"longitude\": -1, \"ifGetRange\": 0}",
+ "P8_stu_teaActiveView": "HTTP 200 len=34227 含locationLatitude=False 含无权限=False",
+ "P9_submit_签到码": "(200, '验证失败次数过多，本次签到已锁定，请 1 小时后重试')",
+ "P9_submit_位置": "(200, 'success')",
+ "P9_submit_二维码": "(200, 'success')",
+ "P9_submit_手势": "(200, 'success')"
+}

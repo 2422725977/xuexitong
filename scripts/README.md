@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 113 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 119 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -100,3 +100,15 @@
 | emu_sanitize.sh + emulator/ | 去模拟器化道具：build.prop 伪装（system/vendor/odm/product）、假 /proc/version 与 /proc/cpuinfo、su 隐藏、挂载 |
 
 - 拍照/人脸的完整结论与全部变体矩阵见 docs/拍照签到-PCR007-专项.md；真机取证流程见 docs/真机抓包作战清单.md。
+
+
+## 只有学生端时的能力边界探针（2026-11-17，见报告第 23 章）
+
+| 脚本 | 说明 |
+|---|---|
+| stuonly_caps.py | 学生 cookie 调 refreshQRCode（暂无权限）/ preSign 页信息面 / 位置真值面 / 五类提交 |
+| stuonly_caps2.py | 位置 range 真校验（成都↔北京 1525491.0 米）+ checkSignCode 锁阈值（第 6 次锁 1 小时）+ 10 个活动列表接口 |
+| stuonly_caps3.py | 列表接口变体（fid/cpi/type/role/App UA）复测 |
+| stuonly_caps4.py | 学生页面（newsign/preSign、pptSign/preSign、widget/sign/e）能否带出坐标 |
+| stuonly_caps5.py | signDetail 全字段（62 个，无 location/address） |
+| stuonly_caps6/7.py | getActiveDataV2 等活动内容接口（只有元数据，无坐标） |
