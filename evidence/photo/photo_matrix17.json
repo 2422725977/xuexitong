@@ -1,0 +1,16 @@
+{
+ "aids": {
+  "E1": "4000180999336",
+  "E2": "4000180999338",
+  "E4": "4000180999340"
+ },
+ "res": {
+  "E1": "photoAuthError_PCR007",
+  "E1b": "photoAuthError_PCR007",
+  "E1c": "photoAuthError_PCR007",
+  "E2": "此次签到未开始",
+  "E3a": "此次签到未开始",
+  "E3b": "此次签到未开始",
+  "E4": "photoAuthError_PCR007"
+ }
+}

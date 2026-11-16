@@ -1,0 +1,91 @@
+{
+  "aid": "4000180999257",
+  "fid": "12",
+  "oid_plain": "3f2e616894df22b91b946c396d066c25",
+  "oid_fid": "3f2e616894df22b91b946c396d066c25",
+  "oid_full": "3f2e616894df22b91b946c396d066c25",
+  "device_code": "5UpR078A5CXE0X9wckWZqco+3W2FKfGichnoLiFd2iU=",
+  "results": [
+    {
+      "tag": "W01",
+      "desc": "fid=12 + GET + 无 photoResult（photo.ts 风格 + 真 fid）",
+      "method": "GET",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W02",
+      "desc": "fid=12 + POST 表单 + photoResult 嵌套 + deviceCode（H5 原样）",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W03",
+      "desc": "fid=12 + GET + photoResult 嵌套 + deviceCode",
+      "method": "GET",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W04",
+      "desc": "fid=12 + POST 表单 + 无 photoResult",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W05",
+      "desc": "fid=12 + POST + photoResult 非嵌套（files 为数组）",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W06",
+      "desc": "objectId 来自带 fid 的上传 + POST + photoResult 嵌套",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W07",
+      "desc": "objectId 来自带 fid+srcAsHd 的上传 + POST + photoResult 嵌套",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "W08",
+      "desc": "fid=0 对照（H5 形状但 fid 默认）",
+      "method": "POST",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    }
+  ],
+  "winner": "",
+  "log": [
+    "[+] activeId=4000180999257  fid(候选)=12",
+    "[+] pan token ok=True",
+    "[U] extra={} -> {\"result\": true, \"msg\": \"success\", \"crc\": \"d474ab6f3a7a1360ad7e72256406800c\", \"objectId\": \"3f2e616894df22b91b946c396d066c25\", \"resid\": 1329259517728034816, \"puid\": [学生PUID], \"data\": {\"disableOpt\": fa",
+    "[U] extra={'fid': '12'} -> {\"result\": true, \"msg\": \"success\", \"crc\": \"d474ab6f3a7a1360ad7e72256406800c\", \"objectId\": \"3f2e616894df22b91b946c396d066c25\", \"resid\": 1329259518440353792, \"puid\": [学生PUID], \"data\": {\"disableOpt\": fa",
+    "[U] extra={'fid': '12', 'srcAsHd': '1'} -> {\"result\": true, \"msg\": \"success\", \"crc\": \"d474ab6f3a7a1360ad7e72256406800c\", \"objectId\": \"3f2e616894df22b91b946c396d066c25\", \"resid\": 1329259520273981440, \"puid\": [学生PUID], \"data\": {\"disableOpt\": fa",
+    "[+] objectId: plain=3f2e616894df22b91b946c396d066c25 fid=3f2e616894df22b91b946c396d066c25 full=3f2e616894df22b91b946c396d066c25",
+    "[=] W01 [GET] fid=12 + GET + 无 photoResult（photo.ts 风格 + 真 fid） -> HTTP 200 photoAuthError_PCR007",
+    "[=] W02 [POST] fid=12 + POST 表单 + photoResult 嵌套 + deviceCode（H5 原样） -> HTTP 200 photoAuthError_PCR007",
+    "[=] W03 [GET] fid=12 + GET + photoResult 嵌套 + deviceCode -> HTTP 200 photoAuthError_PCR007",
+    "[=] W04 [POST] fid=12 + POST 表单 + 无 photoResult -> HTTP 200 photoAuthError_PCR007",
+    "[=] W05 [POST] fid=12 + POST + photoResult 非嵌套（files 为数组） -> HTTP 200 photoAuthError_PCR007",
+    "[=] W06 [POST] objectId 来自带 fid 的上传 + POST + photoResult 嵌套 -> HTTP 200 photoAuthError_PCR007",
+    "[=] W07 [POST] objectId 来自带 fid+srcAsHd 的上传 + POST + photoResult 嵌套 -> HTTP 200 photoAuthError_PCR007",
+    "[=] W08 [POST] fid=0 对照（H5 形状但 fid 默认） -> HTTP 200 photoAuthError_PCR007"
+  ]
+}

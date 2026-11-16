@@ -1,0 +1,56 @@
+{
+  "aid": "4000180999273",
+  "oid": "5c94fdc46a658df33986fbe06ec214bb",
+  "img": "out/photo_v4_1794850089.jpg",
+  "userinfo": {
+    "name": "",
+    "uid": "",
+    "fid": "",
+    "puid": "",
+    "clientId": "",
+    "raw": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html>\r\n<head><title>403 Forbidden</title></head>\r\n<body>\r\n<center><h1>403 Forbidden</h1></center>\r\n<hr><center>tengine</center>\r\n</body>\r\n</html>\r\n"
+  },
+  "pre": {
+    "http": 200,
+    "len": 13318,
+    "enc": "",
+    "ext_used": ""
+  },
+  "analysis": {
+    "http": 200,
+    "code": "d38e75cb356fe7b0bf7fefc15bfc3222",
+    "http2": 200,
+    "body2": "success"
+  },
+  "results": [
+    {
+      "tag": "Y01",
+      "desc": "完整配方：preSign + analysis + ifTiJiao=1 + vpProbability=-1 + objectId（GET）",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Y02",
+      "desc": "同 Y01 但 ifTiJiao=0",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Y03",
+      "desc": "同 Y01 但带 photoResult",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Y04",
+      "desc": "同 Y01 但 POST 表单",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    }
+  ],
+  "winner": ""
+}

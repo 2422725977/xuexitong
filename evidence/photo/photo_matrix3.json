@@ -1,0 +1,62 @@
+{
+  "aid": "4000180999265",
+  "oid": "3f2e616894df22b91b946c396d066c25",
+  "pre": {
+    "http": 200,
+    "len": 13318,
+    "status": "",
+    "url": "https://mobilelearn.chaoxing.com/newsign/preSign?courseId=269282723&classId=159926750&activePrimaryId=4000180999265&general=1&sys=1&ls=1&appType=15&uid=[学生PUID]&isTeacherViewOpen=0"
+  },
+  "results": [
+    {
+      "tag": "X01",
+      "desc": "preSign + POST(oines 参数) + fid=12 + name='' + deviceCode=schild + photoResult 嵌套",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X02",
+      "desc": "同 X01 但 deviceCode=AES(OAID)",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X03",
+      "desc": "同 X01 但 fid=0",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X04",
+      "desc": "同 X01 但无 photoResult",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X05",
+      "desc": "同 X01 但 name=1.png（旧行为）",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X06",
+      "desc": "同 X01 但 GET（query only）",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "tag": "X07",
+      "desc": "同 X01 但 photoResult 非嵌套",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    }
+  ],
+  "winner": ""
+}

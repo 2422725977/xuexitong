@@ -1,0 +1,26 @@
+{
+ "aid": "4000180999331",
+ "img": "out/photo_v16_1794851281.jpg",
+ "crc": "470f817ac7770509c372b297223e359e",
+ "oids": {
+  "base": "16985d098548e1ec8c0af94d66859e0a",
+  "act": "16985d098548e1ec8c0af94d66859e0a",
+  "ctx": "16985d098548e1ec8c0af94d66859e0a",
+  "crc": "16985d098548e1ec8c0af94d66859e0a",
+  "ref": "16985d098548e1ec8c0af94d66859e0a"
+ },
+ "results": {
+  "U1_base": "photoAuthError_PCR007",
+  "U2_uploadctx_oid": "photoAuthError_PCR007",
+  "U3_uploadform_oid": "photoAuthError_PCR007",
+  "U4_coursecx_oid": "photoAuthError_PCR007",
+  "U5_crc_oid": "photoAuthError_PCR007",
+  "U6_referer_oid": "photoAuthError_PCR007",
+  "U7_crc_resid_size": "photoAuthError_PCR007",
+  "U8_oid_is_resid": "photoAuthError_PCR007",
+  "U9_crc_only": "photoAuthError_PCR007",
+  "U10_wholeresp": "photoAuthError_PCR007",
+  "U11_base_POST": "photoAuthError_PCR007"
+ },
+ "hit": null
+}

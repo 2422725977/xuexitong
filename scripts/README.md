@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 72 个脚本。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 113 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -81,3 +81,22 @@
 | `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |
 
 - ★ scripts/stuonly_sign.py —— **只有学生 cookie 时**的全类型签到（普通/手势/签到码/位置/二维码，自动判型 + 本地二维码图片解码）
+
+
+## 拍照签到专项（2026-11-17 新增，结果见 docs/拍照签到-PCR007-专项.md）
+
+| 脚本 | 说明 |
+|---|---|
+| device/（目录） | ★ 真机抓包工具包：android_check.sh 环境自检 / mitm_capture.sh USB 代理抓包 / webview_console.js chrome://inspect 取证 / frida_android_capture.js 真机 frida 抓请求 / CAPTURE-ANDROID.md 作战清单 |
+| photo_sign_matrix.py … photo_sign_matrix8.py | 拍照提交矩阵 v1–v8：UA / deviceCode / photoResult / fid / preSign / ext / 真名 / 外层对象形状 / 四大外部配方逐字复刻 |
+| photo_sign_matrix16.py、photo_sign_matrix17.py | 上传上下文矩阵（上传带 activeId / courseId+classId / CRC 预检 / Referer）；端点存在性探测 + 只保存活动启动 + validate 空值 |
+| photo_probe2.py、photo_probe_v9.py … photo_probe_v15.py | 闸门顺序探针：不带 objectId / 不带 cookie / 教师身份 / 伪造 aid / 普通活动对照 / 群聊路径 |
+| photo_activity_forensics.py、photo_activity_config.py | 活动侧取证：signDetail 全字段、pptActiveInfo 全字段、教师页内容 |
+| probe_upload.sh | 上传通道探测（带/不带 _from 与 _token） |
+| hide_env.js | ★ 梆梆 SecNeo 伪装层：属性改写 + /proc 读缓冲替换 + 路径屏蔽 + strstr 屏蔽（模拟器实测把存活从 0.0s 拉到 12.7s） |
+| run_hide.py、run_frida.py | spawn 驱动（run_frida 支持多脚本注入 + adb forward 连 remote device） |
+| frida_probe2.js、frida_min.js、frida_crash_trace.js | 崩溃现场诊断（Process.setExceptionHandler + /proc 路径重定向 + libDexHelper 采样） |
+| frida_app_probe.js/.py、frida_app_scan_sim.js、frida_attach_probe.py | App 运行态探针 |
+| emu_sanitize.sh + emulator/ | 去模拟器化道具：build.prop 伪装（system/vendor/odm/product）、假 /proc/version 与 /proc/cpuinfo、su 隐藏、挂载 |
+
+- 拍照/人脸的完整结论与全部变体矩阵见 docs/拍照签到-PCR007-专项.md；真机取证流程见 docs/真机抓包作战清单.md。

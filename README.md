@@ -128,10 +128,23 @@ python3 scripts/qr_sign_remote.py --serve 8765 --uid <puid> --cookie-file ck.txt
 
 cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mitmproxy、浏览器 Copy as cURL。
 
+## 拍照签到（ifPhoto=1）：纯 HTTP 打不通，为什么
+
+- 拍照不是独立类型：otherId=1 被服务端拒，正确形态是 otherId=0 + 修饰位 ifPhoto=1。
+- 提交由 WebView 的 H5 发出（/pptSign/stuSignajax），App 只贡献 UA 头 / cookie / deviceCode / objectId 四样，四样全部试过。
+- 服务端闸门是「活动级 + 请求级凭证」：不带 objectId、不带 photoResult、不带 cookie、教师身份、任意参数形状 → 一律纯文本 photoAuthError_PCR007；普通活动带同样参数回「您已签到过了」；伪造 activeId 回 tengine 500。
+- 已排除：UA、fid、name、deviceCode、photoResult 形状、preSign（含 ext）、行为分析回传、ifTiJiao、GET/POST、上传通道、图片随机化。
+- 上传链纯 Python 可用：api/token/uservalid 取 _token → POST /upload?_from=mobilelearn&_token=…（multipart file+puid）→ objectId 内容寻址（resid / encryptedId 每次不同）。
+- deviceCode 公式已还原：Base64_no_wrap(AES-ECB-PKCS5(OAID))，桥 CLIENT_DEVICE_FLAG；另有返回 {"uuid":…} 的 CLIENT_DEVICE_ID 桥。
+- 运行态结论：梆梆 VMP 多级反调试（线程名扫描 + maps 扫描 + 反 inline hook 自毁 + /proc/version 触发自杀），去模拟器化改 property 过不去；真机路线见 docs/真机抓包作战清单.md 与 scripts/device/。
+- 未闭合（需要一次真机抓包）：① 会话/设备绑定 ② 活动来源 ③ objectId 来源。
+
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（18 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门）
+docs/报告-已解壳版.md      完整报告（22 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门 / 拍照签到专项 / 真机取证）
+docs/拍照签到-PCR007-专项.md  ★ 拍照签到专项：闸门定界、上传链、deviceCode 还原、外部实现对照、全部变体矩阵
+docs/真机抓包作战清单.md      ★ 真机 Android 抓包/复现路线（chrome://inspect → mitmproxy → root+frida）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）
 docs/签到类型全表.md       ★ 不同课程的不同签到方式：判定方法 + 每类必需参数
 docs/工装与环境.md         从零搭出可复现环境（AVD / frida / dump / droidasc）
@@ -140,7 +153,7 @@ docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、�
 docs/视频任务点协议.md     ★ 视频任务点：enc 公式、203/rollbackPoint 回退、frida 抓真值、命令速查
 docs/低暴露抓取.md         ★ 取真值时怎么把风控暴露面压到最低（三条路排序 + 尺度纪律 + 模拟器最低暴露清单）
 docs/一键自动签到.md       ★ 教师侧取码 → 学生侧提交：四段流水线、模式速查、诊断产物、故障排查表
-scripts/                   72 个脚本（含 cx_pipeline.py 一键流水线）：解壳、协议重放、自动签到、视频任务点、Frida hook（含低暴露启停）、抓屏中继、伪装/风控/回归
+scripts/                   113 个脚本（含 cx_pipeline.py 一键流水线、device/ 真机抓包工具包、emulator/ 去模拟器化道具）：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归、加固对抗
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```
