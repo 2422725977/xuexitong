@@ -113,6 +113,9 @@ PLACEHOLDER_ENC = {"xxx", "xxxx", "xxxxx", "test", "test123", "example", "null",
                    "0", "1", "enc", "n/a", "none", "{{enc}}", "enc_value", "your_enc"}
 RE_IMG = re.compile(r"""(?:src|data-src|background-image)\s*[:=]\s*[\"']([^\"']{4,300})[\"']""", re.I)
 RE_DATAURI = re.compile(r"data:image/(?:png|jpe?g|webp);base64,([A-Za-z0-9+/=]{300,})")
+# 真 enc 的形状：16~64 位十六进制（实测 A0314A30BDF5D498FE0D7774D1373894）。
+# 页面里的 JS 模板串（如 "enc="+ewnEnc+"）会被 KV 正则误抓成 +ewnEnc+ —— 必须丢掉，不能拿去提交。
+RE_ENC_OK = re.compile(r"^[0-9A-Fa-f]{16,64}$")
 
 
 def _walk_active_any(obj, out, depth=0):
@@ -311,17 +314,22 @@ class TeacherSide(object):
         sc = RE_SIGNCODE.search(body)
         if sc:
             log("T", "  (页面 signCode=%s)" % sc.group(1))
-        seen, uniq = set(), []
+        seen, uniq, dropped = set(), [], []
         for c in out:
             e = (c["enc"] or "").strip()
             low = e.lower()
             if not e or low in PLACEHOLDER_ENC or len(set(low)) <= 2:
+                continue
+            if not RE_ENC_OK.match(e):
+                dropped.append(e[:20])          # JS 模板串/占位符，不是真 enc
                 continue
             c["enc"] = e
             if e in seen:
                 continue
             seen.add(e)
             uniq.append(c)
+        if dropped:
+            log("T", "  已丢弃 %d 个非十六进制候选：%s" % (len(dropped), ", ".join(dropped[:3])))
         return uniq
 
     def sniff_images(self, body, base_url, limit=4):
@@ -893,6 +901,8 @@ def main():
     ap.add_argument("--allow-class", default=ALLOW_CLASS, help="作用域白名单：允许的 clazzId")
     ap.add_argument("--allow-any-class", action="store_true", help="解除班级白名单（默认禁止，需显式开启）")
     ap.add_argument("--create-type", default="", help="create 模式：otherId（0 普通/1 拍照/2 二维码/3 手势/4 位置/5 签到码），默认取 --want-type 第一个")
+    ap.add_argument("--allow-no-enc", action="store_true",
+                    help="允许在取不到 enc 时提交（位置/普通签到服务端不校验 enc；实测位置签到用空 enc 也能入库）")
     ap.add_argument("--no-face", dest="face", action="store_false", default=False, help="create 模式：openCheckFaceFlag=0（默认就是不扫脸）")
     ap.add_argument("--face", dest="face", action="store_true", help="create 模式：开启人脸")
     ap.add_argument("--sign-address", dest="sign_address", action="store_true", default=False,
@@ -966,6 +976,8 @@ def main():
             cid, cl = cls[0]["course"], cls[0]["clazz"]
             tch.uid = tch.uid
         ctype = a.create_type or (sorted(want)[0] if want else "2")
+        if a.sign_address:
+            a.allow_no_enc = True          # 位置签到没有二维码，enc 取不到是正常的
         loc = {}
         if a.sign_address:
             loc = {"address": a.address, "latitude": a.lat, "longitude": a.lon,
@@ -1044,6 +1056,21 @@ def main():
                     seen.add(c["enc"])
                     uniq.append(c)
             uniq = rank(uniq, a.aid)
+            if not uniq and a.allow_no_enc and a.aid and stu is not None:
+                # 只有位置签到这类"没有二维码"的活动才不校验 enc；二维码签到空 enc 会被服务端拒（签到失败，请重新扫描）
+                _geo_ok = True
+                if tch:
+                    try:
+                        _g = tch.activity_geo(a.aid, a.course or None, a.clazz or None) or {}
+                        _geo_ok = str(_g.get("ifopenAddress", "")) == "1"
+                        if not _geo_ok:
+                            log("!", "--allow-no-enc：活动 %s 不是位置签到（ifopenAddress=%s），二维码类必须有真 enc，跳过本轮"
+                                % (a.aid, _g.get("ifopenAddress")))
+                    except Exception as e:
+                        log("-", "no-enc 前置检查失败：%r（按位置类继续）" % (e,))
+                if _geo_ok:
+                    log("i", "--allow-no-enc：该活动不校验 enc（位置类），用空 enc 提交 aid=%s" % a.aid)
+                    uniq = [{"enc": "", "aid": a.aid, "c": "", "src": "no-enc"}]
             if not uniq:
                 log("!", "第 %d 轮未取到 enc 候选（诊断文件见 %s/）" % (rnd, a.dump_dir))
                 rec(a.log, {"t": ts(), "round": rnd, "event": "no_enc"})
@@ -1088,7 +1115,7 @@ def main():
                             log("i", "重提 location/locationResult=%s" % loc_js[:120])
                             res = stu.submit(_aid, c["enc"], a.name, a.fid, verbose=True,
                                              location=loc_js, location_result=loc_js)
-                    rec(a.log, {"t": ts(), "round": rnd, "event": "submit", "enc": c["enc"][:16],
+                    rec(a.log, {"t": ts(), "round": rnd, "event": "submit", "enc": (c["enc"] or "(none)")[:16],
                                 "aid": c["aid"] or a.aid, "src": c["src"], "ok": res.get("ok"),
                                 "msg": str(res.get("msg"))[:120]})
                     if isinstance(res, dict) and res.get("gate") == "face":
