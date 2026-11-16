@@ -79,3 +79,5 @@
 | `flip_attend_status.py` | ★ 教师侧状态改写：把 **迟到(9)** 改回 **已签(1)**（或 5 缺勤 / 10 早退 / 7、8、12 请假 / 2 代签 / 39331-39334 实习实训免修参赛）。自动并四条名单查询定位 attendId（迟到行在未签名单里 status=9），`GET /pptSign/updateSignStatus` 返回 success，改完自动复核；不受活动是否结束影响 |
 | `ewm_watch.py` | 轮询 signDetail 监视 isOver/isBegins/status/signCode/attendNum 变化，可在窗口打开瞬间自动提交（验证旧 enc 是否可用） |
 | `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |
+
+- ★ scripts/stuonly_sign.py —— **只有学生 cookie 时**的全类型签到（普通/手势/签到码/位置/二维码，自动判型 + 本地二维码图片解码）
