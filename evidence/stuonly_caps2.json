@@ -1,0 +1,20 @@
+{
+ "A_位置活动A": "4000180999407",
+ "B_位置活动B": "4000180999409",
+ "A_用成都坐标签北京500米活动": "(200, '距教师指定签到地点1525491.0米，不在可签到范围内。')",
+ "B_用(1.0,1.0)签北京500米活动": "(200, '距教师指定签到地点1.2059094E7米，不在可签到范围内。')",
+ "B_手势活动": "4000180999411",
+ "B_锁阈值": "第 6 次出现锁定提示",
+ "B_锁定后提交真码": "(200, '验证失败次数过多，本次签到已锁定，请 1 小时后重试')",
+ "C_backclazzdata         ": "HTTP 500 len=222 activeHits=0 <!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Serv",
+ "C_courseactivelist_s1   ": "HTTP 200 len=100 activeHits=0 {\"status\":1,\"message\":\"success\",\"data\":[],\"totalCount\":0,\"underWayCount\":0,\"finishCount\":0",
+ "C_courseactivelist_s2   ": "HTTP 200 len=100 activeHits=0 {\"status\":1,\"message\":\"success\",\"data\":[],\"totalCount\":0,\"underWayCount\":0,\"finishCount\":0",
+ "C_courseactivelist_nostatus": "HTTP 200 len=100 activeHits=0 {\"status\":1,\"message\":\"success\",\"data\":[],\"totalCount\":0,\"underWayCount\":0,\"finishCount\":0",
+ "C_personalActiveLibraryV2": "HTTP 500 len=222 activeHits=0 <!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Serv",
+ "C_classTaskCount        ": "HTTP 200 len=22 activeHits=0 {\"result\":0,\"data\":[]}",
+ "C_courseactivecount     ": "HTTP 200 len=55 activeHits=0 {\"message\":\"success\",\"status\":1,\"data\":{\"allCount\", 0}}",
+ "C_taskactivelist        ": "HTTP 200 len=92 activeHits=0 {\"status\":0,\"activeList\":[],\"groupList\":[],\"count\":0,\"result\":0,\"errorMsg\":\"请用学习通客户端打开活动列表",
+ "C_groupActiveCount      ": "HTTP 200 len=12 activeHits=0 {\"result\":0}",
+ "C_phoneactivehistory    ": "HTTP 404 len=1396 activeHits=0 <!DOCTYPE html>\r <html>\r <head>\r <meta name=\"viewport\" content=\"width=device-width, initia",
+ "D_getLastSignForXd": "HTTP 500 <!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html>\r\n<head><title>500 Internal Server Error</title></head>\r\n<body"
+}
