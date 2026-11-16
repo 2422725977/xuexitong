@@ -1,0 +1,347 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0"/>
+    <meta charset="utf-8">
+    <title>签到</title><script src="/service-domain/serviceDomainScript?DB_STRATEGY=RANDOM"></script>
+
+    <script type="text/javascript" src="https://mobilelearn-static.chaoxing.com/mobilelearn/js/jquery.min.js?v=1794840006049" charset="utf-8"></script>
+    <script type="text/javascript" src="https://mobilelearn-static.chaoxing.com/mobilelearn/js/ratio.js?v=1794840006049" type="text/javascript"></script>
+    <script type="text/javascript" src="https://mobilelearn-static.chaoxing.com/mobilelearn/front/mobile/sign/js/CXJSBridge.js?v=1794840006049" charset="utf-8"></script>
+    <script type="text/javascript" src="https://mobilelearn-static.chaoxing.com/mobilelearn/front/mobile/common/app.utils.js?v=1794840006049" charset="utf-8"></script>
+
+    <script type="text/javascript" src="//captcha.chaoxing.com/load.min.js?v=29914168"></script>
+    <script src="https://mobilelearn-static.chaoxing.com/mobilelearn/front/mobile/sign/js/mySignCaptchaUtils.js?v=1794840006049" type="text/javascript"></script>
+
+    <style>
+        *{margin:0;padding:0;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-webkit-appearance:none;}/*-webkit-appearance:radio;*/
+        body{font:14px/1.5 PingFangSC-Regular,微软雅黑;background:#fff;color:#333;-webkit-tap-highlight-color: rgba(0,0,0,0)}
+        ul{list-style-type:none;}
+        input,select,textarea{vertical-align:middle; font:14px 微软雅黑; color:#333;outline:none;background:none;border:none}
+        a{text-decoration:none;color:#333;}
+        table{border-spacing:0px; border-collapse:collapse;width:100%; border:0px;margin:0;padding:0;}
+        img{border:0px;}
+        em{font-style:normal;}
+        b,i{font-style:normal;font-weight:normal}
+        .clearfix{overflow:hidden;zoom:1;}
+        .clear{clear:both; height:0px; font-size:0px; line-height:0px; overflow:hidden;}
+        .fl{float:left;}
+        .fr{float:right;}
+        ::-webkit-input-placeholder {color:#ccc;}
+        :-moz-placeholder{color:#ccc;}
+        ::-moz-placeholder{color:#ccc;}
+        :-ms-input-placeholder{color:#ccc;}
+
+        body,html{height:100%;}
+        .conDiv{padding:0 .3rem;height:9rem;display: flex; justify-content: center; align-items: center;margin-top: .3rem;}
+        .message_camera {
+            position: relative;
+            width: 4.2rem;
+            height: 4.2rem;
+            margin: .7rem auto .2rem;
+            border: 1px #999 dashed;
+            border-radius: .1rem;
+            background: url(https://mobilelearn-static.chaoxing.com/mobilelearn/front/mobile/common/images/camera.png) center no-repeat;
+            background-size: 100%;
+        }
+        .message_camera:after {
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: 0.234rem;
+            content: '点击拍照';
+            width: 100%;
+            line-height: 1.2;
+            text-align: center;
+            color: #09f;
+            font-size: 0.3rem;
+        }
+
+
+        .photo_tit{font-size:.34rem;line-height:.45rem;padding:.3rem .3rem 0 .3rem; margin-bottom:.3rem;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;}
+        .zmessage_change { display: block; padding-top: 0.234rem;text-align: center;color: #999;font-size: 0.3rem;}
+        .qdBtn{display: block;width:6.9rem;margin:0 auto; height:.8rem; border-radius: 0.08rem; background: #09f; line-height: .8rem;text-align: center;color: #fff;font-size: 0.32rem;margin-top:.2rem}
+        .grayBg{    -webkit-filter: grayscale(1);  filter: grayscale(1); opacity: 0.8;}
+        .imgDiv{max-width:100%;max-height:100%;}
+        .imgDiv img{width:100%;height:100%;display:block}
+
+        /*弹窗*/
+        .maskDiv{width:100%;height:100%;position:fixed;left:0;top:0;background:rgba(0,0,0,0.4)}
+        .popTips{width:4.6rem;height:2.3rem;background:#fff;border-radius:.2rem;position:absolute;left:50%;top:50%;margin-left:-2.3rem;margin-top:-1.15rem}
+        .popTips dl dt{text-align:center;line-height:1.4rem;color:#333;font-size:.3rem}
+        .popTips dl dd{width:100%;height:.9rem;text-align:center;border-top:1px solid #f2f2f2;line-height:.9rem;color: #09f;font-size:.3rem}
+
+
+        /*验证码样式*/
+        .cx_modal_close{display: none}
+    </style>
+
+
+</head>
+
+
+
+<body style="background:#f5f6f8">
+<input type="hidden" id="fid" value="0">
+        <p class="photo_tit">拍照矩阵v4</p>
+    <div class="conDiv" onclick="newOpenPhoto();">
+    <div class="message_camera"  ></div>
+    <div style="display:none" class="imgDiv"><img id="image_1" src="https://home-yd.chaoxing.com/res/images/tools/05.gif" /></div>
+</div>
+<span style="display:none" class="zmessage_change" onclick="newOpenPhoto();">点击图片可更换</span>
+<a id="signButton" href="javascript:;" onclick="sign()" class="qdBtn grayBg">
+            签到
+    </a>
+
+
+<!---弹窗--->
+<div class="maskDiv" style="display:none">
+    <div class="popTips">
+        <dl>
+            <dt>请先拍照</dt>
+            <dd onclick="cancelAlert()">确定</dd>
+        </dl>
+    </div>
+</div>
+
+
+<script>
+            document.title="签到"
+    
+    var fid_cookie = "0";
+
+    $(document).ready(function(){
+        var height1 = document.body.clientHeight;
+        var width1 = document.body.clientWidth;
+        var rate = height1/width1;
+        if(rate < 1.5){
+            //console.log("111");
+            $('.conDiv').css('height','auto');
+        }
+        // 初始化签到验证码插件
+        mySignCaptchaUtils.initSignCaptchaPlugin();
+    });
+
+
+    var name = "";
+    var name2 = "";
+    function getCurrentApplyUserInfo(object){
+        $("#fid").val(object.fid);
+        if(!object.name){
+            object.name = "";
+        }
+        name = object.name;
+        name2 = name;
+        name = encodeURIComponent(name);
+    }
+
+    var deviceCode = "";//设备指纹
+    function  _jsBridgeReady(){
+        AppUtils.getUserInfo('',getCurrentApplyUserInfo);
+        try {
+            //CLIENT_DEVICE_FLAG 获取设备指纹
+            jsBridge.bind('CLIENT_DEVICE_FLAG', function(object) {
+                if (object && object.flagInfo) {
+                    deviceCode = object.flagInfo.trim().replace(/[?&]/g, '');
+                }
+            });
+            jsBridge.postNotification("CLIENT_DEVICE_FLAG", {});
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+
+    var jsBridge_cmd_handlers = {};
+    var PHOTO_RESULT = "";
+    //新版打开相机
+    function newOpenPhoto(){
+        var param = {camare:"5","saveGallery":0,pubNetFlag: ServiceDomain.pubNetFlag,"uploadParams":{"_from":"mobilelearn"}};
+        jsBridge.postNotification('CLIENT_CHOOSE_IMAGE',param);
+        if (!jsBridge_cmd_handlers["CLIENT_CHOOSE_IMAGE_RESULT"]) {
+            var handler=jsBridge_cmd_handlers["CLIENT_CHOOSE_IMAGE_RESULT"]=function (object) {
+                //返回格式:{"files":[{"type":"image/jpeg","name":"xxx.jepg","data":"....."},{"type":"image/jpeg","name":"xxx.jepg","data":"....."}]}
+                //新版返回的数据{"files":[{"name":"xxxx.jpg","objectid":"...","type":"jpg"}]}
+                PHOTO_RESULT = object ? JSON.stringify(object) : "";
+                if (object && object.files) {
+                    //var imgArray = new Array();
+                    //var num = $('#photoAreaId').find('img').length;
+                    var imagedata = jQuery.parseJSON(object.files);
+                    for(var i = 0; i<imagedata.length; i++){
+                        if(i < (imagedata.length-1) ){
+                            continue;
+                        }
+
+                        $('.message_camera').hide();
+                        $('.imgDiv').show();
+                        //$(".zmessage_change").show();
+
+                        var imageName=imagedata[i].name;
+                        var imageDate=imagedata[i].objectid;
+
+                        if(!imageDate){
+                            myalert("图片上传失败，请重新拍照上传");
+                            return;
+                        }
+
+                        $("#image_1").attr("src","https://p.cldisk.com/star3/312_412c/"+ imageDate +".jpg");
+                        $("#image_1").attr("href","https://p.cldisk.com/star3/origin/"+ imageDate +".jpg");
+                        $("#image_1").attr("nvalue",imageDate);
+                        $("#signButton").remove();
+
+                        //图片上传后自动签到
+                        setTimeout(function() {
+                            sign();
+                        }, 300);
+
+                    }
+                }
+            };
+            try {
+                jsBridge.bind('CLIENT_CHOOSE_IMAGE_RESULT',handler);
+            } catch (e) {
+                myalert(e);
+            }
+        }
+    }
+
+    function myalert(text){
+        $(".maskDiv dt").html(text);
+
+        $(".maskDiv").show();
+    }
+    function cancelAlert(){
+        $(".maskDiv").hide();
+    }
+
+
+
+    function  fanhui(){
+        var acId="4000180999273";
+        var role="";
+        var uid='493228247';
+        var url1="https://mobilelearn.chaoxing.com/newsign/preSign?courseId=269282723&classId=159926750&activePrimaryId=" + acId + "&uid="+ uid+"&role="+role+"&appType=15&isTeacherViewOpen=0";
+        var opts = {"title":"签到", "checkLogin":"1", "loadType":"0" ,"webUrl":url1+"#INNER","toolbarType":"2"};
+        jsBridge.postNotification('CLIENT_OPEN_URL', opts);
+
+    }
+
+    var chongfu=0;
+    function sign(){
+        var acId="4000180999273";
+
+        var objectId = $("#image_1").attr("nvalue");
+        if(objectId!=''&&typeof(objectId)!="undefined"){
+
+            //判断这个设备是否已经签到过了
+            var lskey = "pptactive"+acId;
+            var lsvalue = window.localStorage[lskey];
+            if(lsvalue){
+                jsBridge.postNotification('CLIENT_DISPLAY_MESSAGE', {'message':"同一设备不允许重复签到！"});
+                setTimeout("existNow()",1000);
+                return;
+            }
+
+            if(chongfu>0){
+                myalert("不能重复签到");
+                return;
+            }
+
+            var uid='493228247';
+            var latitude="-1";
+            var longitude="-1";
+            var ipss="";
+            var fid=$("#fid").val();
+
+            var url="/pptSign/stuSignajax?activeId=" + acId + "&courseId=269282723&uid="+ uid +"&clientip="+ipss+"&useragent="+ "&latitude="+latitude+
+                    "&longitude="+longitude+"&appType=15&fid="+fid+"&objectId="+objectId+"&name="+name+"&validate="+mySignCaptchaUtils.VALIDATE_CODE_STR +
+                    "&deviceCode=" + deviceCode;
+            var  classId="159926750";
+
+            var juli='';
+            var appType='15';
+            var params = urlParamsToObject(url);
+            params.photoResult = PHOTO_RESULT;
+            $.ajax({
+                url: '/pptSign/stuSignajax',
+                type: "post",
+                data: params,
+                success:function(res){
+                    if(res=="validate"){
+                        validateShow(url);
+                        return;
+                    }
+
+                    if(res=="success"||res=="success2"){// success2 是结束了才签到
+                        //签到成功，计入localStorage
+                        var lskey = "pptactive"+acId;
+                        if(!window.localStorage[lskey]){
+                            window.localStorage[lskey] = name2+"   "+'493228247'+"  "+acId;
+                        }
+
+                        chongfu+=1;
+                        if(res=="success"){//
+                                                            jsBridge.postNotification('CLIENT_DISPLAY_MESSAGE', {'message':'恭喜你已完成签到'}) ;
+                                                    }
+                        if(res=="success2"){//
+                            jsBridge.postNotification('CLIENT_DISPLAY_MESSAGE', {'message':'已过教师设置的截止时间'}) ;
+                        }
+                        setTimeout("fanhui()",1000);
+                        return;
+                    }else{
+                        jsBridge.postNotification('CLIENT_DISPLAY_MESSAGE', {'message':res});
+                        jsBridge.postNotification('CLIENT_EXIT_LEVEL', {});
+                    }
+                }
+            });
+        }else{
+            myalert("请先拍照");
+            return;
+        }
+    }
+
+    function existNow(){
+        jsBridge.postNotification('CLIENT_EXIT_LEVEL', {}) ;
+    }
+
+    function validateShow() {
+        mySignCaptchaUtils.verifySuccessCallback = function (validate) {
+            sign();
+        };
+        mySignCaptchaUtils.popUpCaptcha();
+    }
+
+    function urlParamsToObject(url) {
+        //获取字符串 ? 后面的部分
+        var queryString = url.split('?')[1];
+        var paramsArr = queryString.split('&');
+        var paramObj = {};
+
+        paramsArr.forEach(param => {
+            var idx = param.indexOf('=');
+            if (idx != -1) {
+                var key = param.substring(0, idx);
+                var value = param.substring(idx + 1);
+                paramObj[key] = decodeURIComponent(value);
+            } else {
+                paramObj[param] = undefined;
+            }
+        });
+
+        return paramObj;
+    }
+
+</script>
+
+
+
+<!-- 验证码逻辑开始 -->
+<div id="captcha"></div>
+<!-- 验证码逻辑结束 -->
+
+</body>
+</html>

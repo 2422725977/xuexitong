@@ -1,0 +1,78 @@
+{
+ "aid": "4000180999320",
+ "oid": "943f4d2e543135b82012c341971e905c",
+ "encryptedId": "0ca53e7d9d82a8f105b2826700252bf020e7043d0598681a",
+ "img": "out/photo_v8_1794851011.jpg",
+ "ext": "269282723_159926750_493228247_8189e7227495bbc55ae14cbf762c8d01",
+ "student": {
+  "uid": 443369490,
+  "puid": 493228247,
+  "fid": 0,
+  "name": "学生示例"
+ },
+ "teacher": {
+  "uid": 353573964,
+  "puid": 401537379,
+  "fid": 1022,
+  "name": "教师示例"
+ },
+ "class_fid": null,
+ "fids": [
+  "0",
+  "12",
+  "1022"
+ ],
+ "upload": {
+  "result": true,
+  "msg": "success",
+  "crc": "becad865a67ed986325cede857f49b45",
+  "objectId": "943f4d2e543135b82012c341971e905c",
+  "resid": 1329264743990681600,
+  "puid": 493228247,
+  "data": {
+   "disableOpt": false,
+   "resid": 1329264743990681600,
+   "encryptedId": "0ca53e7d9d82a8f105b2826700252bf020e7043d0598681a",
+   "crc": "becad865a67ed986325cede857f49b45",
+   "puid": 493228247,
+   "isfile": true,
+   "pantype": "USER_PAN",
+   "size": 84287,
+   "name": "photo_v8_1794851011.jpg",
+   "objectId": "943f4d2e543135b82012c341971e905c",
+   "restype": "RES_TYPE_NORMAL",
+   "uploadDate": 1794851011450,
+   "modifyDate": 1794851011450,
+   "uploadDateFormat": "2026-11-17",
+   "residstr": "1329264743990681600",
+   "suffix": "jpg",
+   "preview": "https://pan-yz.chaoxing.com/preview/v2/showpreview_1329264743990681600.html?v=1794851011548&enc=a060d499a2662aa69d4df49e8b23d977&wps=00b7c99dca5d2d29a063c6160de7169db1226d631d7be09c&appid=3F6410F7-344C-48C3-BC43-168936D1074B&nonce=-1016970444&timestamp=1794851011548&signature=6592c89b1c96c6d6e7dcd17cc7ed845b",
+   "thumbnail": "https://pan-yz.chaoxing.com/thumbnail/v2/origin/943f4d2e543135b82012c341971e905c?type=img&appid=3F6410F7-344C-48C3-BC43-168936D1074B&nonce=1689812019&timestamp=1794851011548&objectid=943f4d2e543135b82012c341971e905c&signature=4740fbe4183fa9fa10a276cd098ba214",
+   "creator": 493228247,
+   "duration": 0,
+   "isImg": true,
+   "isOffice": false,
+   "isMirror": false,
+   "previewUrl": "https://p.cldisk.com/star4/943f4d2e543135b82012c341971e905c/origin.jpg",
+   "filetype": "",
+   "filepath": "",
+   "sort": 0,
+   "topsort": 0,
+   "resTypeValue": 3,
+   "extinfo": ""
+  }
+ },
+ "results": {
+  "A2020_fid0": "photoAuthError_PCR007",
+  "A2020_fid12": "photoAuthError_PCR007",
+  "A2020_fid1022": "photoAuthError_PCR007",
+  "B_2020_nameFile": "photoAuthError_PCR007",
+  "C_2020_noObjectId": "photoAuthError_PCR007",
+  "D_cxsign_fid0": "photoAuthError_PCR007",
+  "E_ru41_wholeResp": "photoAuthError_PCR007",
+  "F_objectId_encryptedId": "photoAuthError_PCR007",
+  "G_2020_POST": "photoAuthError_PCR007",
+  "H_cxsign_POST_wholeResp": "photoAuthError_PCR007",
+  "I_2020_ua_dalvik": "photoAuthError_PCR007"
+ }
+}

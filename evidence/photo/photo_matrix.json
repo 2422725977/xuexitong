@@ -1,0 +1,140 @@
+{
+  "aid": "4000180999255",
+  "oid_a": "3f2e616894df22b91b946c396d066c25",
+  "oid_b": "",
+  "oid_c": "",
+  "fid_c": "",
+  "device_code": "5UpR078A5CXE0X9wckWZqco+3W2FKfGichnoLiFd2iU=",
+  "results": [
+    {
+      "vid": "V01",
+      "desc": "photo.ts 精确复刻：UA头=UA_APP / useragent参数=UA_APP / fid=0 / 无 photoResult / GET / 通道1",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V02",
+      "desc": "同 V01 但 objectId 来自通道2（裸 upload，无 _from/_token）",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V03",
+      "desc": "V01 + photoResult（files 为字符串的双层嵌套）",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V04",
+      "desc": "V01 + deviceCode（AES-ECB(OAID) 真值）",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V05",
+      "desc": "V03 + V04 合并",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V06",
+      "desc": "UA 头换成 dex 里 WebView 模板 UA，其余同 V01",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; U; Android 10; SM-G9",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V07",
+      "desc": "同 V05 但 UA 头 = dex 模板 UA",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; U; Android 10; SM-G9",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V08",
+      "desc": "V05 改 POST（form body）",
+      "method": "POST",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V09",
+      "desc": "useragent 参数留空、只靠 UA 头（当前项目旧行为）+ photoResult",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V10",
+      "desc": "objectId 来自老 uploadfile 通道（resid 系）；fid 用响应里的真 fid",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V11",
+      "desc": "V05 + X-Requested-With + Accept: application/json 头",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    },
+    {
+      "vid": "V12",
+      "desc": "V05 + Referer=拍照签到页 + Origin",
+      "method": "GET",
+      "ua": "Mozilla/5.0 (Linux; Android 10; SM-G975F",
+      "ok": false,
+      "http": 200,
+      "body": "photoAuthError_PCR007"
+    }
+  ],
+  "winner": null,
+  "log": [
+    "[+] 拍照活动 activeId=4000180999255",
+    "[+] pan token = 6c9973d19d69..",
+    "[U] https://pan-yz.chaoxing.com/upload?_from=mobilelearn&_token= -> {\"result\": true, \"msg\": \"success\", \"crc\": \"d474ab6f3a7a1360ad7e72256406800c\", \"objectId\": \"3f2e616894df22b91b946c396d066c25\", \"resid\": 1329259173943279616, \"puid\": 493228247, \"data\": {\"disableOpt\": false, \"resid\": 132925",
+    "[U] https://pan-yz.chaoxing.com/upload -> {\"result\": false, \"msg\": \"您的ip：183.230.211.52 不被允许访问\", \"_url\": \"https://pan-yz.chaoxing.com/upload\"}",
+    "[U] https://pan-yz.chaoxing.com/upload/uploadfile?puid=493228247 -> {\"result\": false, \"msg\": \"您的ip：183.230.211.52 不被允许访问\", \"_url\": \"https://pan-yz.chaoxing.com/upload/uploadfile?puid=493228247&fid=0&type=1\"}",
+    "[+] objectId 通道1=3f2e616894df22b91b946c396d066c25 通道2=- 通道3=- fid3=-",
+    "[+] deviceCode(OAID=b1c2d3e4f5a60718) = 5UpR078A5CXE0X9wckWZqco+3W2FKfGichnoLiFd2iU=",
+    "[=] V01 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V02 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V03 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V04 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V05 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V06 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V07 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V08 POST -> HTTP 200 photoAuthError_PCR007",
+    "[=] V09 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V10 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V11 GET -> HTTP 200 photoAuthError_PCR007",
+    "[=] V12 GET -> HTTP 200 photoAuthError_PCR007"
+  ]
+}

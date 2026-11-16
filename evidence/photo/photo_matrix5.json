@@ -1,0 +1,51 @@
+{
+  "aid": "4000180999275",
+  "oid": "f41a2c424b074326d98e8de026a1bfed",
+  "userinfo": {
+    "name": "",
+    "uid": "",
+    "fid": "",
+    "puid": "",
+    "clientId": "",
+    "raw": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html>\r\n<head><title>403 Forbidden</title></head>\r\n<body>\r\n<center><h1>403 Forbidden</h1></center>\r\n<hr><center>tengine</center>\r\n</body>\r\n</html>\r\n"
+  },
+  "ext": "269282723_159926750_493228247_8189e7227495bbc55ae14cbf762c8d01",
+  "results": [
+    {
+      "tag": "Z01",
+      "desc": "ext preSign + analysis + objectId + name/fid/uid 真值",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Z02",
+      "desc": "同 Z01 但 photoResult=d$f 全字段形状",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Z03",
+      "desc": "同 Z01 但无 objectId（对照）",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Z04",
+      "desc": "同 Z01 但 fid=12（cookie spaceFid）",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    },
+    {
+      "tag": "Z05",
+      "desc": "同 Z01 但 name 空",
+      "http": 200,
+      "body": "photoAuthError_PCR007",
+      "ok": false
+    }
+  ],
+  "winner": ""
+}
