@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 119 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 126 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -112,3 +112,15 @@
 | stuonly_caps4.py | 学生页面（newsign/preSign、pptSign/preSign、widget/sign/e）能否带出坐标 |
 | stuonly_caps5.py | signDetail 全字段（62 个，无 location/address） |
 | stuonly_caps6/7.py | getActiveDataV2 等活动内容接口（只有元数据，无坐标） |
+
+
+## 二维码刷新模式 / 群消息 探针（2026-11-17，见报告第 24 章）
+
+| 脚本 | 说明 |
+|---|---|
+| qr_refresh_probe.py | 5 秒刷新二维码：enc 是否轮换（6 个/36 秒）+ 旧 enc 提交结果 |
+| qr_static_probe.py | 对照：ifRefreshEwm=0 时 enc 固定、35 秒后旧 enc 仍 success |
+| qr_window_group_probe.py | enc 有效窗口（8/12/22 秒全部失效）+ 10 个群聊/消息接口尝试 |
+| stu_enc_fetch_probe.py | 学生 cookie 抢实时 enc 的 11 条候选路径（全否） |
+| im_history_probe*.py | im.chaoxing.com/apis/message/getHistory 真实参数（803003）+ 变体 |
+| dump_sign_e_page.py | widget/sign/e 大屏页真实返回（1165 B「链接已失效」提示页） |
