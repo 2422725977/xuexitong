@@ -147,6 +147,31 @@ python3 scripts/stu_guard.py --cookie-file ck.txt --uid <puid> \
 
 实测一轮：新活动 11 个 → 普通 success、位置 3 步 success，二维码/签到码/手势/拍照自动归「需人工」`{"signed":5,"needs_secret":6,"fail":0}`。
 
+## 反封号 / 反风控策略层（报告第 27 章，★ 2026-11-23）
+
+四个写操作脚本（`stu_guard.py` / `video_task.py` / `cx_pipeline.py` / `qr_watch.py`）现在共用一个**账号级策略中心**
+`scripts/risk_center.py`：写前过闸门（allow）、写后入账（observe）、全程脱敏审计。默认开启，`--no-risk-center` 关闭。
+
+| 规则 | 管什么 |
+|---|---|
+| R1 只读先行 | 同域 5 分钟内必须有成功的只读探针，才允许写（缺了会自愈补一次真实 GET，不造假） |
+| R2 单调进度 | 视频进度只增不跳，步长上限 = reportTimeInterval×3，触发 rollback 自动降速 |
+| R3 目标上限 | 同一 activeId / jobId 最多写 3 次（爬坡探针 12 次），不来回轰炸同一个活动 |
+| R4 双配额 | 按动作分档：sign 6/小时、sign_probe 30/小时、tch_write 30/小时、qr_sign 120/小时… |
+| R5/R6 节奏 | 活跃窗 6–23（抢签豁免）、静默窗 1–6、真人抖动 + 每若干次插 3–12 分钟长停顿 |
+| R7 分级熔断 | 限流 → 冷却 30 分；软信号累计 2 次 → 2 小时；登录失效/验证码/403 → HALT 24 小时 |
+| R8/R9/R10 | 全审计（enc/token/cookie/uid 等打码）· 不伪造埋点 · 连续失败 3 次退避 15 分钟 |
+
+```bash
+python3 scripts/risk_center.py --status        # 还剩多少配额、是否熔断、探针是否有效
+python3 scripts/risk_center.py --selftest      # 35 项策略回归
+python3 scripts/risk_center.py --reset --hard  # 换 cookie / 解除 HALT
+python3 scripts/risk_integration_test.py       # 17 项接线回归（离线，0.15 秒）
+```
+
+★ 抢签不再"裸奔"也不被拖慢：`qr_sign` 画像 0.5 秒 / 120 次每小时、豁免真人节奏与静默窗（旧 stealth 全局 6 次/小时会拖没 5 秒窗口）；
+位置爬坡用 `sign_probe`。线上实证：教师侧 tch_write 闸门建活动 → 学生侧 sign_probe 闸门签成 success → 假 cookie 触发 HALT 立即停抢。
+
 ## 快速开始
 
 ```bash
@@ -184,7 +209,7 @@ cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mit
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（26 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门 / 拍照签到专项 / 真机取证 / 扫码签到全链路 / 学生端纯远程能力矩阵）
+docs/报告-已解壳版.md      完整报告（27 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门 / 拍照签到专项 / 真机取证 / 扫码签到全链路 / 学生端纯远程能力矩阵 / ☆ 反封号策略层）
 docs/拍照签到-PCR007-专项.md  ★ 拍照签到专项：闸门定界、上传链、deviceCode 还原、外部实现对照、全部变体矩阵
 docs/真机抓包作战清单.md      ★ 真机 Android 抓包/复现路线（chrome://inspect → mitmproxy → root+frida）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）
@@ -195,7 +220,7 @@ docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、�
 docs/视频任务点协议.md     ★ 视频任务点：enc 公式、203/rollbackPoint 回退、frida 抓真值、命令速查
 docs/低暴露抓取.md         ★ 取真值时怎么把风控暴露面压到最低（三条路排序 + 尺度纪律 + 模拟器最低暴露清单）
 docs/一键自动签到.md       ★ 教师侧取码 → 学生侧提交：四段流水线、模式速查、诊断产物、故障排查表
-scripts/                   115 个脚本（含 cx_pipeline.py 一键流水线、device/ 真机抓包工具包、emulator/ 去模拟器化道具）：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归、加固对抗
+scripts/                   139 个脚本（含 cx_pipeline.py 一键流水线、device/ 真机抓包工具包、emulator/ 去模拟器化道具）：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归、加固对抗
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```

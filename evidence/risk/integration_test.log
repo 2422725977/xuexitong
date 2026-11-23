@@ -1,0 +1,29 @@
+== 1) stu_guard R1 只读先行 / 写入计数 ==
+  PASS 未探针时写动作被拦（R1 只读先行）
+  PASS activelist 后登记探针
+  PASS 提交成功文本
+  PASS 写计数 +1
+== 2) R3 目标级上限（sign_probe 上限 12，sign 上限 3）==
+  PASS 第 4 次同活动 sign 被 R3 拦
+== 3) 硬信号 HALT 后全拦 ==
+  PASS 软/硬信号入账（HALT 生效于下一次）
+  PASS HALT 后返回风控拦截
+  PASS HALT 连 read 都拦
+  PASS 审计文件已生成
+== 4) video_task allow/observe 接线 ==
+[report] playingTime=60 isdrag=0 → HTTP 200 result=1
+  PASS 上报 1 正常
+  PASS 进度已记账
+[rollback] 服务端要求回退到 120 秒（可信进度点）
+[report] playingTime=120 isdrag=0 → HTTP 200 result=203 rollback=120
+  PASS 上报 2 触发 rollback 识别
+  PASS R2 进度倒退被拦（接线后同样生效）
+== 5) cx_pipeline StudentSide 接线 ==
+[15:40:35] [!] 风控拦截[sign_probe]：R1 只读先行：本域(mobilelearn.chaoxing.com)还没有成功的只读探针，先探一次再写
+  PASS R1 自愈后放行并计入配额
+  PASS 只读探针已登记
+[15:40:35] [!] 风控拦截[sign_probe]：目标 A9 已写 12 次（上限 12），停手
+  PASS 目标上限后返回 RISK_BLOCKED
+[15:40:35] [!] 风控拦截[sign_probe]：HALT：test
+  PASS HALT 后 submit 直接拒绝
+接线回归: 失败 0 项

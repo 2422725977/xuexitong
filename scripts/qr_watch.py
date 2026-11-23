@@ -222,7 +222,8 @@ def submit_bare_enc(a, sess, enc):
     body = r.text.strip()
     print("[C/enc] GET %s" % url)
     print("[C/enc] HTTP %s %s" % (r.status_code, body[:200]))
-    return {"ok": "success" in body.lower(), "msg": body[:200], "kind": "enc"}
+    return {"ok": "success" in body.lower(), "msg": body[:200], "kind": "enc",
+            "status": r.status_code}
 
 
 def main():
@@ -249,6 +250,8 @@ def main():
     ap.add_argument("--stop-on-success", action="store_true")
     ap.add_argument("--append-log", default="")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-risk-center", action="store_true",
+                    help="关闭反封号策略层（默认开启；qr_sign 画像 0.5s 间隔/120 次每小时，豁免静默窗）")
     a = ap.parse_args()
 
     a.cookie = qsr.load_cookie(a.cookie, a.cookie_file)
@@ -261,13 +264,40 @@ def main():
             print("[cfg] uid 从 cookie 推断 = %s" % a.uid)
 
     import requests
-    # 抢签只要快：不用风控层（它的 8s 最小间隔/每小时配额会把 5 秒窗口拖没），只用 App UA + Cookie
+    # 抢签要快，但也别裸奔：用 qr_sign 画像（0.5s 最小间隔 / 120 次每小时 / 豁免真人节奏与静默窗），
+    # 它既不会拖没 5 秒窗口，又能在被限流/风控时踩刹车。要完全裸跑加 --no-risk-center。
+    rc = None
+    if not a.no_risk_center:
+        try:
+            from risk_center import RiskCenter
+            rc = RiskCenter(uid=a.uid or "")
+        except Exception as e:
+            print("[risk] 策略层不可用：%r" % (e,))
     sess = requests.Session()
     sess.headers.update({"User-Agent": qsr.UA, "Accept": "*/*",
                          "Accept-Language": "zh-CN,zh;q=0.9", "Connection": "keep-alive",
                          "Referer": qsr.MOBILE, "Cookie": a.cookie})
     a.phone_id = qsr.phone_id()
     signer = qsr.Signer(a, sess) if hasattr(qsr, "Signer") else None
+
+    risk_url = qsr.MOBILE + "pptSign/stuSignajax"
+    probed = [False]
+
+    def risk_gate(target):
+        """R1 只读先行 + qr_sign 配额。返回 False 表示本次提交放弃。"""
+        if rc is None:
+            return True
+        if not probed[0]:
+            try:      # 一次只读请求换探针（不发写）
+                sess.get(qsr.MOBILE + "pptSign/gotasksign?uid=%s&appType=15" % (a.uid or ""), timeout=15)
+                rc.probe(qsr.MOBILE)
+            except Exception:
+                pass
+            probed[0] = True
+        ok, why = rc.allow("qr_sign", url=risk_url, target=str(target or ""), quiet_check=False)
+        if not ok:
+            print("[risk] 拦截：%s" % why)
+        return ok
 
     src = Source(a)
     t0 = time.time()
@@ -293,6 +323,8 @@ def main():
             if submitted >= a.max_submits:
                 print("[watch] 已达 --max-submits=%d，停" % a.max_submits)
                 return
+            if not risk_gate(a.active_id or ""):
+                continue
             submitted += 1
             print("\n==== [%s] 第 %d 次提交 %s ====" % (time.strftime("%H:%M:%S"), submitted, tag))
             if RE_HEX.match(content.strip()) and a.active_id:
@@ -301,6 +333,12 @@ def main():
                 res = signer.handle(content, source=tag)
             else:
                 res = {"ok": False, "msg": "no signer"}
+            if rc:
+                rc.observe("qr_sign", risk_url, res.get("status", 200), str(res.get("msg", "")),
+                           target=str(a.active_id or ""), ok=bool(res.get("ok")))
+                if rc.state.get("halted"):
+                    print("[risk] 已 HALT（%s），停止抢签" % rc.state.get("halted_reason", "")[:120])
+                    return
             if a.append_log:
                 import json as _j
                 open(a.append_log, "a", encoding="utf-8").write(

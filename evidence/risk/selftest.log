@@ -1,0 +1,32 @@
+  PASS 未知动作报错
+  PASS R1 未探针先写被拦
+  PASS 最小间隔拦截
+  PASS 小时配额拦截
+  PASS 日配额拦截
+  PASS R3 目标上限拦截
+  PASS R2 进度倒退被拦
+  PASS R2 进度跳跃被拦
+  PASS R2 正常前进放行
+  PASS 上报间隔取 reportTimeInterval=120
+  PASS 活跃窗判断可调用
+  PASS read 无需探针
+  PASS 硬信号 HALT
+  PASS HALT 后全部拦截
+  PASS 429 → COOLDOWN
+  PASS 冷却期拦截
+  PASS 软信号累计冷却 >= 30 分
+  PASS 业务错误判 NOTICE
+  PASS R10 三次失败退避
+  PASS rollbackPoint 识别
+  PASS exam 默认关闭
+  PASS exam 显式开启后放行
+  PASS qr_sign 0.5s 间隔
+  PASS 探针过期需刷新
+  PASS mobilelearn 是 App 域
+  PASS mooc1-api 是 web 域
+  PASS 域可写动作覆盖
+  PASS host 解析
+  PASS url 脱敏
+  PASS explain 有十条规则
+  PASS status 可打印
+风控策略回归: 35 项，失败 0 项  (当前 15 点)

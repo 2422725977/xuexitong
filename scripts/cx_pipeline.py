@@ -241,19 +241,68 @@ def qs_to_dict(s):
     return out
 
 
-class TeacherSide(object):
+class RiskMixin(object):
+    """反封号策略层接线：R1 只读先行 + 双配额 + 目标上限 + 分级熔断 + 全审计。
+
+    rc 为 None 时所有 gate 直接放行（--no-risk-center）。写操作一律先 gate 后 note。
+    """
+
+    rc = None
+
+    def risk_init(self, uid, risk=True):
+        self.rc = None
+        if not risk:
+            log("i", "风控：策略层已关闭（--no-risk-center）")
+            return
+        try:
+            from risk_center import RiskCenter
+            self.rc = RiskCenter(uid=str(uid or ""))
+        except Exception as e:
+            log("!", "风控策略层不可用（%r），退回内置闸门" % (e,))
+
+    def risk_probe(self, url, ok=True):
+        """登记一次成功只读探针（R1）"""
+        if self.rc and ok:
+            self.rc.probe(url)
+
+    def risk_gate(self, action, url, target="", progress=None, max_wait=0, quiet=True):
+        """写操作前的准入。返回 (ok, why)"""
+        if not self.rc:
+            return True, ""
+        ok, why = self.rc.allow(action, url=url, target=str(target or ""), progress=progress, quiet_check=quiet)
+        if not ok and max_wait and any(k in why for k in ("距上次", "小时", "今日", "冷却")):
+            log("i", "风控[%s]：%s → 等待放行" % (action, why))
+            ok, why = self.rc.wait(action, url=url, target=str(target or ""), max_wait=max_wait, verbose=False)
+        if not ok:
+            log("!", "风控拦截[%s]：%s" % (action, why))
+        return ok, why
+
+    def risk_note(self, action, url, status, body, target="", progress=None, ok=None):
+        """写操作后的判级/记账。返回 None 或 {level, reason, action}"""
+        if not self.rc:
+            return None
+        v = self.rc.observe(action, url, status, body, target=str(target or ""), progress=progress, ok=ok)
+        if v["action"] in ("HALT", "COOLDOWN"):
+            log("!", "风控 %s：%s" % (v["action"], v["reason"][:140]))
+        return v
+
+
+class TeacherSide(RiskMixin):
     """教师侧：班级枚举 -> 活动定位 -> enc 采集"""
 
     def __init__(self, ck, uid, ua_mode="h5", dump_dir="out/tch_probe", quiet_hours=None,
-                 max_writes_per_hour=None, min_interval=None):
+                 max_writes_per_hour=None, min_interval=None, per_day=None, risk=True):
         if make_session is None:
             raise SystemExit("stealth_session 不可用")
+        self.risk_init(uid, risk)
         self.expired = False
         kw = {}
         if max_writes_per_hour:
             kw["max_writes_per_hour"] = max_writes_per_hour
         if min_interval:
             kw["min_interval"] = min_interval
+        if per_day:
+            kw["per_day"] = per_day
         self.sess = make_session(cookie=ck, uid=uid, referer=MOBILE, ua_mode=ua_mode,
                                  xhr=True, quiet=quiet_hours, **kw)
         self.uid = uid
@@ -274,6 +323,8 @@ class TeacherSide(object):
         if "passport2" in final or "请登录" in body[:600] or "请先登录" in body[:600]:
             self.expired = True
             log("!", "教师 cookie 疑似失效（%s）" % final[:80])
+        if r.status_code == 200:
+            self.risk_probe(getattr(r, "url", "") or url)     # R1：成功只读 → 本域可写
         if save or (self.saved < 200 and ("sign" in url or "active" in url)):
             self._save(tag or "req", url, r)
         if sniff:
@@ -593,6 +644,7 @@ class TeacherSide(object):
     # ---- ★ 创建签到（教师"发起签到"页 /pptSign/newTaskSign；type=0 保存 / type=1 立即开始）----
     def create_sign(self, course, clazz, other_id="2", face="0", ifopen_address="0", time_long="1800000",
                     start=True, title="", code="", location=None, if_need_vcode="0", late_minute="10",
+                    if_photo=None,
                     if_refresh_ewm="1", ewm_refresh_time="5", verbose=True):
         """实测：POST /pptSign/newTaskSign，form 字段 60+ 个（来自教师页 var url = "/pptSign/newTaskSign"，
         与 /newsign/saveSign 同构；本机 /newsign/saveSign 返回 404）。
@@ -611,7 +663,8 @@ class TeacherSide(object):
             "type": "1" if start else "0", "otherId": str(other_id), "isResult": "0", "code": code,
             "latitude": "-1", "longitude": "-1", "activePrimaryId": "0", "timeLong": str(time_long),
             "ifSendMessage": "1", "ifGetRange": "0", "crnum": "", "planId": "", "appType": "15",
-            "activePrimaryId1": "0", "clone": "0", "classIds": "", "ifPhoto": "1" if str(other_id) == "1" else "0",
+            "activePrimaryId1": "0", "clone": "0", "classIds": "",
+            "ifPhoto": ("1" if str(if_photo) == "1" else "0") if if_photo is not None else ("1" if str(other_id) == "1" else "0"),
             "circleId": "", "tid": "", "uid": self.uid, "title": title,
             "ifRefreshEwm": str(if_refresh_ewm), "ewmRefreshTime": str(ewm_refresh_time),
             "asynKey": "0", "asynId": "", "foreignType": "", "classroomDataId": "", "foreignId": "",
@@ -627,14 +680,27 @@ class TeacherSide(object):
             "openSignOutFlag": "0", "signOutRelativeTime": "", "signOutAbsoluteTime": "", "signOutDuration": "",
             "openCheckFaceFlag": str(face), "fykbParams": "", "openCheckWeChatFlag": "0",
         }
+        wurl = MOBILE + "pptSign/newTaskSign"
+        ok, why = self.risk_gate("tch_write", wurl, target=str(course), max_wait=60)
+        if not ok and "R1" in why:
+            try:      # 自愈：先补一次只读探针
+                self.get(MOBILE + "pptSign/gotasksign?courseId=%s&classId=%s&uid=%s&appType=15"
+                         % (course, clazz, self.uid), tag="riskprobe", sniff=False)
+            except Exception:
+                pass
+            ok, why = self.risk_gate("tch_write", wurl, target=str(course), max_wait=60)
+        if not ok:
+            return ""
         try:
-            r = self.sess.post(MOBILE + "pptSign/newTaskSign", data=p, timeout=30,
+            r = self.sess.post(wurl, data=p, timeout=30,
                                headers={"X-Requested-With": "XMLHttpRequest"})
             body = (r.text or "").strip()
             j = r.json()
         except Exception as e:
             log("T", "创建签到失败 -> %r" % (e,))
             return ""
+        self.risk_note("tch_write", wurl, getattr(r, "status_code", 0), body, target=str(course),
+                       ok=bool(j.get("_activeId")))
         if str(j.get("result")) == "0" or not j.get("_activeId"):
             log("T", "创建签到被拒：%s" % body[:200])
             return ""
@@ -723,23 +789,48 @@ def rank(cands, target_aid=""):
     return sorted(cands, key=lambda c: -c.get("score", 0))
 
 
-class StudentSide(object):
+class StudentSide(RiskMixin):
     def __init__(self, ck, uid, ua_mode="h5", quiet_hours=None,
-                 max_writes_per_hour=None, min_interval=None):
+                 max_writes_per_hour=None, min_interval=None, per_day=None, risk=True):
+        self.risk_init(uid, risk)
         kw = {}
         if max_writes_per_hour:
             kw["max_writes_per_hour"] = max_writes_per_hour
         if min_interval:
             kw["min_interval"] = min_interval
+        if per_day:
+            kw["per_day"] = per_day
         self.sess = make_session(cookie=ck, uid=uid, referer=MOBILE, ua_mode=ua_mode,
                                  xhr=True, quiet=quiet_hours, **kw)
         self.uid = uid
+
+    def touch(self):
+        """只读探针（R1 只读先行）：GET 一次签到页，成功后本域才允许写。"""
+        url = MOBILE + "pptSign/gotasksign?uid=%s&appType=15" % self.uid
+        try:
+            r = self.sess.get(url, timeout=20)
+            self.risk_probe(getattr(r, "url", "") or url, ok=(r.status_code == 200))
+            return r.status_code
+        except Exception as e:
+            log("T", "风控探针失败 -> %r" % (e,))
+            return 0
+
+    def risk_write_gate(self, action, url, target="", progress=None, max_wait=90):
+        ok, why = self.risk_gate(action, url, target=target, progress=progress, max_wait=max_wait)
+        if not ok and "R1" in why:
+            self.touch()
+            ok, why = self.risk_gate(action, url, target=target, progress=progress, max_wait=max_wait)
+        return ok, why
 
     def submit(self, aid, enc, name="", fid="0", lat="-1", lon="-1", verbose=True, extra=None,
                location="", location_result=""):
         """提交签到。定位类活动必须**同时**带 location 与 locationResult（同一个 JSON 串）：
            实测只带 location -> errorLocation3；location+locationResult -> success。
            location JSON 形状（学生页 JS 原文）：{"result":1,"address":..,"longitude":..,"latitude":..}"""
+        surl = MOBILE + "pptSign/stuSignajax"
+        ok, why = self.risk_write_gate("sign_probe", surl, target=str(aid))
+        if not ok:
+            return {"status": "RISK_BLOCKED", "raw": why, "body": why}
         if _submit_url is not None and not extra and not location_result:
             content = "https://x/?enc=%s&id=%s" % (urllib.parse.quote(enc), urllib.parse.quote(str(aid)))
             res = _submit_url(self.sess, content, self.uid, name, fid, lat, lon, verbose=verbose)
@@ -761,6 +852,7 @@ class StudentSide(object):
             log("S", "%s %s" % (r.request.method if getattr(r, "request", None) is not None else "GET", MOBILE + q))
             log("S", "HTTP %s  %s" % (r.status_code, body[:300]))
         ok = ("success" in body.lower()) or ("签到成功" in body)
+        self.risk_note("sign_probe", surl, r.status_code, body, target=str(aid), ok=ok)
         return _classify({"ok": ok, "msg": body[:300]})
 
     # ---- 学生侧活动列表（扫码/普通/定位等活动的真实列表在学生视角下最全）----
@@ -808,11 +900,17 @@ class StudentSide(object):
                 urllib.parse.quote(face_enc), urllib.parse.quote(face_code), urllib.parse.quote(str(aid))))
         if address:
             q += "&address=" + urllib.parse.quote(address)
+        surl = MOBILE + "pptSign/stuSignajax"
+        ok, why = self.risk_write_gate("sign", surl, target=str(aid))
+        if not ok:
+            return {"status": "RISK_BLOCKED", "raw": why, "body": why}
         r = self.sess.get(MOBILE + q, timeout=25)
         body = (r.text or "").strip()
         if verbose:
             log("S", "GET %s" % (MOBILE + q)[:230])
             log("S", "HTTP %s  %s" % (r.status_code, body[:200]))
+        self.risk_note("sign", surl, r.status_code, body, target=str(aid),
+                       ok=("success" in body.lower()))
         return _classify({"ok": ("success" in body.lower()), "msg": body[:300]})
 
 
@@ -918,6 +1016,8 @@ def main():
     ap.add_argument("--address", default="", help="覆盖地址文本（默认取活动 content 的 locationText）")
     ap.add_argument("--max-writes-per-hour", type=int, default=0, help="覆盖风控写配额（0=用默认 6/小时）")
     ap.add_argument("--min-interval", type=float, default=0, help="覆盖最小写间隔秒（0=用默认 8s）")
+    ap.add_argument("--no-risk-center", action="store_true",
+                    help="关闭反封号策略层（默认开启：只读先行/双配额/目标上限/熔断/审计）")
     ap.add_argument("--verbose", action="store_true")
     a = ap.parse_args()
 
@@ -941,7 +1041,8 @@ def main():
         if not (a.qr and stu_ck):
             raise SystemExit("submit-url 需要 --qr 与 --stu-cookie-file")
         st = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=parse_quiet(a.quiet_hours),
-                     max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval)
+                     max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval,
+                          risk=not getattr(a, "no_risk_center", False))
         _submit_url(st.sess, a.qr, a.uid, a.name, a.fid, verbose=True)
         return 0
 
@@ -951,13 +1052,23 @@ def main():
         tch_uid = m.group(1) if m else ""
     if a.mode == "once" and not a.rounds:
         a.rounds = 1                      # once = 只跑一轮（否则会进 watch 无限循环）
+    if not getattr(a, "no_risk_center", False):
+        # 策略层开启时，把旧 stealth_session 的"全局 6 次/小时"放宽，
+        # 让配额由 risk_center 按动作分档（sign 6/h、sign_probe 30/h、tch_write 30/h、read 600/h）
+        if not a.max_writes_per_hour:
+            a.max_writes_per_hour = 120
+        if not a.min_interval:
+            a.min_interval = 0
     qh = parse_quiet(a.quiet_hours)
     tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh,
-                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if tch_ck else None
+                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval,
+                          risk=not getattr(a, "no_risk_center", False)) if tch_ck else None
     stu = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh,
-                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if (stu_ck and not a.dry_run) else None
+                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval,
+                          risk=not getattr(a, "no_risk_center", False)) if (stu_ck and not a.dry_run) else None
     stu_list = StudentSide(stu_ck, a.uid, a.ua_mode, quiet_hours=qh,
-                            max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval) if stu_ck else None   # 只读的活动列表用
+                            max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval,
+                          risk=not getattr(a, "no_risk_center", False)) if stu_ck else None   # 只读的活动列表用
 
     if tch and warmup and not a.dry_run and a.mode == "watch":
         try:
@@ -1012,7 +1123,8 @@ def main():
             if tch_relogin(a.tch_cookie_file):
                 tch_ck = load_cookie("", a.tch_cookie_file)
                 tch = TeacherSide(tch_ck, tch_uid or a.uid, a.ua_mode, a.dump_dir, quiet_hours=qh,
-                                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval)
+                                       max_writes_per_hour=a.max_writes_per_hour, min_interval=a.min_interval,
+                          risk=not getattr(a, "no_risk_center", False))
         if tch:
             tch.round = rnd
         try:

@@ -325,6 +325,13 @@ class VideoTask(object):
         self.ok = 0
         self.rollbacks = 0
         self.session = None
+        self.rc = None
+        if not getattr(args, "no_risk_center", False):
+            try:
+                from risk_center import RiskCenter
+                self.rc = RiskCenter(uid=self.uid or "")
+            except Exception as e:
+                print("[risk] 策略层不可用（%s），退回内置闸门" % e)
 
     # ---- 会话
     def open(self):
@@ -370,6 +377,8 @@ class VideoTask(object):
             sess = self.open()
             url = job_url(a.job_id, a.knowledge_id, a.course_id, a.clazz_id, a.jtoken or "")
             st, data = get_json(sess, url)
+            if st == 200 and self.rc:
+                self.rc.probe(url)          # R1：本域已有成功只读，后面才允许写
             if st != 200 or not isinstance(data, dict):
                 print("[warn] ananas/job 返回 %s：%s" % (st, str(data)[:200]))
             self.job = parse_job(data)
@@ -445,6 +454,19 @@ class VideoTask(object):
                                                              j.get("objectid"), playing_sec,
                                                              j.get("duration") or 0, clip, self.salt)))
             return {"result": None, "dry": True}
+        ri = None
+        if self.rc:
+            ri = int(getattr(a, "report_interval", 0) or j.get("reportTimeInterval") or 0) or None
+            ok, why = self.rc.allow("video_report", url=url, target=str(j.get("jobid")),
+                                    progress=playing_sec, report_interval=ri)
+            if not ok:
+                if any(k in why for k in ("距上次", "小时", "今日", "冷却", "R6")):
+                    ok, why = self.rc.wait("video_report", url=url, target=str(j.get("jobid")),
+                                           max_wait=min(300, (ri or 60) * 3), verbose=True)
+                if not ok:
+                    print("[risk] 拦截：%s" % why)
+                    return {"result": None, "blocked": why, "rollbackPoint": -1, "rollbackStatus": False,
+                            "http": 0, "errorMsg": why}
         sess = self.open()
         r = sess.get(url, timeout=a.timeout)
         try:
@@ -452,6 +474,15 @@ class VideoTask(object):
         except Exception:
             body = {"_raw": r.text[:2000]}
         v = verdict_of(r.status_code, body)
+        if self.rc:
+            ov = self.rc.observe("video_report", url, r.status_code, r.text, progress=playing_sec,
+                                 target=str(j.get("jobid")),
+                                 ok=(v["result"] in (1, 203) or v["result"] is None))
+            if ov["action"] in ("HALT", "COOLDOWN"):
+                print("[risk] %s：%s" % (ov["action"], ov["reason"]))
+                if HAVE_STEALTH:
+                    raise (RiskHalt if ov["action"] == "HALT" else RiskCooldown)(ov["reason"])
+                return v
         self.sent += 1
         if v["result"] == 1:
             self.ok += 1
@@ -586,6 +617,10 @@ def main():
     ap.add_argument("--max-writes-per-hour", type=int, default=90)
     ap.add_argument("--min-interval", type=float, default=5.0)
     ap.add_argument("--quiet-hours", default="1-7")
+    ap.add_argument("--no-risk-center", action="store_true",
+                    help="关闭反封号策略层（默认开启：单调进度/配额/熔断/审计）")
+    ap.add_argument("--report-interval", type=int, default=0,
+                    help="服务端 reportTimeInterval（秒）；>0 时两次上报间隔不得低于它")
     # 任务来源
     ap.add_argument("--course-id")
     ap.add_argument("--clazz-id", required=False)

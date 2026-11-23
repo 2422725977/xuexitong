@@ -25,9 +25,16 @@ CITY = {"北京": (39.9042, 116.4074), "成都": (30.5728, 104.0668), "上海": 
 
 
 class Guard:
-    def __init__(self, cookie, uid, course, clazz, dry=False, do_location=True, log=print):
+    def __init__(self, cookie, uid, course, clazz, dry=False, do_location=True, log=print, risk=True):
         self.uid, self.course, self.clazz = uid, course, clazz
         self.dry, self.do_location, self.log = dry, do_location, log
+        self.rc = None
+        if risk:
+            try:
+                from risk_center import RiskCenter
+                self.rc = RiskCenter(uid=str(uid or ""), optin=("sign_probe",))
+            except Exception as e:
+                self.log("      [风控] 策略层不可用：%s" % e)
         self.s = requests.Session()
         self.s.headers.update({"Cookie": cookie.strip(), "User-Agent": UA_APP})
         self.seen = set()
@@ -40,6 +47,8 @@ class Guard:
                                "showNotStartedActive": show_not_started, "_": str(int(time.time() * 1000))}, timeout=30)
         try:
             self.stats["polled"] += 1
+            if self.rc and r.status_code == 200:
+                self.rc.probe(MOBILE + "/v2/apis/active/student/activelist")   # R1 只读先行
             return (r.json().get("data") or {}).get("activeList") or []
         except Exception:
             return []
@@ -60,12 +69,29 @@ class Guard:
         return {"0": "normal", "2": "qr", "3": "gesture", "5": "code"}.get(other, "other")
 
     # ---------- 提交 ----------
-    def submit(self, aid, **kw):
+    def submit(self, aid, action="sign_probe", **kw):
+        """action: sign_probe（位置爬坡的一次探针，允许多次）/ sign（一次性提交，目标上限 3 次）"""
         p = {"activeId": aid, "courseId": self.course, "uid": self.uid, "clientip": "", "useragent": "",
              "latitude": "-1", "longitude": "-1", "appType": "0", "fid": "0", "name": ""}
         p.update(kw)
-        r = self.s.get(MOBILE + "/pptSign/stuSignajax", params=p, timeout=25)
+        url = MOBILE + "/pptSign/stuSignajax"
+        if self.rc:
+            ok, why = self.rc.allow(action, url=url, target=str(aid))
+            if not ok and "R1" in why:
+                self.activelist()                     # 自愈：补一次只读探针再试
+                ok, why = self.rc.allow(action, url=url, target=str(aid))
+            if not ok:
+                if any(k in why for k in ("距上次", "小时", "今日", "冷却")):
+                    ok, why = self.rc.wait(action, url=url, target=str(aid), max_wait=120, verbose=False)
+            if not ok:
+                self.log("      [风控] 拦截：%s" % why)
+                return "RISK_BLOCKED:" + why, None
+        r = self.s.get(url, params=p, timeout=25)
         b = r.text.strip()
+        if self.rc:
+            v = self.rc.observe(action, url, r.status_code, b, target=str(aid))
+            if v["action"] in ("HALT", "COOLDOWN"):
+                self.log("      [风控] %s → %s" % (v["action"], v["reason"][:80]))
         m = RE_M.search(b)
         return b, (float(m.group(1)) if m else None)
 
@@ -197,6 +223,8 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--no-location", action="store_true")
     ap.add_argument("--log", default="")
+    ap.add_argument("--no-risk-center", action="store_true",
+                    help="关闭反封号策略层（默认开启：只读先行/双配额/目标上限/熔断/审计）")
     a = ap.parse_args()
     cookie = a.cookie or open(a.cookie_file, encoding="utf-8").read()
     if not a.uid or not a.course_id or not a.class_id:
@@ -205,7 +233,8 @@ def main():
     def log(msg):
         line = "[%s] %s" % (time.strftime("%H:%M:%S"), msg); print(line)
         if fh: fh.write(line + chr(10)); fh.flush()
-    g = Guard(cookie, a.uid, a.course_id, a.class_id, dry=a.dry_run, do_location=not a.no_location, log=log)
+    g = Guard(cookie, a.uid, a.course_id, a.class_id, dry=a.dry_run, do_location=not a.no_location,
+              log=log, risk=not getattr(a, "no_risk_center", False))
     st = g.run(interval=a.interval, max_seconds=a.max_seconds, once=a.once)
     log("[guard] 结束 %s" % json.dumps(st, ensure_ascii=False))
 

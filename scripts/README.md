@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 137 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 139 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -72,6 +72,8 @@
 | `unseal_probe.py` | Attempt static recovery inside the sealed payload: embedded zips, zlib/deflate streams, single-byte-xor dex. |
 | `stealth_session.py` | ★ 伪装层 v2 + 风控层核心：六维伪装（身份/指纹/头/时序/流量/审计）+ 判级闸门熔断（其他脚本加 --stealth 即可用） |
 | `risk_guard.py` | ★ 风控层 CLI：判级语料回归 18 条 / 响应判级 / 模拟处置 / 审计监视 / 状态重置 |
+| `risk_center.py` | ★★ 反封号策略层：R1 只读先行 / R2 单调进度 / R3 目标上限 / R4 双配额 / R5+R6 节奏 / R7 三档熔断 / R8 全审计 / R9 不伪造埋点 / R10 失败退避；按动作分档（sign、sign_probe、qr_sign、tch_write、video_report、work_*、exam），CLI --status/--explain/--plan/--selftest(35 项)/--reset/--optin |
+| `risk_integration_test.py` | ★ 接线回归 17 项（离线假 session）：stu_guard 的 R1/计数/R3/HALT/审计、video_task 的 allow→observe→rollback→R2、cx_pipeline StudentSide 的 R1 自愈→配额→R3→HALT |
 | `selftest.py` | ★ 全量回归测试 43 项（判级器 + 闸门熔断 + 调用方熔断 + 审计脱敏），不联网 |
 | `autosign.py` / `qr_sign_remote.py` | 已接入熔断：命中风控打印 [STOP]/[WAIT] 并停手；支持 --max-writes-per-hour / --min-interval / --quiet-hours |
 | `tch_qr_probe.py` | ★ 教师侧二维码探针：用教师登录态反复拉教师端签到页，抽取当前 `widget/sign/e?id&c&enc`、候选 enc/signCode 与跨轮变化（拿到即可不再依赖真人扫码） |
