@@ -1,0 +1,52 @@
+[
+ {
+  "lag": 4,
+  "aid": "4000182044367",
+  "enc": "A27D302998B7EB1DF1EEA7C5F5C8CA2F",
+  "refresh": 0,
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 8,
+  "aid": "4000182044428",
+  "enc": "0CF2B64F102DDF0AD15DBB8606A462D2",
+  "refresh": 0,
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 12,
+  "aid": "4000182044479",
+  "enc": "0689A2A8B32B581B452A949EB8AC7A27",
+  "refresh": 0,
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 16,
+  "aid": "4000182044532",
+  "enc": "4E98408DB77B7668AA0B7BA6AF09FE5F",
+  "refresh": 0,
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 25,
+  "aid": "4000182044600",
+  "enc": "636DE04F2537EFD6B69B324611D76285",
+  "refresh": 0,
+  "result": [
+   200,
+   "success"
+  ]
+ }
+]

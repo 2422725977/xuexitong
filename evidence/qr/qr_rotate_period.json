@@ -1,0 +1,41 @@
+{
+ "aid": "4000182044026",
+ "changes": [
+  {
+   "t": 0.14,
+   "enc": "B6AEC069FEFA40FD49E301C95F25DBE5",
+   "refresh": 0,
+   "signCode": "563749"
+  },
+  {
+   "t": 9.62,
+   "enc": "23CF01D97603A867121BC96724279576",
+   "refresh": 1,
+   "signCode": "299517"
+  },
+  {
+   "t": 14.88,
+   "enc": "9208E64E8B28274327CDD740D00EAD04",
+   "refresh": 1,
+   "signCode": "845037"
+  },
+  {
+   "t": 20.15,
+   "enc": "722B93F0DD347C129FCE9335E19CA704",
+   "refresh": 1,
+   "signCode": "400401"
+  },
+  {
+   "t": 25.42,
+   "enc": "74F6936F29A5A23BAEDA8F184A2E006D",
+   "refresh": 1,
+   "signCode": "419492"
+  },
+  {
+   "t": 30.68,
+   "enc": "44C60012612C995A4FC36977D1DAFDFB",
+   "refresh": 1,
+   "signCode": "152669"
+  }
+ ]
+}

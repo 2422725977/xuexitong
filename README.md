@@ -105,6 +105,29 @@ python3 scripts/cx_pipeline.py --mode create --uid <学生puid> \
 - 依据（三条实测）：学生端页面 `var aidInEwm=""; var enc="";` 只能靠扫码回调赋值；`newsign/signDetail` 带 4 种 msg 参数返回 69 字段完全一致、无 enc；服务端错误文案分类（clone → «签到失败，请重新扫描» / 父活动 → «此次签到未开始»）证明唯一门槛就是 enc。
 - 详见 [`docs/一键自动签到.md`](docs/一键自动签到.md)。
 
+## 扫码签到：一张截图就够（★ 2026-11-23 真机实测）
+
+二维码签到的真身只有一串 `enc`，「扫码」只是把它从图里读出来。实测有效窗：
+
+| 二维码模式 | 有效窗 | 结论 |
+|---|---|---|
+| 不刷新（ifRefreshEwm=0） | ≥25 秒（25s 后仍 success） | 一张截图长期有效 |
+| 5 秒刷新（ifRefreshEwm=1, ewmRefreshTime=5） | 约 10 秒（6.1s/10.2s success，14.3s 失效） | 能签，但必须「拿到图 → 自动提交」 |
+
+```bash
+# 别人把二维码截图丢进目录
+python3 scripts/qr_watch.py --source folder --dir out/qrdrop --uid <puid> --cookie-file ck.txt --stop-on-success
+# 二维码显示在手机屏幕上
+python3 scripts/qr_watch.py --source adb --serial <序列号> --uid <puid> --cookie-file ck.txt --stop-on-success
+# 复现动态大屏码（教师侧）
+python3 scripts/qr_screen_sim.py --aid <aid> --out out/qrdrop --interval 1.5 --count 60 --serve 8899
+```
+
+- 两次端到端实录均为「第 1 次提交即 success」（folder 源 / 真机截屏源），全程无摄像头、无本人到场。
+- 学生 cookie 取不到当前码（refreshQRCode 回「暂无权限」），学生侧只有「拿码 → 提交」这一半。
+- 提示：抢签别套 `--stealth` 风控层（8 秒最小间隔会把 5 秒窗口拖没），qr_watch.py 默认裸发。
+- 详见 [`docs/一键自动签到.md`](docs/一键自动签到.md) 第 17 章与 [`docs/报告-已解壳版.md`](docs/报告-已解壳版.md) 第 25 章。
+
 ## 快速开始
 
 ```bash
@@ -153,7 +176,7 @@ docs/隐身与风控.md         ★ 伪装层 v2 + 风控层：六维伪装、�
 docs/视频任务点协议.md     ★ 视频任务点：enc 公式、203/rollbackPoint 回退、frida 抓真值、命令速查
 docs/低暴露抓取.md         ★ 取真值时怎么把风控暴露面压到最低（三条路排序 + 尺度纪律 + 模拟器最低暴露清单）
 docs/一键自动签到.md       ★ 教师侧取码 → 学生侧提交：四段流水线、模式速查、诊断产物、故障排查表
-scripts/                   113 个脚本（含 cx_pipeline.py 一键流水线、device/ 真机抓包工具包、emulator/ 去模拟器化道具）：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归、加固对抗
+scripts/                   115 个脚本（含 cx_pipeline.py 一键流水线、device/ 真机抓包工具包、emulator/ 去模拟器化道具）：解壳、协议重放、自动签到、视频任务点、Frida hook、抓屏中继、伪装/风控/回归、加固对抗
 userscript/                油猴脚本：在渲染二维码的电脑上直接解码上报
 evidence/                  证据：类清单、字符串、findrefs 结果、反编译源码、dex 校验
 ```

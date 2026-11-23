@@ -1,0 +1,38 @@
+[
+ {
+  "lag": 2,
+  "aid": "4000182044915",
+  "polls": 3,
+  "refresh": 0,
+  "age": 6.1,
+  "enc": "9A066B51569F131E2452C5FFFFDCE88C",
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 6,
+  "aid": "4000182044963",
+  "polls": 5,
+  "refresh": 0,
+  "age": 10.2,
+  "enc": "FAF218924C3FF7046A6F95935435C4C4",
+  "result": [
+   200,
+   "success"
+  ]
+ },
+ {
+  "lag": 10,
+  "aid": "4000182044999",
+  "polls": 7,
+  "refresh": 0,
+  "age": 14.3,
+  "enc": "6E9B01D23E36308C703706EEB822C5AD",
+  "result": [
+   200,
+   "签到失败，请重新扫描。"
+  ]
+ }
+]

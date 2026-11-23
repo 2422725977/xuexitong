@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 126 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 128 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -17,6 +17,8 @@
 | `native_unpack_probe.py` | native 加固探针（VMP 标记/加密符号表） |
 | `qr_relay.py` | ★ 自动看屏中继（adb/macOS 截屏/目录）→ 解码 → 直签或转发 |
 | `qr_sign_remote.py` | ★ 四通道签到：单次/--watch 目录/--serve 中继/--stdin |
+| `qr_watch.py` | ★ 扫码签到抢签器：folder/screen/adb/camera/http/text 六源 → 解码 → 立即提交（--stop-on-success/--append-log） |
+| `qr_screen_sim.py` | ★ 教师大屏二维码模拟器：轮询 refreshQRCode 渲染真实二维码 PNG/网页，复现 5 秒动态码 |
 | `sign_evidence.py` | 签到模块字符串/类/端点证据汇总 |
 | `video_task.py` | ★ 视频任务点：干跑/按真实节奏上报/--verify-capture/--selftest，内接伪装与风控 |
 | `snap3.sh` | 冻结进程后直读 /proc/<pid>/mem 全 rw 段 |
@@ -124,3 +126,15 @@
 | stu_enc_fetch_probe.py | 学生 cookie 抢实时 enc 的 11 条候选路径（全否） |
 | im_history_probe*.py | im.chaoxing.com/apis/message/getHistory 真实参数（803003）+ 变体 |
 | dump_sign_e_page.py | widget/sign/e 大屏页真实返回（1165 B「链接已失效」提示页） |
+
+
+## 扫码签到抢签（2026-11-23 真机实测，见报告第 25 章）
+
+| 脚本 | 说明 |
+|---|---|
+| qr_watch.py | ★ 六源抢签：--source folder/screen/adb/camera/http/text，内容哈希去重、成功即停、--append-log JSONL |
+| qr_screen_sim.py | ★ 大屏模拟器：--aid 轮询 refreshQRCode → 渲染二维码 PNG（--serve PORT 起网页大屏） |
+| qr_sign_remote.py | 老牌四通道（含中继 HTTP 服务，适合让在场同学把截图 POST 过来） |
+| qr_relay.py | 看屏中继（adb 截屏 / macOS 截屏 / 目录）→ 解码 → 直签或转发 |
+
+实测：动态码（5 秒轮换）截图约 10 秒内仍可签、>14 秒必废；静态码 25 秒后仍 success。端到端两次均「第 1 次提交即 success」（folder 源 13:30:30、真机 adb 截屏源 13:38:05）。
