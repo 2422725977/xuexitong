@@ -33,7 +33,7 @@ class Stu:
         self.cookie = (cookie or load_cookie()).replace("\n", "").strip()
         # 直接整串塞进 Cookie 头（与 App 一致；解析成 cookiejar 易丢 uid/_uid）
         self.s.headers["Cookie"] = self.cookie
-        self.uid = uid or "[学生PUID]"
+        self.uid = uid or ""
         self.course_id = course_id or "269282723"
         self.class_id = class_id or "159926750"
         self.timeout = timeout
@@ -162,7 +162,7 @@ class Stu:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cookie", default="ck.txt")
-    ap.add_argument("--uid", default="[学生PUID]")
+    ap.add_argument("--uid", default="")
     ap.add_argument("--course-id", default="269282723")
     ap.add_argument("--class-id", default="159926750")
     ap.add_argument("--active-id")

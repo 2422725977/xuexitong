@@ -115,7 +115,7 @@ def main():
     ap = argparse.ArgumentParser(description="教师侧签到状态改写（迟到<->已签）")
     ap.add_argument("--active-id", required=True, help="活动 id（activeId/activePrimaryId）")
     ap.add_argument("--cookie", default="ck_tch.txt", help="教师 cookie 文件（整串）")
-    ap.add_argument("--teacher-uid", default="[教师PUID]")
+    ap.add_argument("--teacher-uid", default="")
     ap.add_argument("--course-id", default="", help="仅用于拼 referer，可空")
     ap.add_argument("--class-id", default="", help="仅用于拼 referer，可空")
     ap.add_argument("--list", action="store_true", help="只列名单不改")
