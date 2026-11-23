@@ -128,6 +128,25 @@ python3 scripts/qr_screen_sim.py --aid <aid> --out out/qrdrop --interval 1.5 --c
 - 提示：抢签别套 `--stealth` 风控层（8 秒最小间隔会把 5 秒窗口拖没），qr_watch.py 默认裸发。
 - 详见 [`docs/一键自动签到.md`](docs/一键自动签到.md) 第 17 章与 [`docs/报告-已解壳版.md`](docs/报告-已解壳版.md) 第 25 章。
 
+## 没有教师账号、没有二维码时能做到什么（报告第 26 章）
+
+| 签到类型 | 只有学生 cookie | 你需要准备的 |
+|---|---|---|
+| 普通签到 | ✅ 完全可签 | 什么都不用——activelist 会自己发现活动 |
+| 位置签到 | ✅ 完全可签，人不用到场 | 什么都不用——地址文本活动里就有，距离预言机爬坡定位 |
+| 二维码签到 | ⚠️ 需要 enc | 一张十秒内的码截图（静态码一张永久有效） |
+| 签到码 / 手势 | ❌ | 必须有人把码告诉你（连错 6 次锁 1 小时，枚举不可行） |
+| 拍照 / 人脸 | ❌ | 旧账（拍照专项 / 人脸章节） |
+
+两个关键武器：**activelist 自动发现**（`/v2/apis/active/student/activelist`，一次 70+ 条活动，教师刚建的活动 1 秒入列）与 **距离预言机**（位置签到提交假坐标时服务端把真实距离写进错误文案，用「中心点 + 两个梯度探针」爬坡，2–3 轮落进 500 米范围，误差 ≈200 米）。
+
+```bash
+python3 scripts/stu_guard.py --cookie-file ck.txt --uid <puid> \
+    --course-id <courseId> --class-id <classId> --interval 12 --log out/guard.log
+```
+
+实测一轮：新活动 11 个 → 普通 success、位置 3 步 success，二维码/签到码/手势/拍照自动归「需人工」`{"signed":5,"needs_secret":6,"fail":0}`。
+
 ## 快速开始
 
 ```bash
@@ -165,7 +184,7 @@ cookie 三种来源：Frida `dumpcookie`（`scripts/frida_sign_hook.js`）、mit
 ## 目录
 
 ```
-docs/报告-已解壳版.md      完整报告（22 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门 / 拍照签到专项 / 真机取证）
+docs/报告-已解壳版.md      完整报告（26 章，解壳 / 协议 / 人脸 / 动态二维码 / 遗漏审计 / 伪装层与风控层 / 视频任务点 / 模拟器实测 / 一键流水线 / 权威取码与人脸闸门 / 拍照签到专项 / 真机取证 / 扫码签到全链路 / 学生端纯远程能力矩阵）
 docs/拍照签到-PCR007-专项.md  ★ 拍照签到专项：闸门定界、上传链、deviceCode 还原、外部实现对照、全部变体矩阵
 docs/真机抓包作战清单.md      ★ 真机 Android 抓包/复现路线（chrome://inspect → mitmproxy → root+frida）
 docs/报告-静态初版.md      加固前的静态可达面分析（对照用）

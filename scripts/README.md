@@ -1,6 +1,6 @@
 # scripts 索引
 
-共 128 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
+共 137 个脚本（含 device/、emulator/ 子目录）。带 ★ 的是日常主用；其余是解壳/取证过程中留下的工具，保留以便复现。
 
 | 脚本 | 说明 |
 |---|---|
@@ -83,6 +83,7 @@
 | `probe_reporturl_entry.py` | 无 cookie 探测两跳入口（knowledge/cards → ananas/job）的鉴权行为，用于判定 reportUrl 是否必须登录态 |
 
 - ★ scripts/stuonly_sign.py —— **只有学生 cookie 时**的全类型签到（普通/手势/签到码/位置/二维码，自动判型 + 本地二维码图片解码）
+ ★ scripts/stu_guard.py —— **只有学生 cookie 的常驻守护**：activelist 自动发现新签到 → 普通直接签 / 位置用「距离预言机」爬坡自动签，二维码/签到码/手势自动归「需人工」
 
 
 ## 拍照签到专项（2026-11-17 新增，结果见 docs/拍照签到-PCR007-专项.md）
@@ -124,6 +125,12 @@
 | qr_static_probe.py | 对照：ifRefreshEwm=0 时 enc 固定、35 秒后旧 enc 仍 success |
 | qr_window_group_probe.py | enc 有效窗口（8/12/22 秒全部失效）+ 10 个群聊/消息接口尝试 |
 | stu_enc_fetch_probe.py | 学生 cookie 抢实时 enc 的 11 条候选路径（全否） |
+ stu_remote_discover.py | 学生 cookie 自己发现活动：/v2/apis/active/student/activelist（一次 70+ 条，新活动 1 秒入列） |
+ stu_oracle_walk.py / stu_remote_location.py | 位置签到纯远程：地址文本 → 起点，用「距离预言机」中心 + 两个梯度探针爬坡 |
+ stu_trilaterate.py | 三边几何解析解（失败路线：探针点距目标 35-40km 时病态，反解偏 17.9km） |
+ stu_lock_test.py | 签到码/手势锁定阈值：第 6 次错码锁 1 小时（按账号+活动，换 session 无效） |
+ stu_read_secret.py / stu_read_secret2.py | 学生 preSign 页能否带出码值/坐标（只有变量名，无真值） |
+ qr_construct_probe.py | 二维码 enc 能否构造：8 次采样 32 位 hex 每 5.3 秒换，md5 试算全否 |
 | im_history_probe*.py | im.chaoxing.com/apis/message/getHistory 真实参数（803003）+ 变体 |
 | dump_sign_e_page.py | widget/sign/e 大屏页真实返回（1165 B「链接已失效」提示页） |
 

@@ -1,0 +1,231 @@
+{
+ "enc_samples": [
+  {
+   "ts": 1795412704724,
+   "enc": "117A4755D832C2DA4D5D360F7334F40C",
+   "signCode": "775286",
+   "refresh": 1,
+   "len": 32
+  },
+  {
+   "ts": 1795412706068,
+   "enc": "117A4755D832C2DA4D5D360F7334F40C",
+   "signCode": "775286",
+   "refresh": 0,
+   "len": 32
+  },
+  {
+   "ts": 1795412707324,
+   "enc": "117A4755D832C2DA4D5D360F7334F40C",
+   "signCode": "775286",
+   "refresh": 0,
+   "len": 32
+  },
+  {
+   "ts": 1795412708575,
+   "enc": "117A4755D832C2DA4D5D360F7334F40C",
+   "signCode": "775286",
+   "refresh": 0,
+   "len": 32
+  },
+  {
+   "ts": 1795412709825,
+   "enc": "92FC5F041405D403D3FF2F835673FBEE",
+   "signCode": "314299",
+   "refresh": 1,
+   "len": 32
+  },
+  {
+   "ts": 1795412711092,
+   "enc": "92FC5F041405D403D3FF2F835673FBEE",
+   "signCode": "314299",
+   "refresh": 0,
+   "len": 32
+  },
+  {
+   "ts": 1795412712358,
+   "enc": "92FC5F041405D403D3FF2F835673FBEE",
+   "signCode": "314299",
+   "refresh": 0,
+   "len": 32
+  },
+  {
+   "ts": 1795412713610,
+   "enc": "92FC5F041405D403D3FF2F835673FBEE",
+   "signCode": "314299",
+   "refresh": 0,
+   "len": 32
+  }
+ ],
+ "infokeys": [
+  "activeSort",
+  "activeType",
+  "activityTranMode",
+  "addToCacheTime",
+  "attendNum",
+  "attendPer",
+  "bsid",
+  "chartid",
+  "chatid",
+  "clazzid",
+  "configJson",
+  "content",
+  "courseId",
+  "createPageTimeLong",
+  "createtime",
+  "createtimeStr",
+  "createuid",
+  "createuidname",
+  "createxxuid",
+  "credit",
+  "currentstatus",
+  "currentversion",
+  "day",
+  "dpurl",
+  "editconfig",
+  "endTime",
+  "endtime",
+  "endtimeStr",
+  "endtimes",
+  "ewmRefreshTime",
+  "ewnCtime1",
+  "ewnCtime2",
+  "fid",
+  "fid2",
+  "fykbActiveInfo",
+  "fykbActiveInfoExtend",
+  "grouptype",
+  "hour",
+  "id",
+  "ifNeedVCode",
+  "ifaveraged",
+  "ifcommit",
+  "ifgetrange",
+  "ifopenAddress",
+  "ifphoto",
+  "ifrefreshewm",
+  "ifsendmessage",
+  "iphoneContent",
+  "isNowDay",
+  "isanony",
+  "isbackfill",
+  "isbegins",
+  "isclone",
+  "isdelete",
+  "islook",
+  "ismark",
+  "isnorm",
+  "isold",
+  "isresult",
+  "jurl",
+  "jwCourseId",
+  "lateEndTime",
+  "lateMinute",
+  "latitude",
+  "locationLatitude",
+  "locationLatitude_gd",
+  "locationLongitude",
+  "locationLongitude_gd",
+  "locationRange",
+  "locationText",
+  "longitude",
+  "manual",
+  "mark",
+  "minute",
+  "name",
+  "newOld",
+  "normscore",
+  "nowTime",
+  "numberCount",
+  "oldActiveId",
+  "oldOtherId",
+  "openCheckFaceFlag",
+  "openCheckWeChatFlag",
+  "openPreventCheatFlag",
+  "openSignOutFlag",
+  "otherId",
+  "pActiveId",
+  "parentid",
+  "pptPlanId",
+  "pptnum",
+  "puid",
+  "realActiveId",
+  "region",
+  "releaseNum",
+  "scoreWeight",
+  "sfdp",
+  "sffxs",
+  "showOpenTimer",
+  "showOverdueTipsFlag",
+  "showVCode",
+  "showhide",
+  "signCode",
+  "signOutPublishTimeStamp",
+  "source",
+  "starttime",
+  "starttimeStr",
+  "starttimes",
+  "status",
+  "stuid",
+  "sxs",
+  "timeLong",
+  "title",
+  "updatetime",
+  "url",
+  "userName",
+  "userStatus",
+  "viewPicPath",
+  "zhjsid"
+ ],
+ "infohit": {
+  "ifNeedVCode": 0,
+  "openCheckFaceFlag": 0,
+  "openCheckWeChatFlag": 0,
+  "openSignOutFlag": 0,
+  "showVCode": 0,
+  "signCode": "",
+  "signOutPublishTimeStamp": 4999
+ },
+ "msg_probe": {
+  "/v2/apis/message/getMessageList": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/message/list": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/notice/list": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/push/msglist": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/active/student/activemsg": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/active/student/coursemsg": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/v2/apis/active/student/courseactivecount": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/ppt/activeAPI/classTaskCount": {
+   "http": 200,
+   "body": "{\"result\":0,\"data\":[]}"
+  },
+  "/v2/apis/active/getActiveDataV2": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error</h1></center>\r <hr><center>tengine</center>\r </body>\r </htm"
+  },
+  "/ppt/taskAPI/getActiveDataV2": {
+   "http": 200,
+   "body": "{\"result\":\"1\",\"msg\":\"获取信息成功\",\"data\":{\"startends\":\"11-23 14:14\",\"tjTitle\":\"\",\"sort\":73,\"typeTitle\":\"stu-remote-qr\",\"title\":\"stu-remote-qr\",\"activityTranMode\":1,\"activeType\":2,\"createTime\":\"2026-11-23 13:44:40\",\"logo\":\"htt"
+  }
+ }
+}

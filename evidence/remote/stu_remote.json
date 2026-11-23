@@ -1,0 +1,157 @@
+{
+ "ts": "2026-11-23 13:44:14",
+ "fixtures": {
+  "normal": "4000182046885",
+  "code": "4000182046919",
+  "qr": "4000182046940"
+ },
+ "activelist": {
+  "http": 200,
+  "keys": [
+   "ext",
+   "readingDuration",
+   "activeList"
+  ],
+  "count": 72
+ },
+ "activelist_rows": [
+  [
+   "4000182046940",
+   null,
+   1,
+   1
+  ],
+  [
+   "4000182046919",
+   null,
+   1,
+   1
+  ],
+  [
+   "4000182046885",
+   null,
+   1,
+   1
+  ],
+  [
+   "4000182040671",
+   null,
+   1,
+   1
+  ],
+  [
+   "4000182040192",
+   null,
+   1,
+   1
+  ],
+  [
+   "4000182045105",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044999",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044963",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044915",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044600",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044532",
+   null,
+   1,
+   2
+  ],
+  [
+   "4000182044479",
+   null,
+   1,
+   2
+  ]
+ ],
+ "submit": {
+  "4000182046885": {
+   "info": {
+    "otherId": 0,
+    "ifphoto": 0,
+    "ifopenAddress": 0,
+    "status": 1,
+    "title": null,
+    "chatid": null
+   },
+   "submit": {
+    "http": 200,
+    "body": "success"
+   }
+  },
+  "4000182046919": {
+   "info": {
+    "otherId": 5,
+    "ifphoto": 0,
+    "ifopenAddress": 0,
+    "status": 1,
+    "title": null,
+    "chatid": null
+   },
+   "submit": {
+    "http": 200,
+    "body": "签到失败[90002]"
+   }
+  },
+  "4000182046940": {
+   "info": {
+    "otherId": 2,
+    "ifphoto": 0,
+    "ifopenAddress": 0,
+    "status": 1,
+    "title": null,
+    "chatid": null
+   },
+   "submit": {
+    "http": 200,
+    "body": "签到失败，请重新扫描"
+   }
+  }
+ },
+ "probe": {
+  "refreshQRCode": {
+   "http": 200,
+   "body": "{\"result\":0,\"msg\":null,\"data\":null,\"errorMsg\":\"无权限获取签到二维码\"}"
+  },
+  "getSignCode(stu)": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error"
+  },
+  "getSignCode(tea)": {
+   "http": 200,
+   "body": "{\"result\":0,\"msg\":null,\"data\":null,\"errorMsg\":\"没有权限\"}"
+  },
+  "getLastSigninSettings": {
+   "http": 500,
+   "body": "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r <html>\r <head><title>500 Internal Server Error</title></head>\r <body>\r <center><h1>500 Internal Server Error"
+  },
+  "signDetail": {
+   "http": 200,
+   "body": "{\"activeSort\":72,\"activeType\":2,\"activityTranMode\":1,\"attendNum\":0,\"bsid\":0,\"chartId\":\"330606364917761\",\"clazzId\":159926750,\"configJson\":\"{\\\"sendToOtherClassLis"
+  }
+ }
+}
